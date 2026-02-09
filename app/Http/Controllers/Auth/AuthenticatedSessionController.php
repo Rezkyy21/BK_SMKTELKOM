@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Filament\Facades\Filament;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,21 +24,20 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-   public function store(LoginRequest $request): RedirectResponse
-{
-    $request->authenticate();
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
 
-    $request->session()->regenerate();
+        $request->session()->regenerate();
 
-    $user = auth()->user();
+        $user = auth()->user();
 
-    if ($user->role === 'admin' || $user->role === 'guru_bk') {
-        return redirect('/admin'); // Filament
+        if ($user->role === 'admin' || $user->role === 'guru_bk') {
+            return redirect()->intended(Filament::getPanel('admin')->getUrl());
+        }
+
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
-    
-
-    return redirect()->route('dashboard'); // siswa
-}
     /**
      * Destroy an authenticated session.
      */

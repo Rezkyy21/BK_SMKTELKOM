@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('materi_media', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('materi_id')->constrained('materi')->onDelete('cascade');
+            $table->foreignId('materi_id')->constrained('materi')->cascadeOnDelete();
             $table->enum('tipe', ['image', 'youtube', 'pdf', 'link']);
             $table->string('value');
             $table->string('caption')->nullable();

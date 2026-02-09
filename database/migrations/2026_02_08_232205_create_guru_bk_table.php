@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('guru_bk', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->unique()->constrained('users')->cascadeOnDelete();
             $table->string('nip')->unique();
             $table->string('nama');
             $table->enum('status', ['aktif', 'cuti', 'nonaktif'])->default('aktif');

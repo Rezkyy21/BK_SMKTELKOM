@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('laporan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->unique()->constrained('booking')->onDelete('cascade');
-            $table->foreignId('guru_id')->constrained('guru_bk')->onDelete('cascade');
+            $table->foreignId('booking_id')->unique()->constrained('booking')->cascadeOnDelete();
+            $table->foreignId('guru_id')->constrained('guru_bk')->cascadeOnDelete();
             $table->text('kesimpulan');
             $table->text('rekomendasi');
             $table->timestamp('created_at')->useCurrent();

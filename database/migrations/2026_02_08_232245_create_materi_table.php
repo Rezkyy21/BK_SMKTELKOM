@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('materi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kategori_id')->constrained('kategori_materi')->onDelete('cascade');
-            $table->foreignId('guru_id')->constrained('guru_bk')->onDelete('cascade');
+            $table->foreignId('kategori_id')->constrained('kategori_materi')->cascadeOnDelete();
+            $table->foreignId('guru_id')->constrained('guru_bk')->cascadeOnDelete();
             $table->string('judul');
             $table->string('slug')->unique();
             $table->text('konten');
