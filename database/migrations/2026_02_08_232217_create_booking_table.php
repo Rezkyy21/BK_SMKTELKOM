@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('booking', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('jadwal_id')->constrained('jadwal')->onDelete('cascade');
-            $table->foreignId('siswa_id')->constrained('siswa')->onDelete('cascade');
-            $table->foreignId('topik_id')->constrained('topik')->onDelete('cascade');
+            $table->foreignId('jadwal_id')->constrained('jadwal')->cascadeOnDelete();
+            $table->foreignId('siswa_id')->constrained('siswa')->cascadeOnDelete();
+            $table->foreignId('topik_id')->constrained('topik')->cascadeOnDelete();
             $table->enum('mode_konseling', ['online', 'offline'])->default('offline');
             $table->enum('mode_identitas', ['asli', 'anonim'])->default('asli');
             $table->enum('status', ['menunggu', 'disetujui', 'ditolak', 'selesai'])->default('menunggu');
