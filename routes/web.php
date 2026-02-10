@@ -9,6 +9,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Redirect /admin/login to /login untuk menghindari duplikasi halaman login
+// Name the route so Filament's logout/login route generation still works
+Route::get('/admin/login', fn() => redirect('/login'))->name('filament.admin.auth.login');
+
 Route::middleware(['auth'])->group(function () {
 
     // DASHBOARD SISWA
@@ -28,6 +32,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('siswa.konseling');
     Route::post('/siswa/konseling', [SiswaController::class, 'storeKonseling'])
         ->name('siswa.konseling.store');
+    Route::get('/api/guru/{guru}/jadwals', [SiswaController::class, 'getGuruJadwals'])
+        ->name('api.guru.jadwals');
 
     // DASHBOARD GURU
     Route::get('/guru/dashboard', [GuruController::class, 'dashboard'])

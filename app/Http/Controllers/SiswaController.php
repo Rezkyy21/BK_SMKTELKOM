@@ -7,7 +7,9 @@ use App\Models\Topik;
 use App\Models\Booking;
 use App\Models\KategoriMateri;
 use App\Models\Materi;
+use App\Models\GuruBk;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class SiswaController extends Controller
 {
@@ -60,14 +62,27 @@ class SiswaController extends Controller
     }
 
     /**
-     * Display the konseling page with available jadwal and topik.
+     * Display the konseling page with available guru BK and topik.
      */
     public function konseling()
     {
-        $jadwals = Jadwal::with('guru')->get();
+        $gurus = GuruBk::with('jadwals')->get();
         $topiks = Topik::all();
         
-        return view('siswa.konseling', compact('jadwals', 'topiks'));
+        return view('siswa.konseling', compact('gurus', 'topiks'));
+    }
+
+    /**
+     * Get jadwal for a specific guru (AJAX endpoint).
+     */
+    public function getGuruJadwals($guruId): JsonResponse
+    {
+        $jadwals = Jadwal::where('guru_id', $guruId)->get();
+        
+        return response()->json([
+            'success' => true,
+            'jadwals' => $jadwals,
+        ]);
     }
 
     /**

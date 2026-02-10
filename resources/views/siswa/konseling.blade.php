@@ -59,7 +59,7 @@
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-md p-8">
                     <h1 class="text-3xl font-bold text-gray-800 mb-2">Layanan Konseling</h1>
-                    <p class="text-gray-600 mb-8">Pesan sesi konseling dengan guru BK kami</p>
+                    <p class="text-gray-600 mb-8">Pilih guru BK, lihat jadwalnya, dan pesan sesi konseling</p>
 
                     @if ($errors->any())
                         <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
@@ -78,22 +78,50 @@
                         </div>
                     @endif
 
+                    <!-- Step 1: Pilih Guru -->
+                    <div class="mb-8">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Langkah 1: Pilih Guru BK</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @forelse($gurus as $guru)
+                                <button type="button" 
+                                    onclick="selectGuru({{ $guru->id }}, '{{ $guru->nama }}')"
+                                    class="guru-card p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-lg transition text-left"
+                                    data-guru-id="{{ $guru->id }}">
+                                    <h3 class="font-semibold text-gray-800">{{ $guru->nama }}</h3>
+                                    <p class="text-sm text-gray-600">{{ $guru->nip ?? 'NIP Tidak Tersedia' }}</p>
+                                    <p class="text-xs text-gray-500 mt-2">{{ $guru->jadwals->count() }} jadwal tersedia</p>
+                                </button>
+                            @empty
+                                <p class="text-gray-500">Tidak ada guru BK tersedia</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Form Booking -->
                     <form action="{{ route('siswa.konseling.store') }}" method="POST" class="space-y-6">
                         @csrf
 
-                        <!-- Pilih Jadwal -->
-                        <div>
+                        <!-- Selected Guru (Hidden) -->
+                        <input type="hidden" id="selected_guru_id" value="{{ old('jadwal_id') ? \App\Models\Jadwal::find(old('jadwal_id'))->guru_id : '' }}">
+                        <input type="hidden" id="selected_guru_name" value="">
+
+                        <!-- Guru yang dipilih -->
+                        <div id="selected-guru-info" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                            <p class="text-sm text-blue-600">
+                                <span class="font-semibold">Guru BK dipilih:</span> 
+                                <span id="guru-name-display"></span>
+                                <button type="button" onclick="unselectGuru()" class="ml-2 text-blue-600 underline hover:text-blue-800 text-xs">Ubah</button>
+                            </p>
+                        </div>
+
+                        <!-- Pilih Jadwal (Dinamis) -->
+                        <div id="jadwal-section" class="hidden">
                             <label for="jadwal_id" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Pilih Jadwal Konseling <span class="text-red-500">*</span>
                             </label>
-                            <select id="jadwal_id" name="jadwal_id" required
+                            <select id="jadwal_id" name="jadwal_id"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('jadwal_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Jadwal --</option>
-                                @foreach ($jadwals as $jadwal)
-                                    <option value="{{ $jadwal->id }}" @selected(old('jadwal_id') == $jadwal->id)>
-                                        {{ $jadwal->guru->nama ?? 'Guru' }} - {{ ucfirst($jadwal->hari) }} ({{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }})
-                                    </option>
-                                @endforeach
                             </select>
                             @error('jadwal_id')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -101,11 +129,11 @@
                         </div>
 
                         <!-- Pilih Topik -->
-                        <div>
+                        <div id="topik-section" class="hidden">
                             <label for="topik_id" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Pilih Topik <span class="text-red-500">*</span>
                             </label>
-                            <select id="topik_id" name="topik_id" required
+                            <select id="topik_id" name="topik_id"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('topik_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Topik --</option>
                                 @foreach ($topiks as $topik)
@@ -120,11 +148,11 @@
                         </div>
 
                         <!-- Deskripsi -->
-                        <div>
+                        <div id="deskripsi-section" class="hidden">
                             <label for="catatan_siswa" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Deskripsi Masalah <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="catatan_siswa" name="catatan_siswa" rows="6" required
+                            <textarea id="catatan_siswa" name="catatan_siswa" rows="6"
                                 placeholder="Jelaskan masalah atau topik yang ingin Anda diskusikan dengan guru BK..."
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 @error('catatan_siswa') border-red-500 @enderror">{{ old('catatan_siswa') }}</textarea>
                             @error('catatan_siswa')
@@ -133,7 +161,7 @@
                         </div>
 
                         <!-- Tombol Submit -->
-                        <div class="flex gap-4">
+                        <div class="flex gap-4" id="button-section" style="display: none;">
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300">
                                 Pesan Konseling
                             </button>
@@ -150,9 +178,10 @@
                 <div class="bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-lg p-6 border border-indigo-200 mb-6">
                     <h3 class="text-lg font-semibold text-indigo-900 mb-3">ℹ️ Informasi Penting</h3>
                     <ul class="text-indigo-700 text-sm space-y-2">
-                        <li>✓ Pilih jadwal yang sesuai dengan waktu Anda</li>
-                        <li>✓ Jelaskan topik yang ingin didiskusikan</li>
-                        <li>✓ Deskripsi yang detail membantu guru BK mempersiapkan diri</li>
+                        <li>✓ Pilih guru BK yang Anda inginkan</li>
+                        <li>✓ Lihat jadwal tersedia guru BK</li>
+                        <li>✓ Pilih jadwal dan topik yang sesuai</li>
+                        <li>✓ Jelaskan masalah Anda secara detail</li>
                         <li>✓ Tunggu konfirmasi dari guru BK</li>
                     </ul>
                 </div>
@@ -168,5 +197,110 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function selectGuru(guruId, guruName) {
+            // Set hidden inputs
+            document.getElementById('selected_guru_id').value = guruId;
+            document.getElementById('selected_guru_name').value = guruName;
+            
+            // Show selected guru info
+            document.getElementById('selected-guru-info').classList.remove('hidden');
+            document.getElementById('guru-name-display').textContent = guruName;
+            
+            // Show form sections
+            document.getElementById('jadwal-section').classList.remove('hidden');
+            document.getElementById('topik-section').classList.remove('hidden');
+            document.getElementById('deskripsi-section').classList.remove('hidden');
+            document.getElementById('button-section').style.display = 'flex';
+            
+            // Highlight selected guru card
+            document.querySelectorAll('.guru-card').forEach(card => {
+                card.classList.remove('border-blue-500', 'bg-blue-50');
+                card.classList.add('border-gray-200');
+            });
+            document.querySelector(`[data-guru-id="${guruId}"]`).classList.add('border-blue-500', 'bg-blue-50');
+            
+            // Fetch jadwal untuk guru
+            fetchGuruJadwals(guruId);
+            
+            // Scroll to form
+            setTimeout(() => {
+                document.getElementById('jadwal-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function unselectGuru() {
+            document.getElementById('selected_guru_id').value = '';
+            document.getElementById('selected_guru_name').value = '';
+            document.getElementById('selected-guru-info').classList.add('hidden');
+            document.getElementById('jadwal-section').classList.add('hidden');
+            document.getElementById('topik-section').classList.add('hidden');
+            document.getElementById('deskripsi-section').classList.add('hidden');
+            document.getElementById('button-section').style.display = 'none';
+            
+            // Reset guru card selection
+            document.querySelectorAll('.guru-card').forEach(card => {
+                card.classList.remove('border-blue-500', 'bg-blue-50');
+                card.classList.add('border-gray-200');
+            });
+            
+            // Clear jadwal select
+            document.getElementById('jadwal_id').innerHTML = '<option value="">-- Pilih Jadwal --</option>';
+        }
+
+        function fetchGuruJadwals(guruId) {
+            const jadwalSelect = document.getElementById('jadwal_id');
+            
+            // Show loading state
+            jadwalSelect.innerHTML = '<option value="">Memuat jadwal...</option>';
+            
+            fetch(`{{ url('/api/guru') }}/${guruId}/jadwals`)
+                .then(response => response.json())
+                .then(data => {
+                    jadwalSelect.innerHTML = '<option value="">-- Pilih Jadwal --</option>';
+                    
+                    if (data.jadwals && data.jadwals.length > 0) {
+                        data.jadwals.forEach(jadwal => {
+                            const option = document.createElement('option');
+                            option.value = jadwal.id;
+                            option.textContent = `${getHariName(jadwal.hari)} (${jadwal.jam_mulai} - ${jadwal.jam_selesai})`;
+                            jadwalSelect.appendChild(option);
+                        });
+                    } else {
+                        jadwalSelect.innerHTML = '<option value="">Tidak ada jadwal tersedia</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    jadwalSelect.innerHTML = '<option value="">Error memuat jadwal</option>';
+                });
+        }
+
+        function getHariName(hari) {
+            const days = {
+                'senin': 'Senin',
+                'selasa': 'Selasa',
+                'rabu': 'Rabu',
+                'kamis': 'Kamis',
+                'jumat': 'Jumat',
+                'sabtu': 'Sabtu',
+                'minggu': 'Minggu'
+            };
+            return days[hari.toLowerCase()] || hari;
+        }
+
+        // Jika ada guru yang sudah dipilih sebelumnya (dari validation error)
+        window.addEventListener('load', () => {
+            const selectedGuruId = document.getElementById('selected_guru_id').value;
+            if (selectedGuruId) {
+                const guruCard = document.querySelector(`[data-guru-id="${selectedGuruId}"]`);
+                if (guruCard) {
+                    const guruName = guruCard.querySelector('h3').textContent;
+                    selectGuru(selectedGuruId, guruName);
+                }
+            }
+        });
+    </script>
 </body>
 </html>

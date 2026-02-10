@@ -3,6 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\KategoriMateri;
+use App\Models\Materi;
+use App\Policies\KategoriMateriPolicy;
+use App\Policies\MateriPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::policy(KategoriMateri::class, KategoriMateriPolicy::class);
+        Gate::policy(Materi::class, MateriPolicy::class);
     }
 }
