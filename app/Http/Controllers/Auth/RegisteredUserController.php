@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Siswa;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,6 +30,8 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
 {
+    $nis = substr($request->email, 0, strpos($request->email, '@'));
+    
     $request->validate([
         'email' => [
             'required',
@@ -40,20 +43,38 @@ class RegisteredUserController extends Controller
             'regex:/^[0-9]+@student\.smktelkom-pwt\.sch\.id$/'
         ],
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    ], [
-        'email.regex' => 'Gunakan email sekolah: nis@student.smktelkom-pwt.sch.id'
+        'nama' => ['required', 'string', 'max:255'],
+        'kelas' => ['required', 'string'],
     ]);
 
     $user = User::create([
+        'name' => $request->nama,
         'email' => $request->email,
         'password' => Hash::make($request->password),
         'role' => 'siswa', // otomatis siswa
     ]);
 
+    // Create siswa profile
+    try {
+        Siswa::create([
+            'user_id' => $user->id,
+            'nis' => $nis,
+            'nama' => $request->nama,
+            'kelas' => $request->kelas,
+            'jenis_kelamin' => $request->jenis_kelamin ?? 'L',
+            'alamat' => $request->alamat ?? '',
+        ]);
+    } catch (\Exception $e) {
+        // If siswa creation fails, delete the user
+        $user->delete();
+        throw $e;
+    }
+
     event(new Registered($user));
     Auth::login($user);
 
-    return redirect(route('dashboard'));
+    return redirect(route('siswa.dashboard'));
 }
 
 }
+

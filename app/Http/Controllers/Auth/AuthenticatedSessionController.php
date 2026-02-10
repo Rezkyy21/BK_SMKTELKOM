@@ -36,7 +36,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(Filament::getPanel('admin')->getUrl());
         }
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // Siswa redirect to dashboard
+        return redirect()->intended(route('siswa.dashboard'));
     }
     /**
      * Destroy an authenticated session.
