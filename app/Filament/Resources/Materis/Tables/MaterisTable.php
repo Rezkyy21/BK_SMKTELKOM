@@ -8,7 +8,6 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Filters\SelectFilter;
 
 class MaterisTable
@@ -36,12 +35,14 @@ class MaterisTable
                     ->label('Guru')
                     ->sortable(),
 
-                BadgeColumn::make('status')
+                TextColumn::make('status')
                     ->label('Status')
-                    ->enum([
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
                         'draft' => 'Draft',
                         'publish' => 'Publish',
-                    ])
+                        default => $state,
+                    })
                     ->colors([
                         'secondary' => 'draft',
                         'success' => 'publish',

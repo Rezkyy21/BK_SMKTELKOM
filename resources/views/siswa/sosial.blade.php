@@ -75,31 +75,10 @@
                 </div>
             </div>
     
-        @if(isset($materis) && $materis->isNotEmpty())
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h2 class="text-2xl font-semibold mb-4">Daftar Materi Sosial</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @foreach($materis as $m)
-                        <a href="{{ route('materi.show', $m->slug) }}" class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden h-full flex flex-col">
-                            @if($m->thumbnail)
-                                <div class="w-full h-40 overflow-hidden bg-gray-200">
-                                    <img src="{{ asset('storage/' . $m->thumbnail) }}" alt="{{ $m->judul }}" class="w-full h-full object-cover hover:scale-105 transition-transform">
-                                </div>
-                            @else
-                                <div class="w-full h-40 bg-gradient-to-br from-gray-300 to-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-500">Tidak ada gambar</span>
-                                </div>
-                            @endif
-                            <div class="p-4 flex flex-col flex-grow">
-                                <h3 class="text-lg font-semibold mb-2 text-gray-800 line-clamp-2">{{ $m->judul }}</h3>
-                                <p class="text-sm text-gray-600 mb-3 flex-grow">{{ Str::limit(strip_tags($m->konten), 120) }}</p>
-                                <span class="text-blue-600 hover:underline text-sm font-medium">Baca selengkapnya →</span>
-                            </div>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        @endif
+            @include('siswa._materi_cards', ['materis' => $materis ?? collect(), 'kategoriLabel' => 'Sosial'])
+            @if(!isset($materis) || $materis->isEmpty())
+                <p class="mt-8 text-gray-500 text-sm">Belum ada materi yang dipublikasikan di kategori ini.</p>
+            @endif
         </div>
     </div>
 </body>

@@ -58,51 +58,50 @@
             <a href="javascript:history.back()" class="text-blue-600 hover:underline text-sm font-medium">← Kembali</a>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <!-- Thumbnail -->
-            @if($materi->thumbnail)
-                <div class="w-full h-96 overflow-hidden">
-                    <img src="{{ asset('storage/' . $materi->thumbnail) }}" alt="{{ $materi->judul }}" class="w-full h-full object-cover">
-                </div>
-            @endif
-
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <!-- Content -->
-            <div class="p-8">
+            <div class="p-6 sm:p-8">
                 <!-- Title -->
-                <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ $materi->judul }}</h1>
-                
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">{{ $materi->judul }}</h1>
+
                 <!-- Meta Info -->
-                <div class="flex flex-wrap items-center gap-6 mb-8 text-sm text-gray-600 border-b pb-6">
-                    <div class="flex items-center gap-2">
-                        <span class="font-semibold text-gray-700">Guru:</span>
-                        <span>{{ $materi->guru->nama }}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-semibold text-gray-700">Kategori:</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">{{ $materi->kategori->nama_kategori }}</span>
-                    </div>
+                <div class="flex flex-wrap items-center gap-4 mb-6 text-sm text-gray-600 border-b border-gray-200 pb-4">
+                    @if($materi->guru)
+                        <span><span class="font-medium text-gray-700">Oleh:</span> {{ $materi->guru->nama }}</span>
+                    @endif
+                    @if($materi->kategori)
+                        <span class="bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full text-xs font-medium">{{ $materi->kategori->nama_kategori }}</span>
+                    @endif
                     @if($materi->published_at)
-                        <div class="flex items-center gap-2">
-                            <span class="font-semibold text-gray-700">Dipublikasikan:</span>
-                            <span>
-                                @if(is_string($materi->published_at))
-                                    {{ \Carbon\Carbon::parse($materi->published_at)->format('d M Y') }}
-                                @else
-                                    {{ $materi->published_at->format('d M Y') }}
-                                @endif
-                            </span>
-                        </div>
+                        <span>
+                            @if(is_string($materi->published_at))
+                                {{ \Carbon\Carbon::parse($materi->published_at)->format('d M Y') }}
+                            @else
+                                {{ $materi->published_at->format('d M Y') }}
+                            @endif
+                        </span>
                     @endif
                 </div>
 
-                <!-- Body Content -->
-                <div class="prose prose-sm max-w-none mb-8 text-gray-700 leading-relaxed">
-                    {!! nl2br(e($materi->konten)) !!}
+                <!-- Thumbnail (tidak terlalu besar) -->
+                @if($materi->thumbnail)
+                    <div class="mb-6 max-w-xl">
+                        <img src="{{ asset('storage/' . $materi->thumbnail) }}" alt="{{ $materi->judul }}" class="w-full h-auto max-h-56 object-cover rounded-lg border border-gray-200">
+                    </div>
+                @endif
+
+                <!-- Isi artikel dari guru -->
+                <div class="prose prose-sm prose-gray max-w-none text-gray-700 leading-relaxed">
+                    @if(strip_tags($materi->konten) !== $materi->konten)
+                        {!! $materi->konten !!}
+                    @else
+                        {!! nl2br(e($materi->konten)) !!}
+                    @endif
                 </div>
 
                 <!-- Back Button -->
-                <div class="mt-12 pt-8 border-t">
-                    <a href="javascript:history.back()" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                <div class="mt-10 pt-6 border-t border-gray-200">
+                    <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm">
                         ← Kembali ke Daftar
                     </a>
                 </div>

@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, Notifiable;
 
@@ -17,6 +18,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'role',
         'status_akun',
+        'avatar',
     ];
 
     protected $hidden = [
@@ -41,6 +43,11 @@ class User extends Authenticatable implements FilamentUser
     public function getFilamentName(): string
     {
         return $this->name ?? $this->email;
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar ? asset('storage/' . $this->avatar) : null;
     }
 
     // Relasi

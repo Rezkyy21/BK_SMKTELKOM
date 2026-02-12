@@ -6,7 +6,7 @@ use App\Http\Controllers\GuruController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
 // Redirect /admin/login to /login untuk menghindari duplikasi halaman login

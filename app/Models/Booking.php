@@ -12,8 +12,10 @@ use Illuminate\Database\Eloquent\Model;
     
     protected $fillable = [
         'jadwal_id',
+        'tanggal',
         'siswa_id',
         'topik_id',
+        'tipe_konseling',
         'mode_konseling',
         'mode_identitas',
         'status',

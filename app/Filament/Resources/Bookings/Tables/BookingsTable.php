@@ -19,14 +19,24 @@ class BookingsTable
                     ->label('ID'),
                 TextColumn::make('siswa.nama')
                     ->label('Siswa'),
+                TextColumn::make('tanggal')
+                    ->label('Tanggal')
+                    ->date('d/m/Y')
+                    ->sortable(),
                 TextColumn::make('jadwal.hari')
                     ->label('Hari'),
+                TextColumn::make('jadwal.jam_mulai')
+                    ->label('Jam')
+                    ->formatStateUsing(fn ($record) => $record->jadwal ? substr($record->jadwal->jam_mulai, 0, 5) . ' - ' . substr($record->jadwal->jam_selesai, 0, 5) : '-'),
+                TextColumn::make('tipe_konseling')
+                    ->label('Tipe')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state === 'kelompok' ? 'Kelompok' : 'Individu'),
                 TextColumn::make('topik.nama_topik')
                     ->label('Topik'),
-                TextColumn::make('mode_konseling')
-                    ->label('Mode'),
                 TextColumn::make('status')
-                    ->label('Status'),
+                    ->label('Status')
+                    ->badge(),
             ])
             ->filters([
                 //
