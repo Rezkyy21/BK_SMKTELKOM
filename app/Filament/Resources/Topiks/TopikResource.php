@@ -8,6 +8,7 @@ use App\Filament\Resources\Topiks\Pages\ListTopiks;
 use App\Filament\Resources\Topiks\Schemas\TopikForm;
 use App\Filament\Resources\Topiks\Tables\TopiksTable;
 use App\Models\Topik;
+use Illuminate\Database\Eloquent\Model;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -35,6 +36,32 @@ class TopikResource extends Resource
         return [
             //
         ];
+    }
+
+    // only administrators may manage topiks
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
     }
 
     public static function getPages(): array

@@ -8,12 +8,14 @@ use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class BookingsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->whereDoesntHave('laporan'))
             ->columns([
                 TextColumn::make('id')
                     ->label('ID'),
@@ -41,37 +43,37 @@ class BookingsTable
             ->filters([
                 //
             ])
-            
-->recordActions([
-    Action::make('approve')
-        ->label('Setujui')
-        ->icon('heroicon-m-check-circle')
-        ->color('success')
-        ->visible(fn ($record) => $record->status === 'menunggu')
-        ->action(fn ($record) => $record->update(['status' => 'disetujui']))
-        ->successNotificationTitle('Konseling disetujui'),
-    
-    Action::make('reject')
-        ->label('Tolak')
-        ->icon('heroicon-m-x-circle')
-        ->color('danger')
-        ->visible(fn ($record) => $record->status === 'menunggu')
-        ->form([
-            \Filament\Forms\Components\Textarea::make('alasan_penolakan')
-                ->label('Alasan Penolakan')
-                ->required()
-                ->maxLength(500),
-        ])
-        ->action(function ($record, array $data) {
-            $record->update([
-                'status' => 'ditolak',
-                'catatan_siswa' => $data['alasan_penolakan'],
-            ]);
-        })
-        ->successNotificationTitle('Konseling ditolak'),
-    
-    EditAction::make(),
-])
+            ->recordActions([
+                Action::make('detail')
+                    ->label('Detail')
+                    ->icon('heroicon-m-eye')
+                    ->visible(fn ($record) => $record->status === 'menunggu')
+                    ->modalWidth('lg')
+                    ->modalHeading('Detail Booking')
+                    ->modalContent(fn ($record) => view('filament.bookings.detail-modal', ['booking' => $record->load(['siswa.user.major','jadwal','topik'])]))
+                    ->modalActions([
+                        Action::make('approve')
+                            ->label('Setujui Konseling')
+                            ->color('success')
+                            ->action(fn ($record) => $record->update(['status' => 'disetujui']))
+                            ->visible(fn ($record) => $record->status === 'menunggu'),
+                        Action::make('reject')
+                            ->label('Tolak Konseling')
+                            ->color('danger')
+                            ->form([
+                                \Filament\Forms\Components\Textarea::make('alasan_penolakan')
+                                    ->label('Alasan Penolakan')
+                                    ->required()
+                                    ->maxLength(500),
+                            ])
+                            ->action(fn ($record, array $data) => $record->update([
+                                'status' => 'ditolak',
+                                'catatan_siswa' => $data['alasan_penolakan'],
+                            ]))
+                            ->visible(fn ($record) => $record->status === 'menunggu'),
+                    ]),
+                EditAction::make(),
+            ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

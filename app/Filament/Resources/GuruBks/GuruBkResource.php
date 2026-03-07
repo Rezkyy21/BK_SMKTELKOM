@@ -8,6 +8,7 @@ use App\Filament\Resources\GuruBks\Pages\ListGuruBks;
 use App\Filament\Resources\GuruBks\Schemas\GuruBkForm;
 use App\Filament\Resources\GuruBks\Tables\GuruBksTable;
 use App\Models\GuruBk;
+use Illuminate\Database\Eloquent\Model;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -35,6 +36,32 @@ class GuruBkResource extends Resource
         return [
             //
         ];
+    }
+
+    // only administrators may interact with this resource
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'admin';
     }
 
     public static function getPages(): array

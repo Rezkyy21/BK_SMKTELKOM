@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class JadwalResource extends Resource
 {
@@ -28,6 +29,21 @@ class JadwalResource extends Resource
     public static function table(Table $table): Table
     {
         return JadwalsTable::configure($table);
+    }
+
+    /**
+     * Scope the base query so that non‑admins only see their own jadwals.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // if a guru is logged in, limit to their records
+        if (auth()->check() && auth()->user()->guruBk) {
+            $query->where('guru_id', auth()->user()->guruBk->id);
+        }
+
+        return $query;
     }
 
     public static function getRelations(): array

@@ -19,8 +19,24 @@ class StatsKonselingWidget extends StatsOverviewWidget
 
     protected function getStats(): array
     {
+        $user = auth()->user();
+
+        // bookings are scoped to the current user if possible
+        $bookingQuery = Booking::query();
+        if ($user) {
+            if ($user->guruBk) {
+                // count bookings for this guru's jadwal slots
+                $bookingQuery->whereHas('jadwal', function ($q) use ($user) {
+                    $q->where('guru_id', $user->guruBk->id);
+                });
+            } elseif ($user->siswa) {
+                // count bookings made by this student
+                $bookingQuery->where('siswa_id', $user->siswa->id);
+            }
+        }
+
         return [
-            Stat::make('Total Booking', Booking::query()->count())
+            Stat::make('Total Booking', $bookingQuery->count())
                 ->icon(Heroicon::OutlinedClipboardDocumentList)
                 ->color('primary')
                 ->description('Janji konseling'),

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Jadwal extends Model
 {
@@ -24,6 +25,14 @@ class Jadwal extends Model
     public function guru()
     {
         return $this->belongsTo(GuruBk::class, 'guru_id');
+    }
+
+    /**
+     * Get the bookings for this jadwal.
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'jadwal_id');
     }
 }
 

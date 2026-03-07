@@ -29,7 +29,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            // Filament should not register its own login page.  We use a
+            // single shared `/login` view for all users so pass `null` here.
+            ->login(null)
             ->profile(EditProfile::class, isSimple: false)
             ->colors([
                 'primary' => Color::Amber,

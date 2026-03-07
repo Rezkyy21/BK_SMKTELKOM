@@ -18,7 +18,9 @@ class SiswaController extends Controller
      */
     public function dashboard()
     {
-        return view('siswa.dashboard');
+        // load authenticated user if available (guests can still view dashboard)
+        $user = auth()->check() ? auth()->user()->load(['careerPlan', 'classRoom']) : null;
+        return view('siswa.dashboard', compact('user'));
     }
 
     /**
@@ -26,9 +28,12 @@ class SiswaController extends Controller
      */
     public function karir()
     {
+        // load user if authenticated
+        $user = auth()->check() ? auth()->user()->load(['careerPlan', 'classRoom', 'major']) : null;
+        
         $kategori = KategoriMateri::where('slug', 'karir')->first();
         $materis = $kategori ? Materi::where('kategori_id', $kategori->id)->where('status', 'publish')->get() : collect();
-        return view('siswa.karir', compact('materis'));
+        return view('siswa.karir', compact('materis', 'user'));
     }
 
     /**
@@ -66,7 +71,12 @@ class SiswaController extends Controller
      */
     public function konseling()
     {
-        $gurus = GuruBk::with('jadwals')->get();
+        // guests should not be able to book; redirect them to login
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('info', 'Silakan login untuk mengakses layanan konseling.');
+        }
+
+        $gurus = GuruBk::with('jadwals')->where('status', 'aktif')->get();
         $topiks = Topik::all();
         
         return view('siswa.konseling', compact('gurus', 'topiks'));
@@ -78,7 +88,13 @@ class SiswaController extends Controller
     public function getGuruJadwals($guruId): JsonResponse
     {
         \Carbon\Carbon::setLocale('id');
-        $jadwals = Jadwal::where('guru_id', $guruId)->where('is_active', true)->orderBy('hari')->orderBy('jam_mulai')->get();
+        // Only get active jadwal with available quota (kuota > 0)
+        $jadwals = Jadwal::where('guru_id', $guruId)
+            ->where('is_active', true)
+            ->where('kuota', '>', 0)
+            ->orderBy('hari')
+            ->orderBy('jam_mulai')
+            ->get();
 
         $hariMap = ['senin' => 1, 'selasa' => 2, 'rabu' => 3, 'kamis' => 4, 'jumat' => 5, 'sabtu' => 6];
         $slots = [];
@@ -91,7 +107,7 @@ class SiswaController extends Controller
             $jamMulai = is_string($j->jam_mulai) ? $j->jam_mulai : $j->jam_mulai->format('H:i');
             $jamSelesai = is_string($j->jam_selesai) ? $j->jam_selesai : $j->jam_selesai->format('H:i');
             while ($current->lte($end)) {
-                if ($current->dayOfWeekIso() === $dayOfWeek) {
+                if ($current->dayOfWeek() === $dayOfWeek) {
                     $slots[] = [
                         'id' => $j->id,
                         'jadwal_id' => $j->id,
@@ -101,6 +117,7 @@ class SiswaController extends Controller
                         'tanggal' => $current->format('Y-m-d'),
                         'tanggal_label' => $current->locale('id')->translatedFormat('l, d F Y'),
                         'waktu_label' => substr($jamMulai, 0, 5) . ' - ' . substr($jamSelesai, 0, 5),
+                        'kuota' => $j->kuota,
                     ];
                 }
                 $current->addDay();

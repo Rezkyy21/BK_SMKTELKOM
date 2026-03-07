@@ -19,8 +19,18 @@ class StatsKontenWidget extends StatsOverviewWidget
 
     protected function getStats(): array
     {
+        $user = auth()->user();
+
+        $jadwalQuery = Jadwal::query()->where('is_active', true);
+        if ($user && $user->guruBk) {
+            $jadwalQuery->where('guru_id', $user->guruBk->id);
+        } else {
+            // non-guru users shouldn't see global jadwal count
+            $jadwalQuery->whereRaw('1 = 0');
+        }
+
         return [
-            Stat::make('Jadwal Aktif', Jadwal::query()->where('is_active', true)->count())
+            Stat::make('Jadwal Aktif', $jadwalQuery->count())
                 ->icon(Heroicon::OutlinedCalendarDays)
                 ->color('warning')
                 ->description('Slot jadwal tersedia'),

@@ -9,6 +9,9 @@ use App\Models\Materi;
 use App\Policies\KategoriMateriPolicy;
 use App\Policies\MateriPolicy;
 
+use App\Models\Booking;
+use App\Observers\BookingObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -26,5 +29,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(KategoriMateri::class, KategoriMateriPolicy::class);
         Gate::policy(Materi::class, MateriPolicy::class);
+
+        // register model observers
+        Booking::observe(BookingObserver::class);
     }
 }

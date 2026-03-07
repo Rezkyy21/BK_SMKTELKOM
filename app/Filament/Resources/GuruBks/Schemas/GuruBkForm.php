@@ -12,17 +12,21 @@ class GuruBkForm
     {
         return $schema
             ->components([
-                Select::make('user_id')
-                    ->relationship('user', 'email')
+                TextInput::make('nama')
                     ->required()
-                    ->label('User (Email)'),
+                    ->label('Nama Guru'),
                 TextInput::make('nip')
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->label('NIP'),
-                TextInput::make('nama')
+                TextInput::make('email')
+                    ->email()
                     ->required()
-                    ->label('Nama Guru'),
+                    ->label('Email'),
+                TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->label('Password'),
                 Select::make('status')
                     ->options([
                         'aktif' => 'Aktif',
@@ -35,4 +39,3 @@ class GuruBkForm
             ]);
     }
 }
-

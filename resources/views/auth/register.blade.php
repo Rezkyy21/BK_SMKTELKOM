@@ -42,22 +42,56 @@
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 
+                <!-- Jurusan (Major) -->
                 <div>
-                    <label for="kelas" class="block text-sm font-medium text-gray-700">Kelas</label>
-                    <select id="kelas" name="kelas" required
+                    <label for="major_id" class="block text-sm font-medium text-gray-700">Jurusan <span class="text-red-500">*</span></label>
+                    <select id="major_id" name="major_id" required
+                            class="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50 shadow-sm focus:border-[#E31837] focus:ring-[#E31837] text-gray-900"
+                            onchange="updateClasses()">
+                        <option value="">-- Pilih Jurusan --</option>
+                        @foreach($majors ?? [] as $major)
+                            <option value="{{ $major->id }}" @selected(old('major_id') == $major->id)>
+                                {{ $major->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('major_id')" class="mt-2" />
+                </div>
+
+                <!-- Kelas (Class) -->
+                <div>
+                    <label for="class_id" class="block text-sm font-medium text-gray-700">Kelas <span class="text-red-500">*</span></label>
+                    <select id="class_id" name="class_id" 
                             class="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50 shadow-sm focus:border-[#E31837] focus:ring-[#E31837] text-gray-900">
                         <option value="">-- Pilih Kelas --</option>
-                        <option value="X-A" @selected(old('kelas') == 'X-A')>X-A</option>
-                        <option value="X-B" @selected(old('kelas') == 'X-B')>X-B</option>
-                        <option value="X-C" @selected(old('kelas') == 'X-C')>X-C</option>
-                        <option value="XI-A" @selected(old('kelas') == 'XI-A')>XI-A</option>
-                        <option value="XI-B" @selected(old('kelas') == 'XI-B')>XI-B</option>
-                        <option value="XI-C" @selected(old('kelas') == 'XI-C')>XI-C</option>
-                        <option value="XII-A" @selected(old('kelas') == 'XII-A')>XII-A</option>
-                        <option value="XII-B" @selected(old('kelas') == 'XII-B')>XII-B</option>
-                        <option value="XII-C" @selected(old('kelas') == 'XII-C')>XII-C</option>
+                        @if(old('major_id'))
+                            @foreach($classes->where('major_id', old('major_id'))->where('academic_year_id', $activeYear->id ?? null) ?? [] as $class)
+                                <option value="{{ $class->id }}" @selected(old('class_id') == $class->id)>
+                                    Kelas {{ $class->grade_level }} - {{ $class->name }}
+                                </option>
+                            @endforeach 
+                        @endif
                     </select>
-                    <x-input-error :messages="$errors->get('kelas')" class="mt-2" />
+
+                    <!-- input manual saat tidak ada pilihan kelas -->
+                    <input id="class_manual" name="class_manual" type="text" value="{{ old('class_manual') }}"
+                           class="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50 shadow-sm focus:border-[#E31837] focus:ring-[#E31837] text-gray-900 hidden"
+                           placeholder="Ketik nama kelas jika tidak tersedia">
+
+                    <small class="text-gray-500">Pilih jurusan terlebih dahulu atau ketik nama kelas jika tidak tersedia</small>
+                    <x-input-error :messages="$errors->get('class_id')" class="mt-2" />
+                    <x-input-error :messages="$errors->get('class_manual')" class="mt-2" />
+                </div>
+
+                <!-- Tahun Masuk -->
+                <div>
+                    <label for="tahun_masuk" class="block text-sm font-medium text-gray-700">Tahun Masuk <span class="text-red-500">*</span></label>
+                    <input id="tahun_masuk" name="tahun_masuk" type="number" value="{{ old('tahun_masuk', now()->year) }}"
+                           min="2020" max="{{ now()->year }}"
+                           class="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50 shadow-sm focus:border-[#E31837] focus:ring-[#E31837] text-gray-900"
+                           placeholder="Tahun masuk (misal: 2024)"
+                           required>
+                    <x-input-error :messages="$errors->get('tahun_masuk')" class="mt-2" />
                 </div>
 
                 <div>
@@ -105,3 +139,77 @@
         </div>
     </div>
 </x-login-split-layout>
+
+<script>
+    // Data semua classes (dari server-side)
+    const allClasses = @json($classes ?? collect());
+    const activeAcademicYearId = {!! json_encode($activeYear->id ?? null) !!};
+    const activeAcademicYearName = {!! json_encode($activeYear->name ?? null) !!};
+
+    console.log('All Classes:', allClasses);
+    console.log('Active Academic Year ID:', activeAcademicYearId);
+    console.log('Active Academic Year Name:', activeAcademicYearName);
+    console.log('Total classes count:', allClasses.length);
+
+    function updateClasses() {
+        const majorId = document.getElementById('major_id').value;
+        const classSelect = document.getElementById('class_id');
+        const manualInput = document.getElementById('class_manual');
+        
+        console.log('updateClasses called with majorId:', majorId);
+        
+        // Reset visibility and options
+        classSelect.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+        manualInput.classList.add('hidden');
+        classSelect.classList.remove('hidden');
+        
+        if (!majorId) {
+            document.querySelector('small.text-gray-500').textContent = 'Pilih jurusan terlebih dahulu';
+            return;
+        }
+        
+        // Filter classes berdasarkan major_id dan academic_year_id (relasi baru)
+        const filteredClasses = allClasses.filter(c => {
+            console.log('Comparing:', {c_major_id: c.major_id, majorId: majorId, c_academic_year_id: c.academic_year_id, activeAcademicYearId: activeAcademicYearId, match: c.major_id == majorId && String(c.academic_year_id) === String(activeAcademicYearId)});
+            return c.major_id == majorId && String(c.academic_year_id) === String(activeAcademicYearId);
+        });
+        
+        console.log('Filtered classes count:', filteredClasses.length);
+        
+        if (filteredClasses.length === 0) {
+            // no existing class: hide select and show manual text field
+            classSelect.classList.add('hidden');
+            manualInput.classList.remove('hidden');
+            document.querySelector('small.text-gray-500').textContent = 'Tidak ada kelas untuk jurusan ini, ketik manual';
+            return;
+        }
+        
+        // Add filtered classes
+        filteredClasses.forEach(cls => {
+            const option = document.createElement('option');
+            option.value = cls.id;
+            option.textContent = `Kelas ${cls.grade_level} - ${cls.name}`;
+            classSelect.appendChild(option);
+        });
+        
+        document.querySelector('small.text-gray-500').textContent = `Total ${filteredClasses.length} kelas tersedia`;
+    }
+
+    // When the page loads, if there was old input we should restore state
+    document.addEventListener('DOMContentLoaded', () => {
+        const majorSelect = document.getElementById('major_id');
+        const manualInput = document.getElementById('class_manual');
+        const classSelect = document.getElementById('class_id');
+        
+        if (majorSelect.value) {
+            updateClasses();
+            // if user previously entered manual name
+            @if(old('class_manual'))
+                manualInput.classList.remove('hidden');
+                classSelect.classList.add('hidden');
+            @elseif(old('class_id'))
+                classSelect.value = "{{ old('class_id') }}";
+            @endif
+        }
+    });
+</script>

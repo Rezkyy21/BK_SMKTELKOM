@@ -37,7 +37,8 @@ class MateriForm
 
                 FileUpload::make('thumbnail')
                     ->label('Thumbnail')
-                    ->image(),
+                    ->image()
+                     ->disk('public'),
 
                 Select::make('status')
                     ->label('Status')

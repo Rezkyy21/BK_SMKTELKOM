@@ -6,6 +6,14 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\FileUpload;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\SiswaImport;
 
 class SiswasTable
 {
@@ -13,15 +21,64 @@ class SiswasTable
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('nis')->label('NIS')->searchable()->sortable(),
+                TextColumn::make('nama_lengkap')->label('Nama')->searchable()->sortable(),
+                TextColumn::make('user.email')->label('Email')->searchable()->sortable(),
+                BadgeColumn::make('user.status_akun')->label('Status')->colors([
+                    'success' => 'aktif',
+                    'danger' => 'nonaktif',
+                ])->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status_akun')
+                    ->label('Status Akun')
+                    ->options([
+                        'aktif' => 'Aktif',
+                        'nonaktif' => 'Nonaktif',
+                    ])
+                    ->query(function (Builder $query, $value) {
+                        return $query->whereHas('user', function ($q) use ($value) {
+                            $q->where('status_akun', $value);
+                        });
+                    }),
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('deactivate')
+                    ->label('Nonaktifkan')
+                    ->requiresConfirmation()
+                    ->visible(fn($record) => $record->user?->status_akun === 'aktif')
+                    ->action(function ($record) {
+                        $record->user?->update(['status_akun' => 'nonaktif']);
+                    }),
+                Action::make('activate')
+                    ->label('Aktifkan')
+                    ->requiresConfirmation()
+                    ->visible(fn($record) => $record->user?->status_akun === 'nonaktif')
+                    ->action(function ($record) {
+                        $record->user?->update(['status_akun' => 'aktif']);
+                    }),
             ])
             ->toolbarActions([
+                Action::make('download_template')
+                    ->label('Download Template')
+                    ->url(route('filament.siswa.template')),
+
+                Action::make('import_siswa')
+                    ->label('Import Siswa')
+                    ->form([
+                        FileUpload::make('file')->required(),
+                    ])
+                    ->action(function (array $data) {
+                        if (empty($data['file'])) {
+                            return;
+                        }
+
+                        $path = $data['file'];
+                        // Filament FileUpload returns path; pass to Excel
+                        Excel::import(new SiswaImport(), storage_path('app/' . $path));
+                    }),
+
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

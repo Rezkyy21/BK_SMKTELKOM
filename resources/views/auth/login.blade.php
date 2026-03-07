@@ -58,16 +58,17 @@
                 <form method="POST" action="{{ route('login') }}" class="space-y-6">
                     @csrf
 
-                    {{-- Username/Email --}}
+                    {{-- NIS / Email (switches based on tab) --}}
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                            <span id="email-label">Username</span>
+                            <span id="email-label">NIS</span>
                         </label>
                         <input id="email" name="email" type="text" value="{{ old('email') }}"
                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3.5 text-gray-900 placeholder:text-gray-400 focus:border-[#E31837] focus:ring-1 focus:ring-[#E31837] focus:bg-white transition"
                                placeholder="NIS"
                                required autofocus autocomplete="username">
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('nis')" class="mt-2" />
                     </div>
 
                     {{-- Password --}}
@@ -97,14 +98,6 @@
                         </button>
                     </div>
                 </form>
-
-                {{-- Sign Up Link --}}
-                <p class="mt-8 text-center text-sm text-gray-600">
-                    Don't Have An Account?
-                    <a href="{{ route('register') }}" class="font-semibold text-[#E31837] hover:text-[#c41230] transition ml-1">
-                        Sign Up
-                    </a>
-                </p>
             </div>
         </div>
     </div>
@@ -126,10 +119,11 @@
                     tabGuru.classList.remove('bg-[#E31837]', 'text-white', 'shadow-md');
                     tabGuru.classList.add('bg-white', 'border-2', 'border-gray-200', 'text-gray-900');
                     
-                    // Update input
-                    emailInput.placeholder = 'NIS';
+                    // Update input untuk NIS
+                    emailInput.placeholder = 'Contoh: 12345';
                     emailInput.type = 'text';
-                    if (emailLabel) emailLabel.textContent = 'Username';
+                    emailInput.pattern = '[0-9]*';
+                    if (emailLabel) emailLabel.textContent = 'NIS (Nomor Induk Siswa)';
                 } else {
                     // Style untuk tab Guru (aktif)
                     tabGuru.classList.add('bg-[#E31837]', 'text-white', 'shadow-md');
@@ -139,12 +133,16 @@
                     tabSiswa.classList.remove('bg-[#E31837]', 'text-white', 'shadow-md');
                     tabSiswa.classList.add('bg-white', 'border-2', 'border-gray-200', 'text-gray-900');
                     
-                    // Update input
+                    // Update input untuk Email
                     emailInput.placeholder = 'email@smktelkom-pwt.sch.id';
                     emailInput.type = 'email';
+                    emailInput.removeAttribute('pattern');
                     if (emailLabel) emailLabel.textContent = 'Email';
                 }
             }
+
+            // Initialize with siswa tab active
+            setActiveTab('siswa');
 
             tabSiswa.addEventListener('click', function() { setActiveTab('siswa'); });
             tabGuru.addEventListener('click', function() { setActiveTab('guru'); });
