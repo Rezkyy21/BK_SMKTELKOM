@@ -9,6 +9,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
+
 class StatsKonselingWidget extends StatsOverviewWidget
 {
     protected static ?int $sort = 1;
@@ -48,6 +49,7 @@ class StatsKonselingWidget extends StatsOverviewWidget
                 ->icon(Heroicon::OutlinedUserGroup)
                 ->color('success')
                 ->description('Guru bimbingan konseling'),
+                
         ];
     }
 }

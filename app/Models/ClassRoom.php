@@ -23,6 +23,12 @@ class ClassRoom extends Model
         'academic_year_id',
     ];
 
+
+   
+    public function getFullNameAttribute()
+    {
+        return $this->grade_level . ' ' . $this->major->name . ' ' . $this->name;
+    }
     /**
      * Each class belongs to a major (jurusan).
      */

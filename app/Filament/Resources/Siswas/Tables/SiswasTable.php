@@ -22,7 +22,7 @@ class SiswasTable
         return $table
             ->columns([
                 TextColumn::make('nis')->label('NIS')->searchable()->sortable(),
-                TextColumn::make('nama_lengkap')->label('Nama')->searchable()->sortable(),
+               TextColumn::make('nama')->label('Nama')->searchable()->sortable(),
                 TextColumn::make('user.email')->label('Email')->searchable()->sortable(),
                 BadgeColumn::make('user.status_akun')->label('Status')->colors([
                     'success' => 'aktif',
@@ -30,17 +30,21 @@ class SiswasTable
                 ])->sortable(),
             ])
             ->filters([
-                SelectFilter::make('status_akun')
-                    ->label('Status Akun')
-                    ->options([
-                        'aktif' => 'Aktif',
-                        'nonaktif' => 'Nonaktif',
-                    ])
-                    ->query(function (Builder $query, $value) {
-                        return $query->whereHas('user', function ($q) use ($value) {
-                            $q->where('status_akun', $value);
-                        });
-                    }),
+               SelectFilter::make('status_akun')
+    ->label('Status Akun')
+    ->options([
+        'aktif' => 'Aktif',
+        'nonaktif' => 'Nonaktif',
+    ])
+    ->query(function (Builder $query, $data) {
+        if (!$data['value']) {
+            return $query;
+        }
+
+        return $query->whereHas('user', function ($q) use ($data) {
+            $q->where('status_akun', $data['value']);
+        });
+    }),
             ])
             ->recordActions([
                 EditAction::make(),

@@ -14,12 +14,16 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-
+use UnitEnum;
 class TopikResource extends Resource
 {
     protected static ?string $model = Topik::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Topik';
+protected static ?string $pluralLabel = 'Topik';
+protected static ?string $modelLabel = 'Topik';
+protected static string|UnitEnum|null $navigationGroup = 'Kategori';
+protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
     public static function form(Schema $schema): Schema
     {

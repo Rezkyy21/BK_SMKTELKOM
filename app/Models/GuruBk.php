@@ -12,6 +12,7 @@ class GuruBk extends Model
 
     protected $fillable = [
         'user_id',
+        'photo',
         'nip',
         'nama',
         'status',

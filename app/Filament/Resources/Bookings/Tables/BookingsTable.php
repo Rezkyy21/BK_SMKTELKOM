@@ -9,18 +9,36 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\SelectFilter;
+
 
 class BookingsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+        ->modifyQueryUsing(fn (Builder $query) => 
+            $query->with(['siswa.kelas.major'])
+                ->whereDoesntHave('laporan')
+        )
             ->modifyQueryUsing(fn (Builder $query) => $query->whereDoesntHave('laporan'))
             ->columns([
                 TextColumn::make('id')
                     ->label('ID'),
                 TextColumn::make('siswa.nama')
                     ->label('Siswa'),
+                    TextColumn::make('siswa.kelas')
+                    ->label('Kelas')
+                    ->formatStateUsing(function ($record) {
+                        $kelas = $record->siswa?->kelas;
+
+                        if (!$kelas) return '-';
+
+                        return 
+                            ($kelas->grade_level ?? '-') . ' ' .
+                            ($kelas->major->name ?? '-') . ' ' .
+                            ($kelas->name ?? '-');
+                    }),
                 TextColumn::make('tanggal')
                     ->label('Tanggal')
                     ->date('d/m/Y')
@@ -41,7 +59,13 @@ class BookingsTable
                     ->badge(),
             ])
             ->filters([
-                //
+                
+            SelectFilter::make('status')
+    ->options([
+        'pending' => 'Pending',
+        'disetujui' => 'Disetujui',
+        'ditolak' => 'Ditolak',
+    ])
             ])
             ->recordActions([
                 Action::make('detail')
@@ -50,7 +74,9 @@ class BookingsTable
                     ->visible(fn ($record) => $record->status === 'menunggu')
                     ->modalWidth('lg')
                     ->modalHeading('Detail Booking')
-                    ->modalContent(fn ($record) => view('filament.bookings.detail-modal', ['booking' => $record->load(['siswa.user.major','jadwal','topik'])]))
+                   ->modalContent(fn ($record) => view('filament.bookings.detail-modal', [
+                            'booking' => $record->load(['siswa.kelas.major','jadwal','topik'])
+                        ]))
                     ->modalActions([
                         Action::make('approve')
                             ->label('Setujui Konseling')
@@ -79,6 +105,7 @@ class BookingsTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
+            
     }
 }
 

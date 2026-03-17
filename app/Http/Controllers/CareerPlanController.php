@@ -182,7 +182,7 @@ class CareerPlanController extends Controller
     {
         $user = auth()->user();
 
-        $careerPlan = $user->careerPlan;
+        $careerPlan = CareerPlan::where('user_id', $user->id)->first();
 
         if (!$careerPlan) {
             return redirect()
@@ -191,7 +191,7 @@ class CareerPlanController extends Controller
         }
 
         $careerPlan->status = 'submitted';
-        $careerPlan->submitted_at = now();
+        $careerPlan->submitted_at = \Carbon\Carbon::now();
         $careerPlan->save();
 
         return redirect()

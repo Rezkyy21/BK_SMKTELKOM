@@ -8,6 +8,8 @@ use App\Models\Booking;
 use App\Models\KategoriMateri;
 use App\Models\Materi;
 use App\Models\GuruBk;
+use App\Models\ClassRoom;
+use App\Models\AcademicYear;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -20,7 +22,9 @@ class SiswaController extends Controller
     {
         // load authenticated user if available (guests can still view dashboard)
         $user = auth()->check() ? auth()->user()->load(['careerPlan', 'classRoom']) : null;
-        return view('siswa.dashboard', compact('user'));
+        $gurus = GuruBK::all();
+
+        return view('siswa.dashboard', compact('user', 'gurus'));
     }
 
     /**
@@ -69,18 +73,22 @@ class SiswaController extends Controller
     /**
      * Display the konseling page with available guru BK and topik.
      */
-    public function konseling()
-    {
-        // guests should not be able to book; redirect them to login
-        if (!auth()->check()) {
-            return redirect()->route('login')->with('info', 'Silakan login untuk mengakses layanan konseling.');
-        }
-
-        $gurus = GuruBk::with('jadwals')->where('status', 'aktif')->get();
-        $topiks = Topik::all();
-        
-        return view('siswa.konseling', compact('gurus', 'topiks'));
+   public function konseling()
+{
+    
+    if (!auth()->check()) {
+        return redirect()->route('login')->with('info', 'Silakan login untuk mengakses layanan konseling.');
     }
+
+    $gurus = GuruBk::with('jadwals')->where('status', 'aktif')->get();
+    $topiks = Topik::all();
+
+    $classRooms = ClassRoom::with('major')->get();
+
+
+    return view('siswa.konseling', compact('gurus', 'topiks', 'classRooms'));
+   
+}
 
     /**
      * Get jadwal for a specific guru dengan slot tanggal (2 minggu ke depan).
@@ -161,8 +169,15 @@ class SiswaController extends Controller
             'catatan_siswa.max' => 'Deskripsi maksimal 1000 karakter',
         ]);
 
-        $user = auth()->user();
-        $siswa = $user->siswa;
+     $user = auth()->user();
+$siswa = $user->siswa;
+$kelas = \App\Models\ClassRoom::with('major')
+    ->find($request->class_id);
+
+       $formatKelas = 
+    ($kelas->grade_level ?? '-') . ' ' .
+    ($siswa->major->name ?? '-') . ' ' .
+    ($kelas->name ?? '-');
 
         if (!$siswa) {
             return back()->withErrors(['error' => 'Data siswa tidak ditemukan. Hubungi admin.']);
@@ -175,6 +190,7 @@ class SiswaController extends Controller
             'topik_id' => $validated['topik_id'],
             'tipe_konseling' => $validated['tipe_konseling'],
             'catatan_siswa' => $validated['catatan_siswa'],
+            'kelas' => $formatKelas,
             'status' => 'menunggu',
             'mode_konseling' => 'offline',
             'mode_identitas' => 'asli',

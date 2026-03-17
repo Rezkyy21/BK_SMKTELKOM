@@ -14,12 +14,17 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class GuruBkResource extends Resource
 {
     protected static ?string $model = GuruBk::class;
+    protected static ?string $navigationLabel = 'Guru BK';
+    protected static ?string $pluralLabel = 'Guru BK';
+    protected static ?string $modelLabel = 'Guru BK';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user';
+     protected static string|UnitEnum|null $navigationGroup = 'Data';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
     {

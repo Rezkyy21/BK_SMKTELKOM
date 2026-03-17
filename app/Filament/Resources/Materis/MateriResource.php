@@ -13,12 +13,16 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-
+use UnitEnum;
 class MateriResource extends Resource
 {
     protected static ?string $model = Materi::class;
+    protected static ?string $navigationLabel = 'Materi';
+protected static ?string $pluralLabel = 'Materi';
+protected static ?string $modelLabel = 'Materi';
+protected static string|UnitEnum|null $navigationGroup = 'Artikel';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-book-open';
 
     public static function form(Schema $schema): Schema
     {

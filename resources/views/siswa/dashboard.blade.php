@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Siswa - SMK Telkom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --red: #E63329;
-            --orange: #F97316;
-            --teal: #14b8a6;
-            --cyan: #06b6d4;
-            --emerald: #10b981;
-            --yellow: #EAB308;
-        }
+                    --red: #dc2626;
+                    --orange: #ef4444;
+                    --teal: #b91c1c;
+                    --cyan: #f87171;
+                    --emerald: #7f1d1d;
+                    --yellow: #fca5a5;
+                }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -21,7 +22,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #0f172a;
+            background: #2a0f0f;
             color: white;
             overflow-x: hidden;
         }
@@ -33,7 +34,7 @@
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 200;
-            background: rgba(15,23,42,0.85);
+            background: rgba(42, 15, 15, 0.85);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255,255,255,0.06);
             animation: navSlide 0.6s ease both;
@@ -71,8 +72,8 @@
         }
 
         .logo-text {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 900;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 750;
             font-size: 1.2rem;
             color: white;
         }
@@ -125,7 +126,7 @@
         .profile-dropdown {
             position: absolute; right: 0; top: calc(100% + 10px);
             width: 210px;
-            background: #1e293b;
+            background: #3b1e1e;
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 14px;
             box-shadow: 0 16px 48px rgba(0,0,0,0.4);
@@ -148,6 +149,7 @@
             font-weight: 700;
             font-size: 0.87rem;
             color: white;
+            margin: 1px;
         }
 
         .dropdown-header .demail {
@@ -190,15 +192,14 @@
 
         /* Animated gradient mesh background */
         .hero-bg {
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 80% 60% at 70% 30%, rgba(230,51,41,0.18) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 20% 80%, rgba(20,184,166,0.12) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 40% at 90% 90%, rgba(249,115,22,0.1) 0%, transparent 50%),
-                #0f172a;
-            animation: meshShift 12s ease-in-out infinite alternate;
-        }
+                    position: absolute;
+                    inset: 0;
+                    background:
+                        radial-gradient(ellipse 80% 60% at 70% 30%, rgba(220,38,38,0.25) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(239,68,68,0.18) 0%, transparent 60%),
+                        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(248,113,113,0.14) 0%, transparent 50%),
+                        #2a0f0f;
+                }
 
         @keyframes meshShift {
             0%   { filter: hue-rotate(0deg); }
@@ -498,17 +499,17 @@
         ============================== */
         .section-light {
             background: #f8fafc;
-            color: #1e293b;
+            color: #3b1e1e;
         }
 
         .section-dark {
-            background: #0f172a;
+            background: #2a0f0f;
             color: white;
         }
 
         .section-mid {
             background: #f0fdfa;
-            color: #1e293b;
+            color: #3b1e1e;
         }
 
         /* ==============================
@@ -544,7 +545,7 @@
             font-family: 'Nunito', sans-serif;
             font-size: 2.2rem;
             font-weight: 900;
-            color: #1e293b;
+            color: #3b1e1e;
             margin-bottom: 10px;
         }
 
@@ -552,7 +553,7 @@
 
         .section-sub {
             font-size: 0.92rem;
-            color: #64748b;
+            color: #8b6464;
             max-width: 460px;
             margin: 0 auto;
             line-height: 1.7;
@@ -581,7 +582,7 @@
         }
 
         .guru-thumb {
-            height: 160px;
+            height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -617,13 +618,13 @@
             font-family: 'Nunito', sans-serif;
             font-size: 0.95rem;
             font-weight: 800;
-            color: #1e293b;
+            color: #3b1e1e;
             margin-bottom: 4px;
         }
 
         .guru-nip {
             font-size: 0.75rem;
-            color: #94a3b8;
+            color: #b89494;
             margin-bottom: 12px;
         }
 
@@ -651,7 +652,7 @@
         ============================== */
         .motivasi-section {
             padding: 80px 28px;
-            background: #0f172a;
+            background: #2a0f0f;
             position: relative;
             overflow: hidden;
         }
@@ -668,9 +669,9 @@
         .motivasi-section .section-title { color: white; }
         .motivasi-section .section-sub { color: rgba(255,255,255,0.45); }
         .motivasi-section .section-tag {
-            background: rgba(20,184,166,0.15);
-            color: #5eead4;
-            border-color: rgba(20,184,166,0.3);
+            background: rgba(184, 20, 20, 0.15);
+            color: #ea5e5e;
+            border-color: rgba(184, 20, 20, 0.3);
         }
 
         /* Carousel */
@@ -958,7 +959,7 @@
         /* ==============================
            RESPONSIVE
         ============================== */
-        @media (max-width: 900px) {
+             @media (max-width: 900px) {
             .hero-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
             .hero-desc { margin: 0 auto 36px; }
             .hero-btns { justify-content: center; }
@@ -968,13 +969,95 @@
             .lulus-grid { grid-template-columns: 1fr; max-width: 360px; }
             .footer-top { grid-template-columns: 1fr 1fr; }
         }
-
-        @media (max-width: 600px) {
+  .menu-btn{
+    display:none;
+    font-size:22px;
+    color:white;
+    background:none;
+    border:none;
+    cursor:pointer;
+}
+        @media (max-width: 768px) {
             .nav-links { display: none; }
+             .menu-btn{
+                display:block;
+            }
             .guru-grid { grid-template-columns: 1fr; }
             .footer-top { grid-template-columns: 1fr; }
             .hero-title { font-size: 2rem; }
+            .guru-card{
+    display:flex;
+    align-items:center;
+    padding:12px;
+    
+}
+
+.guru-thumb{
+    width:80px;
+    height:80px;
+    flex-shrink:0;
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.guru-thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.guru-info{
+    padding:0 0 0 14px;
+    flex:1;
+}
+
+.guru-name{
+    font-size:0.9rem;
+}
+
+.guru-btn{
+    margin-top:6px;
+    width:fit-content;
+}
+
         }
+       
+         
+ .logo-img{
+                width:40px;
+                height:60px;
+                object-fit:contain;
+            }
+.mobile-menu{
+    position:fixed;
+    top:64px;
+    left:0;
+    right:0;
+    background:#2a0f0f;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:20px;
+    transform:translateY(-120%);
+    transition:0.3s;
+    z-index:150;
+}
+
+.mobile-menu a{
+    color:white;
+    text-decoration:none;
+    padding:10px;
+    border-radius:8px;
+}
+
+.mobile-menu a:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.mobile-menu.active{
+    transform:translateY(0);
+}
+
     </style>
 </head>
 <body>
@@ -984,50 +1067,80 @@
     ============================== -->
     <nav>
         <div class="nav-inner">
-            <a href="{{ route('siswa.dashboard') }}" class="logo">
-                <div class="logo-icon">TS</div>
-                <div class="logo-text">
-                    <span class="school-name">SMK Telkom</span>
-                    <span class="school-location">Purwokerto</span>
-                </div>
-            </a>
-
-            <ul class="nav-links">
-                <li><a href="{{ route('siswa.dashboard') }}" class="active">Home</a></li>
-                <li><a href="{{ route('siswa.karir') }}">Karir</a></li>
-                <li><a href="{{ route('siswa.belajar') }}">Belajar</a></li>
-                <li><a href="{{ route('siswa.pribadi') }}">Pribadi</a></li>
-                <li><a href="{{ route('siswa.sosial') }}">Sosial</a></li>
-                <li><a href="{{ route('siswa.konseling') }}">Konseling</a></li>
-                @guest
-                    <li><a href="{{ route('login') }}">Login</a></li>
-                @endguest
-            </ul>
-
-            @auth
-            <div class="profile-wrapper">
-                <button class="profile-btn">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                </button>
-                <div class="profile-dropdown">
-                    <div class="dropdown-header">
-                        <div class="dname">{{ auth()->user()->name ?? 'Nama Siswa' }}</div>
-                        <div class="demail">{{ auth()->user()->email ?? 'siswa@email.com' }}</div>
+          
+               <div class="flex items-center space-x-3">
+                      <button id="menuBtn" class="menu-btn">
+                ☰
+            </button>
+                    <img src="{{ asset('images/telkom.png') }}" alt="Logo Telkom" class="logo-img">
+               
+                    <div>
+                        <p class="font-bold text-white text-sm leading-tight">SMK Telkom</p>
+                        <p class="text-white text-xs leading-tight">Purwokerto</p>
                     </div>
-                    <a href="{{ route('siswa.profile.edit') }}" class="dropdown-item">Edit Profile</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item">Logout</button>
-                    </form>
                 </div>
+                
+          
+
+           <ul class="nav-links">
+    <li><a href="{{ route('siswa.dashboard') }}" class="active">Home</a></li>
+    <li><a href="{{ route('siswa.karir') }}">Karir</a></li>
+    <li><a href="{{ route('siswa.belajar') }}">Belajar</a></li>
+    <li><a href="{{ route('siswa.pribadi') }}">Pribadi</a></li>
+    <li><a href="{{ route('siswa.sosial') }}">Sosial</a></li>
+    <li><a href="{{ route('siswa.konseling') }}">Konseling</a></li>
+</ul>
+
+@guest
+<a href="{{ route('login') }}" class="text-white text-sm font-semibold">
+    Login
+</a>
+@endguest
+          
+
+           @auth
+        <div class="relative group profile-wrapper">
+            <button class="profile-btn">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </button>
+
+            <div class="profile-dropdown absolute right-0 mt-2 w-64 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100 bg-[#3b1e1e]">
+                <div class="dropdown-header px-4 py-3 border-b border-gray-100 ">
+                    <p class="text-sm font-semibold text-white break-words mb-1">{{ auth()->user()->name }}</p>
+                    <p class="text-xs text-gray-400 break-words">{{ auth()->user()->email }}</p>
+                </div>
+                @auth
+                     @if(auth()->user()->guruBk|| auth()->user()->role === 'admin')
+                    <a href="/admin" class="block px-4 py-2 text-white hover:bg-[#4b2929] text-sm">
+                        Dashboard Admin
+                    </a>
+                @endif
+                    @if(auth()->user()->siswa)
+                        <a href="{{ route('siswa.profile.edit') }}" class="block px-4 py-2 text-white hover:bg-[#4b2929] text-sm">
+                            Edit Profile
+                        </a>
+                    @endif
+                @endauth
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full text-left px-4 py-2 text-white hover:bg-[#4b2929] text-sm">Logout</button>
+                </form>
             </div>
-            @endauth
+        </div>
+        @endauth
         </div>
     </nav>
-
+    <div id="mobileMenu" class="mobile-menu">
+        <a href="{{ route('siswa.dashboard') }}">Home</a>
+        <a href="{{ route('siswa.karir') }}">Karir</a>
+        <a href="{{ route('siswa.belajar') }}">Belajar</a>
+        <a href="{{ route('siswa.pribadi') }}">Pribadi</a>
+        <a href="{{ route('siswa.sosial') }}">Sosial</a>
+        <a href="{{ route('siswa.konseling') }}">Konseling</a>
+    </div>
     <!-- ==============================
          HERO
     ============================== -->
@@ -1070,20 +1183,7 @@
                 </div>
 
                 <div class="hero-stats">
-                    <div class="stat-item">
-                        <div class="stat-num" data-count="2400">0</div>
-                        <div class="stat-lbl">Siswa Aktif</div>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-num" data-count="320">0</div>
-                        <div class="stat-lbl">Sesi Konseling</div>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-num" data-count="97">0</div>
-                        <div class="stat-lbl">% Kepuasan</div>
-                    </div>
+                    
                 </div>
             </div>
 
@@ -1131,7 +1231,7 @@
     <section class="guru-section" id="guru">
         <div class="section-inner">
             <div class="section-head reveal">
-                <div class="section-tag">👩‍🏫 Tim Konselor</div>
+               
                 <h2 class="section-title"><span>Guru</span> Konseling</h2>
                 <p class="section-sub">Mendengar, memahami, dan membantu kamu menemukan solusi terbaik.</p>
             </div>
@@ -1140,13 +1240,17 @@
                 @forelse($gurus ?? [] as $guru)
                     <div class="guru-card reveal" style="transition-delay: {{ $loop->index * 0.1 }}s">
                         <div class="guru-thumb">
-                            <div class="guru-initials">
-                                {{ strtoupper(substr($guru->nama, 0, 1)) }}{{ strtoupper(substr(explode(' ', $guru->nama)[1] ?? 'K', 0, 1)) }}
-                            </div>
+                            @if($guru->photo)
+                                <img src="{{ asset('storage/'.$guru->photo) }}" alt="{{ $guru->nama }}">
+                            @else
+                                <div class="guru-initials">
+                                    {{ strtoupper(substr($guru->nama, 0, 1)) }}{{ strtoupper(substr(explode(' ', $guru->nama)[1] ?? 'K', 0, 1)) }}
+                                </div>
+                            @endif
                         </div>
                         <div class="guru-info">
                             <div class="guru-name">{{ $guru->nama }}</div>
-                            <div class="guru-nip">{{ $guru->nip ?? 'Guru BK' }}</div>
+                           
                             <a href="{{ route('siswa.konseling') }}" class="guru-btn">
                                 Buat Jadwal
                                 <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1164,7 +1268,7 @@
                         </div>
                         <div class="guru-info">
                             <div class="guru-name">Guru BK {{ $i + 1 }}</div>
-                            <div class="guru-nip">Spesialisasi: {{ $g[2] }}</div>
+                           
                             <a href="{{ route('siswa.konseling') }}" class="guru-btn">
                                 Buat Jadwal
                                 <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1292,7 +1396,7 @@
                     </div>
                 </a>
                 <a href="{{ route('career-plan.edit') }}" class="lulus-card reveal" style="transition-delay:0.1s">
-                    <div class="lulus-icon">💼</div>
+                    <div class="lulus-icon">💻</div>
                     <div class="lulus-label">Kerja</div>
                     <div class="lulus-desc">Mulai karir profesionalmu di dunia industri</div>
                     <div class="lulus-arrow">
@@ -1302,7 +1406,7 @@
                     </div>
                 </a>
                 <a href="{{ route('career-plan.edit') }}" class="lulus-card reveal" style="transition-delay:0.2s">
-                    <div class="lulus-icon">🚀</div>
+                    <div class="lulus-icon">📈</div>
                     <div class="lulus-label">Wirausaha</div>
                     <div class="lulus-desc">Bangun bisnis impianmu dan jadilah pengusaha sukses</div>
                     <div class="lulus-arrow">
@@ -1318,50 +1422,63 @@
     <!-- ==============================
          FOOTER
     ============================== -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <a href="{{ route('siswa.dashboard') }}" class="footer-logo">
-                        <div class="logo-icon">TS</div>
-                        <div class="logo-text">
-                            <span class="school-name">SMK Telkom</span>
-                            <span class="school-location">Purwokerto</span>
-                        </div>
-                    </a>
-                    <p>Platform pembelajaran dan konseling terpadu untuk siswa SMK Telkom Sandy Putra Purwokerto.</p>
+    <footer class="bg-white border-t border-gray-100 py-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div>
+                    <h4 class="font-bold text-red-500 mb-4 text-base">SMK Telkom Purwokerto</h4>
+                    <div class="space-y-2 text-sm text-gray-500">
+                        <p class="font-medium text-gray-700">Contact us</p>
+                        <p>bkstematel@gmail.com</p>
+                       <p>Jl. DI Panjaitan No.128</p>
+                        <p>Purwokerto Selatan, Banyumas</p>
+                        <p>Jawa Tengah 53147</p>
+                        <p>Indonesia</p>
+                    </div>
+                    <div class="flex space-x-3 mt-4">
+                        <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                    </div>
                 </div>
-                <div class="footer-col">
-                    <h4>Layanan Kami</h4>
-                    <ul>
-                        <li><a href="{{ route('siswa.karir') }}">Karir</a></li>
-                        <li><a href="{{ route('siswa.belajar') }}">Belajar</a></li>
-                        <li><a href="{{ route('siswa.pribadi') }}">Pribadi</a></li>
-                        <li><a href="{{ route('siswa.sosial') }}">Sosial</a></li>
-                        <li><a href="{{ route('siswa.konseling') }}">Konseling</a></li>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-4 text-sm">Layanan Kami</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="{{ route('siswa.karir') }}" class="hover:text-red-500 transition">Karir</a></li>
+                        <li><a href="{{ route('siswa.belajar') }}" class="hover:text-red-500 transition">Belajar</a></li>
+                        <li><a href="{{ route('siswa.pribadi') }}" class="hover:text-red-500 transition">Pribadi</a></li>
+                        <li><a href="{{ route('siswa.sosial') }}" class="hover:text-red-500 transition">Sosial</a></li>
+                        <li><a href="{{ route('siswa.konseling') }}" class="hover:text-red-500 transition">Konseling</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>Tentang</h4>
-                    <ul>
-                        <li><a href="#">Tentang Kami</a></li>
-                        <li><a href="#">Tim Guru BK</a></li>
-                        <li><a href="#">Kebijakan</a></li>
-                        <li><a href="#">Kontak</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Kontak</h4>
-                    <ul>
-                        <li><a href="mailto:bksmatel@gmail.com">bksmatel@gmail.com</a></li>
-                        <li><a href="#">+62 862722551</a></li>
-                        <li><a href="#">Purwokerto, Jawa Tengah</a></li>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-4 text-sm">About</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                      
+                  
+                        <li><a href="#guru" class="hover:text-red-500 transition">Tim Guru BK</a></li>
+                        <li><a href="#motivasi" class="hover:text-red-500 transition">Motivasi Siswa</a></li>
+                        <li><a href="#lulus" class="hover:text-red-500 transition">Perencanaan Karir</a></li>
+                        <li><a href="{{ route('siswa.konseling') }}" class="hover:text-red-500 transition">Ajukan Konseling</a></li>
+                        <li><a href="{{ route('siswa.profile.edit') }}" class="hover:text-red-500 transition">Profil Siswa</a></li>
+                   
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <span class="footer-school">SMK Telkom Sandy Putra Purwokerto</span>
-                <span>© {{ date('Y') }} SMK Telkom Sandy Putra Purwokerto. All rights reserved.</span>
+
+            <div class="border-t border-gray-100 mt-10 pt-6 text-center text-xs text-gray-400">
+                © {{ date('Y') }} SMK Telkom Purwokerto. All rights reserved.
             </div>
         </div>
     </footer>
@@ -1389,53 +1506,56 @@
             this.speedX = (Math.random() - 0.5) * 0.4;
             this.speedY = (Math.random() - 0.5) * 0.4;
             this.opacity = Math.random() * 0.5 + 0.1;
-            const colors = ['rgba(230,51,41,', 'rgba(20,184,166,', 'rgba(249,115,22,', 'rgba(255,255,255,'];
+           const colors = ['rgba(220,38,38,', 'rgba(239,68,68,', 'rgba(248,113,113,', 'rgba(255,255,255,'];
             this.color = colors[Math.floor(Math.random() * colors.length)];
         }
         update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = this.color + this.opacity + ')';
-            ctx.fill();
-        }
+    this.x += this.speedX;
+    this.y += this.speedY;
+
+    if (this.x < 0 || this.x > canvas.width) {
+        this.speedX *= -1;
     }
 
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < 80; i++) particles.push(new Particle());
+    if (this.y < 0 || this.y > canvas.height) {
+        this.speedY *= -1;
     }
+}
 
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
+draw() {
+    ctx.fillStyle = this.color + this.opacity + ')';
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+}
+}
 
-        // Draw connections
-        particles.forEach((a, i) => {
-            particles.slice(i + 1).forEach(b => {
-                const dx = a.x - b.x, dy = a.y - b.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 110) {
-                    ctx.beginPath();
-                    ctx.moveTo(a.x, a.y);
-                    ctx.lineTo(b.x, b.y);
-                    ctx.strokeStyle = `rgba(255,255,255,${(1 - dist / 110) * 0.05})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.stroke();
-                }
-            });
-        });
-
-        animFrame = requestAnimationFrame(animateParticles);
+function initParticles() {
+    particles = [];
+    for (let i = 0; i < 80; i++) {
+        particles.push(new Particle());
     }
+}
 
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+        p.update();
+        p.draw();
+    });
+
+    animFrame = requestAnimationFrame(animateParticles);
+}
+
+window.addEventListener('resize', () => {
     resizeCanvas();
     initParticles();
-    animateParticles();
+});
+
+resizeCanvas();
+initParticles();
+animateParticles();
     window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
 
     // Stop particles when hero not visible
@@ -1528,6 +1648,12 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal, .reveal-left').forEach(el => revealObs.observe(el));
+    const menuBtn = document.getElementById("menuBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+
+menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("active");
+});
     </script>
 
 </body>

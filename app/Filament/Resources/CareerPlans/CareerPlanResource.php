@@ -15,12 +15,15 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-
+use UnitEnum;
 class CareerPlanResource extends Resource
 {
     protected static ?string $model = CareerPlan::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+     protected static ?string $navigationLabel = 'Rencana Karir';
+    protected static ?string $pluralLabel = 'Rencana Karir';
+    protected static ?string $modelLabel = 'Rencana Karir';
+   protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
+   protected static string|UnitEnum|null $navigationGroup = 'Data';
 
     public static function form(Schema $schema): Schema
     {

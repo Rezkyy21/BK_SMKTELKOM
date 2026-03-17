@@ -9,29 +9,29 @@
 <body class="h-screen overflow-hidden">
     <div class="flex h-screen">
         {{-- Bagian kiri: gambar sekolah --}}
-        <div class="hidden lg:flex lg:flex-1 lg:min-h-screen relative overflow-hidden">
-        {{-- Background image dengan overlay gelap di bawah --}}
-        <div class="absolute inset-0">
-            <img src="/path/to/school-image.jpg" alt="SMK Telkom Purwokerto" class="w-full h-full object-cover">
-            {{-- Gradient overlay dari transparan di atas ke gelap di bawah --}}
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/70"></div>
-        </div>
-        
-        {{-- Konten di atas gambar --}}
-        <div class="relative z-10 flex flex-col justify-between w-full p-12">
-            {{-- Logo dan text di atas --}}
-            <div class="text-white">
-                <h2 class="text-3xl font-bold tracking-tight">Telkom Schools</h2>
-                <p class="text-2xl font-semibold mt-1">SMK Telkom Purwokerto</p>
-            </div>
-            
-            {{-- Text di bawah --}}
-            <div class="text-white/90">
-                <p class="text-sm">Sistem Bimbingan Konseling</p>
-                <p class="text-xs mt-1">SMK Telkom Purwokerto</p>
-            </div>
-        </div>
+      <div class="hidden lg:flex lg:flex-1 lg:min-h-screen relative overflow-hidden">
+    
+    {{-- Background image --}}
+    <div class="absolute inset-0">
+        <img src="{{ asset('images/bglogin.png') }}" 
+             alt="SMK Telkom Purwokerto"
+             class="w-full h-full object-cover ">
+
+        {{-- Gradient overlay --}}
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/70"></div>
     </div>
+                
+    {{-- Konten --}}
+    <div class="relative z-10 flex flex-col justify-end w-full p-12">
+        
+        {{-- Text bawah --}}
+        <div class="text-white/90">
+            <p class="text-sm">Sistem Bimbingan Konseling</p>
+            <p class="text-xs mt-1">SMK Telkom Purwokerto</p>
+        </div>
+
+    </div>
+</div>
 
     {{-- Bagian kanan: form login --}}
     <div class="flex-1 flex flex-col justify-center px-6 py-12 lg:px-12 bg-white w-full">

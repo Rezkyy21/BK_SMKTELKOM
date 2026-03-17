@@ -12,14 +12,17 @@ use App\Models\Booking;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
+use UnitEnum;
 use Filament\Tables\Table;
 
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+     protected static ?string $navigationLabel = 'Booking';
+    protected static ?string $pluralLabel = 'Booking';
+    protected static ?string $modelLabel = 'Booking';
+    protected static string|UnitEnum|null $navigationGroup = 'Konseling';
+   protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar';
 
     public static function getEloquentQuery(): Builder
     {

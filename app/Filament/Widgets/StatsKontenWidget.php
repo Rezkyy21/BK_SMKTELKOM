@@ -30,8 +30,8 @@ class StatsKontenWidget extends StatsOverviewWidget
         }
 
         return [
-            Stat::make('Jadwal Aktif', $jadwalQuery->count())
-                ->icon(Heroicon::OutlinedCalendarDays)
+           Stat::make('Jadwal Aktif', Jadwal::count())
+                ->icon(Heroicon::OutlinedCalendar)
                 ->color('warning')
                 ->description('Slot jadwal tersedia'),
             Stat::make('Materi', Materi::query()->count())

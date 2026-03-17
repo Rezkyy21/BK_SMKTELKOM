@@ -7,7 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #fdf4f4;
+            overflow-x: hidden;
+        }
 
         .hero-section {
             background: linear-gradient(135deg, #fff8f0 0%, #fff 60%, #f0f4ff 100%);
@@ -22,29 +28,90 @@
             50% { transform: translateY(-12px); }
         }
 
-        .nav-link {
-            position: relative;
-            font-weight: 500;
-            color: #374151;
-            transition: color 0.2s;
-        }
+       .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+}
 
-        .nav-link:hover { color: #111; }
+.nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+}
 
-        .nav-link.active {
-            color: #e53e3e;
-            font-weight: 700;
-        }
+.nav-links a {
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 6px 0;
+    position: relative;
+    transition: color 0.3s;
+}
 
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0; right: 0;
-            height: 2px;
-            background: #e53e3e;
-            border-radius: 2px;
-        }
+.nav-links a:hover { color: #1e293b; }
+.nav-links a.active { color: #f43f5e; }
+
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 2px;
+    background: #f43f5e;
+    border-radius: 2px;
+}
+
+.profile-wrapper { position: relative; }
+.profile-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+.profile-btn:hover { background: #f1f5f9; }
+
+.profile-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s;
+    z-index: 200;
+    border: 1px solid #f1f5f9;
+}
+
+.profile-wrapper:hover .profile-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-header { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
+.dropdown-header .name { font-weight: 700; font-size: 0.88rem; color: #1e293b; }
+.dropdown-header .email { font-size: 0.78rem; color: #94a3b8; margin-top: 2px; }
+
+.dropdown-item {
+    display: block;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    color: #475569;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.dropdown-item:hover { background: #f8fafc; }
 
         .card-hover {
             transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -102,39 +169,112 @@
         }
 
         .layanan-card:hover { transform: translateY(-3px); }
+          .logo-img{
+                width:40px;
+                height:60px;
+                object-fit:contain;
+            }
+            .karir-img{
+    width:280px;
+    animation: floatKarir 3s ease-in-out infinite;
+}
+
+@keyframes floatKarir{
+    0%{
+        transform: translateY(0px);
+    }
+    50%{
+        transform: translateY(-12px);
+    }
+    100%{
+        transform: translateY(0px);
+    }
+}
+.menu-btn{
+    display:none;
+    font-size:26px;
+    background:none;
+    border:none;
+    cursor:pointer;
+}
+
+@media (max-width:768px){
+
+    .menu-btn{
+        display:block;
+    }
+  
+
+.nav-links a.active::after{
+    display:none;
+}
+
+    .nav-links{
+        position:absolute;
+        top:64px;
+        left:0;
+        width:100%;
+        background:white;
+        flex-direction:column;
+        gap:0;
+        display:none;
+        border-top:1px solid #eee;
+    }
+
+    .nav-links li{
+        border-bottom:1px solid #f1f1f1;
+    }
+
+    .nav-links a{
+        display:block;
+        padding:14px 20px;
+    }
+
+    .nav-links.show{
+        display:flex;
+    }
+
+}
     </style>
 </head>
 <body class="bg-white">
 
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-sm">TS</span>
-                    </div>
-                    <div>
-                        <p class="font-bold text-gray-900 text-sm leading-tight">SMK Telkom</p>
-                        <p class="text-gray-500 text-xs leading-tight">Purwokerto</p>
-                    </div>
-                </div>
+   <!-- Navigation -->
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="nav-inner">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
 
-                <!-- Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ route('siswa.dashboard') }}" class="nav-link">Home</a>
-                    <a href="{{ route('siswa.karir') }}" class="nav-link active">Karir</a>
-                    <a href="{{ route('siswa.belajar') }}" class="nav-link">Belajar</a>
-                    <a href="{{ route('siswa.pribadi') }}" class="nav-link">Pribadi</a>
-                    <a href="{{ route('siswa.sosial') }}" class="nav-link">Sosial</a>
-                    <a href="{{ route('siswa.konseling') }}" class="nav-link">Konseling</a>
-                    @guest
-                        <a href="{{ route('login') }}" class="nav-link">Login</a>
-                    @endguest
-                </div>
+    <button id="menuBtn" class="menu-btn">
+        ☰
+    </button>
 
-                @auth
+    <img src="{{ asset('images/telkom.png') }}" alt="Logo Telkom" class="logo-img">
+
+    <div>
+        <p class="font-bold text-gray-900 text-sm leading-tight">SMK Telkom</p>
+        <p class="text-gray-500 text-xs leading-tight">Purwokerto</p>
+    </div>
+
+</div>
+
+        <!-- Menu -->
+      
+            <ul class="nav-links" id="navMenu">
+            <li><a href="{{ route('siswa.dashboard') }}">Home</a></li>
+            <li><a href="{{ route('siswa.karir') }}" class="active">Karir</a></li>
+            <li><a href="{{ route('siswa.belajar') }}">Belajar</a></li>
+            <li><a href="{{ route('siswa.pribadi') }}">Pribadi</a></li>
+            <li><a href="{{ route('siswa.sosial') }}">Sosial</a></li>
+            <li><a href="{{ route('siswa.konseling') }}">Konseling</a></li>
+        </ul>
+            @guest
+                <li><a href="{{ route('login') }}">Login</a></li>
+            @endguest
+        </ul>
+
+        <!-- Profile -->
+        @auth
                 <!-- Profile -->
                 <div class="relative group">
                     <button class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
@@ -142,12 +282,23 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
                     </button>
-                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100">
-                        <div class="px-4 py-3 border-b border-gray-100">
-                            <p class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
+                   <div class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100">
+                       <div class="px-4 py-3 border-b border-gray-100 ">
+                           <p class="text-sm font-semibold text-gray-800 break-words mb-1">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-500 break-words">{{ auth()->user()->email }}</p>
                         </div>
-                        <a href="{{ route('siswa.profile.edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">Edit Profile</a>
+                        @auth
+                         @if(auth()->user()->guruBk|| auth()->user()->role === 'admin')
+                            <a href="/admin" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">
+                                Dashboard Admin
+                            </a>
+                        @endif
+                            @if(auth()->user()->siswa)
+                                <a href="{{ route('siswa.profile.edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">
+                                    Edit Profile
+                                </a>
+                            @endif
+                        @endauth
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">Logout</button>
@@ -155,9 +306,8 @@
                     </div>
                 </div>
                 @endauth
-            </div>
-        </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Hero Section -->
     <section class="hero-section py-16 overflow-hidden">
@@ -177,35 +327,7 @@
                 <!-- Illustration -->
                 <div class="flex-shrink-0 hidden md:block">
                     <div class="hero-brain relative">
-                        <!-- Brain SVG Illustration -->
-                        <svg width="280" height="280" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Body -->
-                            <ellipse cx="140" cy="200" rx="50" ry="30" fill="#F9A8A8"/>
-                            <!-- Legs -->
-                            <rect x="110" y="220" width="18" height="35" rx="9" fill="#F9A8A8"/>
-                            <rect x="152" y="220" width="18" height="35" rx="9" fill="#F9A8A8"/>
-                            <!-- Arms -->
-                            <rect x="72" y="175" width="40" height="16" rx="8" fill="#F9A8A8" transform="rotate(-20 72 175)"/>
-                            <rect x="168" y="175" width="40" height="16" rx="8" fill="#F9A8A8" transform="rotate(20 168 175)"/>
-                            <!-- Brain Head -->
-                            <ellipse cx="140" cy="140" rx="72" ry="68" fill="#F87171"/>
-                            <!-- Brain folds -->
-                            <path d="M100 120 Q120 100 140 115 Q160 100 180 120" stroke="#EF4444" stroke-width="3" fill="none" stroke-linecap="round"/>
-                            <path d="M95 140 Q115 125 135 138 Q155 125 175 140" stroke="#EF4444" stroke-width="3" fill="none" stroke-linecap="round"/>
-                            <path d="M100 160 Q120 148 140 158 Q160 148 180 160" stroke="#EF4444" stroke-width="3" fill="none" stroke-linecap="round"/>
-                            <!-- Eyes -->
-                            <circle cx="120" cy="130" r="10" fill="white"/>
-                            <circle cx="160" cy="130" r="10" fill="white"/>
-                            <circle cx="122" cy="132" r="5" fill="#1f2937"/>
-                            <circle cx="162" cy="132" r="5" fill="#1f2937"/>
-                            <!-- Eyebrows (worried) -->
-                            <path d="M110 118 Q120 112 130 116" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/>
-                            <path d="M150 116 Q160 112 170 118" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/>
-                            <!-- Mouth (worried) -->
-                            <path d="M125 150 Q140 143 155 150" stroke="#EF4444" stroke-width="3" fill="none" stroke-linecap="round"/>
-                            <!-- Question mark -->
-                            <text x="200" y="90" font-size="52" fill="#818CF8" font-weight="900">?</text>
-                        </svg>
+                        <img src="{{ asset('images/karir.png') }}" alt="Karir Illustration" class="karir-img">
                     </div>
                 </div>
             </div>
@@ -215,19 +337,20 @@
     <!-- Career Plan Banner (Kelas 12) -->
     @auth
         @if ($user && $user->classRoom && $user->classRoom->grade_level === 12)
-        <div class="max-w-6xl mx-auto px-6 mt-4">
-            <div class="p-5 bg-amber-50 border-2 border-amber-300 rounded-xl flex items-center justify-between">
+        <section class="bg-gray-50 py-10">
+<div class="max-w-6xl mx-auto px-6">
+            <div class="p-6 bg-red-50 border border-red-300 rounded-xl flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-sm">
                 <div>
-                    <h3 class="font-bold text-amber-900 text-lg mb-1">🎯 Rencana Karir Setelah Lulus</h3>
-                    <p class="text-amber-800 text-sm">Anda sedang di kelas 12. Silakan isi rencana karir Anda untuk dipantau oleh guru BK.</p>
+                    <h3 class="font-bold text-red-900 text-lg mb-1">Rencana Karir Setelah Lulus</h3>
+                    <p class="text-red-800 text-sm">Anda sedang di kelas 12. Silakan isi rencana karir Anda untuk dipantau oleh guru BK.</p>
                 </div>
-                <a href="{{ route('career-plan.edit') }}" class="ml-4 px-6 py-2.5 bg-amber-500 text-white rounded-lg hover:bg-amber-600 font-semibold whitespace-nowrap transition">
+                <a href="{{ route('career-plan.edit') }}" class="px-6 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 font-semibold whitespace-nowrap transition self-start md:self-auto">
                     {{ $user->careerPlan ? 'Edit Rencana' : 'Buat Rencana' }}
                 </a>
             </div>
             @if ($user->careerPlan)
-            <div class="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                <h4 class="font-semibold text-blue-900 mb-2">Rencana Karir Anda:</h4>
+           <div class="mt-3 p-4 bg-gray-100 border border-gray-300 rounded-xl"> 
+                <h4 class="font-semibold text-gray-800 mb-2">Rencana Karir Anda:</h4>       
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-xs text-gray-500">Kategori</p>
@@ -240,7 +363,7 @@
                         </p>
                     </div>
                 </div>
-                <p class="text-sm text-gray-700 mt-2"><strong>Detail:</strong> {{ $user->careerPlan->getDetailDescription() }}</p>
+                <p class="text-sm text-gray-600 mt-2"><strong>Detail:</strong> {{ $user->careerPlan->getDetailDescription() }}</p>
             </div>
             @endif
         </div>
@@ -267,9 +390,9 @@
             </div>
         </div>
     @endauth
-
+        </section>
     <!-- Layanan Karir Section -->
-    <section class="section-divider py-16 mt-10">
+    <section class="section-divider py-16">
         <div class="max-w-6xl mx-auto px-6">
             <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Layanan Karir</h2>
             <p class="text-gray-500 mb-10 text-base">Jelajahi berbagai peluang karir dan konsultasi dengan guru pembimbing karir kami untuk mengembangkan minat dan bakat Anda.</p>
@@ -303,57 +426,109 @@
     </section>
 
     <!-- Artikel Karir Section -->
-    <section class="py-16">
-        <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-2 text-center">
-                Artikel <span class="text-red-500">Karir</span>
-            </h2>
-            <p class="text-gray-500 text-center mb-10">Baca artikel terbaru seputar karir dan pengembangan diri</p>
+<section class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-6">
 
-            @php $materis = $materis ?? collect(); @endphp
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-2">
+            Artikel <span class="text-red-500">Karir</span>
+        </h2>
 
-            @if($materis->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                @foreach($materis as $materi)
-                <div class="artikel-card">
-                    <div class="w-28 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                        @if($materi->thumbnail)
-                            <img src="{{ asset('storage/' . $materi->thumbnail) }}" alt="{{ $materi->judul }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-2">{{ $materi->judul }}</h4>
-                        <p class="text-gray-500 text-xs leading-relaxed line-clamp-3 mb-3">{{ Str::limit(strip_tags($materi->konten), 100) }}</p>
-                        <a href="{{ route('materi.show', $materi->slug) }}" class="text-xs font-bold text-red-500 hover:text-red-700 uppercase tracking-wide transition">Read More →</a>
-                    </div>
+        <p class="text-gray-500 text-center mb-14">
+            Baca artikel terbaru seputar karir dan pengembangan diri
+        </p>
+
+        @php $materis = $materis ?? collect(); @endphp
+
+        @if($materis->count() > 0)
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            @foreach($materis as $materi)
+
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition overflow-hidden flex flex-col">
+
+                <!-- Thumbnail -->
+                <div class="h-48 w-full bg-gray-100">
+                    @if($materi->thumbnail)
+                        <img 
+                        src="{{ asset('storage/' . $materi->thumbnail) }}"
+                        alt="{{ $materi->judul }}"
+                        class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                            </svg>
+                        </div>
+                    @endif
                 </div>
-                @endforeach
+
+                <!-- Content -->
+                <div class="p-6 flex flex-col flex-1">
+
+                    <h4 class="font-bold text-gray-900 text-lg mb-2 line-clamp-2">
+                        {{ $materi->judul }}
+                    </h4>
+
+                    <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
+                        {{ Str::limit(strip_tags($materi->konten), 120) }}
+                    </p>
+
+                    <div class="text-xs text-gray-400 flex items-center gap-2 mb-5">
+                        <span>{{ optional($materi->guru)->nama ?? optional($materi->guru)->name ?? 'Guru BK' }}</span>
+                        <span>•</span>
+                        <span>{{ optional($materi->created_at)->format('d M Y') }}</span>
+                    </div>
+
+                    <a 
+                    href="{{ route('materi.show', $materi->slug) }}"
+                    class="mt-auto inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition">
+                        Baca Artikel
+                    </a>
+
+                </div>
+
             </div>
-            @else
-            <div class="text-center py-16 text-gray-400">
-                <svg class="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                <p class="text-lg font-medium">Belum ada artikel karir</p>
-                <p class="text-sm mt-1">Artikel akan muncul di sini setelah ditambahkan oleh guru.</p>
-            </div>
-            @endif
+
+            @endforeach
+
         </div>
-    </section>
+
+        @else
+
+        <div class="text-center py-16 text-gray-400">
+
+            <svg class="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
+
+            <p class="text-lg font-medium">Belum ada artikel karir</p>
+            <p class="text-sm mt-1">
+                Artikel akan muncul di sini setelah ditambahkan oleh guru.
+            </p>
+
+        </div>
+
+        @endif
+
+    </div>
+</section>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-100 py-12 mt-8">
+   <footer class="bg-white border-t border-gray-100 py-12">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div>
-                    <h4 class="font-bold text-red-500 mb-4 text-base">SMK Telkom Sandy Putra Purwokerto</h4>
+                    <h4 class="font-bold text-red-500 mb-4 text-base">SMK Telkom Purwokerto</h4>
                     <div class="space-y-2 text-sm text-gray-500">
                         <p class="font-medium text-gray-700">Contact us</p>
-                        <p>bktelsmatel@gmail.com</p>
-                        <p>+62 862722531</p>
-                        <p>123 Ave, New York, USA</p>
+                        <p>bkstematel@gmail.com</p>
+                       <p>Jl. DI Panjaitan No.128</p>
+                        <p>Purwokerto Selatan, Banyumas</p>
+                        <p>Jawa Tengah 53147</p>
+                        <p>Indonesia</p>
                     </div>
                     <div class="flex space-x-3 mt-4">
                         <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
@@ -385,20 +560,32 @@
                 <div>
                     <h4 class="font-bold text-gray-800 mb-4 text-sm">About</h4>
                     <ul class="space-y-2 text-sm text-gray-500">
-                        <li>Egesta vitae.</li>
-                        <li>Viverra lorem ac.</li>
-                        <li>Eget ac tellus.</li>
-                        <li>Erat nulla.</li>
-                        <li>Vulputate proin.</li>
+                      
+                  
+                        <li><a href="{{ route('siswa.dashboard') }}#guru" class="hover:text-red-500 transition">Tim Guru BK</a></li>
+                        <li><a href="{{ route('siswa.dashboard') }}#motivasi" class="hover:text-red-500 transition">Motivasi Siswa</a></li>
+                        <li><a href="{{ route('siswa.dashboard') }}#lulus" class="hover:text-red-500 transition">Perencanaan Karir</a></li>
+                        <li><a href="{{ route('siswa.konseling') }}" class="hover:text-red-500 transition">Ajukan Konseling</a></li>
+                        <li><a href="{{ route('siswa.profile.edit') }}" class="hover:text-red-500 transition">Profil Siswa</a></li>
+                   
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-gray-100 mt-10 pt-6 text-center text-xs text-gray-400">
-                © {{ date('Y') }} SMK Telkom Sandy Putra Purwokerto. All rights reserved.
+                © {{ date('Y') }} SMK Telkom Purwokerto. All rights reserved.
             </div>
         </div>
     </footer>
+<script>
+   
+const menuBtn = document.getElementById("menuBtn");
+const navMenu = document.getElementById("navMenu");
 
+menuBtn.addEventListener("click", () => {
+    navMenu.classList.toggle("show");
+});
+
+</script>
 </body>
 </html>

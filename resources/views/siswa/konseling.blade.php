@@ -1,27 +1,34 @@
-<!DOCTYPE html>
-<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Konseling - SMK Telkom</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --red: #E63329;
-            --red-dark: #c41230;
-            --teal: #14b8a6;
-            --cyan: #06b6d4;
-            --emerald: #10b981;
-            --orange: #F97316;
-        }
+            :root {
+                --red: #E63329;
+                --red-dark: #b91c1c;
+                --teal: #dc2626;
+                --cyan: #ef4444;
+                --emerald: #f87171;
+                --orange: #fb7185;
+            }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Poppins', sans-serif;
+           font-family: 'Poppins', sans-serif;
             background: #f8fafc;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+                    
         }
 
         /* ===== NAV ===== */
@@ -80,31 +87,38 @@
             color: #64748b;
         }
 
-        .nav-links { display: flex; gap: 28px; list-style: none; }
+       .nav-link {
+    position: relative;
+    font-weight: 500;
+    color: #374151;
+    transition: color 0.2s;
+}
 
-        .nav-links a {
-            text-decoration: none;
-            color: #64748b;
-            font-weight: 600;
-            font-size: 0.88rem;
-            padding: 6px 0;
-            position: relative;
-            transition: color 0.3s;
-        }
+.nav-link:hover { 
+    color: #111; 
+}
 
-        .nav-links a:hover { color: #1e293b; }
-        .nav-links a.active { color: var(--red); }
-        .nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px; left: 0; right: 0;
-            height: 2px;
-            background: var(--red);
-            border-radius: 2px;
-        }
+.nav-link.active {
+    color: #e53e3e;
+    font-weight: 700;
+}
 
-        .nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #e53e3e;
+    border-radius: 2px;
+}
 
+.logo-img{
+    width:40px;
+    height:60px;
+    object-fit:contain;
+}
         .profile-wrapper, .notif-wrapper { position: relative; }
         .profile-btn, .notif-btn {
             background: none; border: none; cursor: pointer;
@@ -152,43 +166,43 @@
 
         .notif-item {
             padding: 12px 16px;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f9f1f1;
             cursor: pointer;
             transition: background 0.15s;
         }
-        .notif-item:hover { background: #f8fafc; }
+        .notif-item:hover { background: #fcf8f8; }
         .notif-item:last-child { border-bottom: none; }
 
         .notif-item-title {
             font-weight: 600;
             font-size: 0.85rem;
-            color: #1e293b;
+            color: #3b1e1e;
             margin-bottom: 2px;
         }
 
         .notif-item-desc {
             font-size: 0.78rem;
-            color: #94a3b8;
+            color: #b89494;
             margin-bottom: 4px;
         }
 
         .notif-item-time {
             font-size: 0.73rem;
-            color: #cbd5e1;
+            color: #e1cbcb;
         }
 
         .notif-empty {
             padding: 32px 16px;
             text-align: center;
-            color: #94a3b8;
+            color: #b89494;
             font-size: 0.85rem;
         }
-        .dropdown-header { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
-        .dropdown-header .name { font-weight: 700; font-size: 0.88rem; color: #1e293b; }
-        .dropdown-header .email { font-size: 0.78rem; color: #94a3b8; margin-top: 2px; }
+        .dropdown-header { padding: 14px 16px; border-bottom: 1px solid #f9f1f1; }
+        .dropdown-header .name { font-weight: 700; font-size: 0.88rem; color: #3b1e1e; }
+        .dropdown-header .email { font-size: 0.78rem; color: #b89494; margin-top: 2px; }
         .dropdown-item {
             display: block; padding: 10px 16px; font-size: 0.85rem;
-            color: #475569; text-decoration: none; transition: background 0.15s;
+            color: #694747; text-decoration: none; transition: background 0.15s;
             font-family: 'Poppins', sans-serif;
         }
         .dropdown-item:hover { background: #f8fafc; }
@@ -199,7 +213,7 @@
             padding: 56px 24px 64px;
             position: relative;
             overflow: hidden;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f9f1f1;
         }
 
         .hero-blob {
@@ -217,7 +231,7 @@
         }
         .hb2 {
             width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(20,184,166,0.06), transparent);
+            background: radial-gradient(circle, rgba(184, 20, 20, 0.06), transparent);
             bottom: -100px; left: -80px;
             animation: blobFloat 10s ease-in-out infinite reverse;
         }
@@ -267,10 +281,11 @@
 
         .hero h1 {
             font-family: 'Nunito', sans-serif;
-            font-size: 2.6rem;
+            font-size: 2.8rem;
+             letter-spacing: -0.02em;
             font-weight: 900;
             line-height: 1.2;
-            color: #1e293b;
+            color: #3b1e1e;
             margin-bottom: 14px;
         }
 
@@ -281,7 +296,7 @@
         }
 
         .hero p {
-            color: #64748b;
+            color: #8b6464;
             font-size: 0.95rem;
             line-height: 1.75;
             max-width: 540px;
@@ -301,7 +316,7 @@
             padding: 20px 28px;
             background: #f8fafc;
             border-radius: 16px;
-            border: 1px solid #f1f5f9;
+            border: 1px solid #f9f1f1;
             position: relative;
             min-width: 110px;
             text-align: center;
@@ -432,6 +447,7 @@
             padding: 24px 20px;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all .3s ease;
             position: relative;
             overflow: hidden;
             text-align: center;
@@ -443,7 +459,7 @@
             top: 0; left: 0; right: 0;
             height: 3px;
             background: linear-gradient(90deg, var(--red), var(--orange));
-            transform: scaleX(0);
+            transform: translateY(-6px) scale(1.02);
             transform-origin: left;
             transition: transform 0.3s;
         }
@@ -684,7 +700,7 @@
             gap: 6px;
             padding: 8px 20px;
             border-radius: 100px;
-            background: linear-gradient(135deg, var(--teal), var(--cyan));
+            background: linear-gradient(135deg, var(--red), var(--orange));
             color: white;
             font-size: 0.8rem;
             font-weight: 700;
@@ -697,7 +713,7 @@
 
         .atur-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(20,184,166,0.4);
+           box-shadow: 0 6px 20px rgba(230,51,41,0.4);
         }
 
         /* Loading/Empty row */
@@ -799,7 +815,7 @@
         .tipe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
         .tipe-card {
-            border: 2px solid #f1f5f9;
+            border: 2px solid #f9f1f1;
             border-radius: 18px;
             padding: 24px 20px;
             text-align: center;
@@ -809,10 +825,10 @@
         }
 
         .tipe-card:hover {
-            border-color: var(--teal);
-            background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+            border-color: var(--emerald);
+            background: linear-gradient(135deg, #fdf0f0, #fbcccc);
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(20,184,166,0.15);
+            box-shadow: 0 8px 24px rgba(184, 20, 20, 0.15);
         }
 
         .tipe-icon {
@@ -884,13 +900,13 @@
             background: white;
         }
 
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--teal);
-            box-shadow: 0 0 0 3px rgba(20,184,166,0.12);
-        }
+     .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+        outline: none;
+        border-color: var(--red);
+        box-shadow: 0 0 0 3px rgba(230,51,41,0.15);
+    }
 
         .form-input.readonly {
             background: #f8fafc;
@@ -938,7 +954,7 @@
 
         /* ===== FOOTER ===== */
         footer {
-            background: #1e293b;
+            background: #3b1e1e;
             padding: 56px 24px 28px;
             margin-top: 0;
         }
@@ -972,7 +988,19 @@
         }
 
         .footer-school { color: var(--teal); font-weight: 700; }
-
+.menu-btn{
+    display:none;
+    font-size:26px;
+    background:none;
+    border:none;
+    cursor:pointer;
+}
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:28px;
+    list-style:none;
+}
         /* Responsive */
         @media (max-width: 768px) {
             .hero-inner { grid-template-columns: 1fr; }
@@ -981,63 +1009,151 @@
             .tipe-grid { grid-template-columns: 1fr; }
             .footer-top { grid-template-columns: 1fr 1fr; }
             .hero h1 { font-size: 2rem; }
+
+
+    .menu-btn{
+        display:block;
+    }
+   
+
+.nav-links a.active::after{
+    display:none;
+}
+
+.nav-links{
+    position:absolute;
+    top:64px;
+    left:0;
+    width:100%;
+    background:white;
+    flex-direction:column;
+    display:none;
+    border-top:1px solid #eee;
+    gap:0;
+    align-items:flex-start;
+}
+
+    .nav-links li{
+        border-bottom:1px solid #f1f1f1;
+    }
+
+   .nav-links a{
+    display:block;
+    padding:14px 20px;
+    text-align:left;
+    width:100%;
+}
+
+    .nav-links.show{
+        display:flex;
+    }
         }
 
         @media (max-width: 480px) {
             .guru-grid { grid-template-columns: 1fr; }
         }
+        .guru-avatar {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.guru-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInRow {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
     </style>
 </head>
 <body>
 
     <!-- Navigation -->
-    <nav>
-        <div class="nav-inner">
-            <a href="{{ route('siswa.dashboard') }}" class="logo">
-                <div class="logo-icon">TS</div>
-                <div class="logo-text">
-                    <span class="school-name">SMK Telkom</span>
-                    <span class="school-location">Purwokerto</span>
-                </div>
-            </a>
 
-            <ul class="nav-links">
-                <li><a href="{{ route('siswa.dashboard') }}">Home</a></li>
-                <li><a href="{{ route('siswa.karir') }}">Karir</a></li>
-                <li><a href="{{ route('siswa.belajar') }}">Belajar</a></li>
-                <li><a href="{{ route('siswa.pribadi') }}">Pribadi</a></li>
-                <li><a href="{{ route('siswa.sosial') }}">Sosial</a></li>
-                <li><a href="{{ route('siswa.konseling') }}" class="active">Konseling</a></li>
-                @guest
-                    <li><a href="{{ route('login') }}">Login</a></li>
-                @endguest
-            </ul>
+            <!-- Logo -->
+           <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="nav-inner">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
 
-            @auth
-            <div class="profile-wrapper">
-                <button class="profile-btn">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                </button>
-                <div class="profile-dropdown">
-                    <div class="dropdown-header">
-                        <div class="name">{{ auth()->user()->name ?? 'Nama Siswa' }}</div>
-                        <div class="email">{{ auth()->user()->email ?? 'siswa@email.com' }}</div>
+    <button id="menuBtn" class="menu-btn">
+        ☰
+    </button>
+
+    <img src="{{ asset('images/telkom.png') }}" alt="Logo Telkom" class="logo-img">
+
+    <div>
+        <p class="font-bold text-gray-900 text-sm leading-tight">SMK Telkom</p>
+        <p class="text-gray-500 text-xs leading-tight">Purwokerto</p>
+    </div>
+
+</div>
+
+            <!-- Menu -->
+           <ul class="nav-links" id="navMenu">
+    <li><a href="{{ route('siswa.dashboard') }}" class="nav-link">Home</a></li>
+    <li><a href="{{ route('siswa.karir') }}" class="nav-link">Karir</a></li>
+    <li><a href="{{ route('siswa.belajar') }}" class="nav-link">Belajar</a></li>
+    <li><a href="{{ route('siswa.pribadi') }}" class="nav-link">Pribadi</a></li>
+    <li><a href="{{ route('siswa.sosial') }}" class="nav-link">Sosial</a></li>
+    <li><a href="{{ route('siswa.konseling') }}" class="nav-link active">Konseling</a></li>
+</ul>
+            @guest
+                <li><a href="{{ route('login') }}">Login</a></li>
+            @endguest
+        
+
+
+                @auth
+                <!-- Profile -->
+                <div class="relative group">
+                    <button class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </button>
+                   <div class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100">
+                       <div class="px-4 py-3 border-b border-gray-100 ">
+                           <p class="text-sm font-semibold text-gray-800 break-words mb-1">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-500 break-words">{{ auth()->user()->email }}</p>
+                        </div>
+                        @auth
+                         @if(auth()->user()->guruBk|| auth()->user()->role === 'admin')
+                            <a href="/admin" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">
+                                Dashboard Admin
+                            </a>
+                        @endif
+                        @if(auth()->user()->siswa)
+                            <a href="{{ route('siswa.profile.edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">
+                                Edit Profile
+                            </a>
+                        @endif
+                    @endauth
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">Logout</button>
+                        </form>
                     </div>
-                    <a href="{{ route('siswa.profile.edit') }}" class="dropdown-item">Edit Profile</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;">Logout</button>
-                    </form>
                 </div>
-            </div>
-            @endauth
-        </div>
-    </nav>
+                @endauth
 
+        </div>
+    </div>
+</nav>
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero ">
         <div class="hero-blob hb1"></div>
         <div class="hero-blob hb2"></div>
 
@@ -1045,7 +1161,7 @@
             <div>
                 <div class="hero-badge">
                     <span class="dot"></span>
-                    Layanan Konseling
+                   Konseling
                 </div>
                 <h1>Pilih <span class="hl-red">Guru BK</span><br>yang Tepat Untukmu</h1>
                 <p>Setiap orang butuh ruang aman untuk bercerita. Pilih Guru BK yang siap mendengarkan dan membantu mencari solusi terbaik untukmu.</p>
@@ -1098,22 +1214,31 @@
             <div class="alert-success">✅ {{ session('success') }}</div>
         @endif
 
-        <!-- Step 1: Pilih Guru BK -->
-        <div class="section-label">
-            <div class="section-label-badge">1</div>
-            <div class="section-label-text">Pilih Guru BK</div>
-            <div class="section-label-sub">Klik kartu guru untuk melihat jadwal tersedia</div>
-        </div>
-
-        <div class="guru-grid">
-            @forelse($gurus as $guru)
-                <div class="guru-card" id="guru-card-{{ $guru->id }}" onclick="pilihGuru({{ $guru->id }}, '{{ addslashes($guru->nama) }}')">
-                    <div class="guru-avatar">
-                        <div class="guru-avatar-ring"></div>
-                        {{ strtoupper(substr($guru->nama, 0, 1)) }}{{ strtoupper(substr(explode(' ', $guru->nama)[1] ?? 'K', 0, 1)) }}
+                    <!-- Step 1: Pilih Guru BK -->
+                    <div class="section-label">
+                        <div class="section-label-badge">1</div>
+                        <div class="section-label-text">Pilih Guru BK</div>
+                        <div class="section-label-sub">Klik kartu guru untuk melihat jadwal tersedia</div>
                     </div>
+
+                    <div class="guru-grid">
+                        @forelse($gurus as $guru)
+                            <div class="guru-card" id="guru-card-{{ $guru->id }}" onclick="pilihGuru({{ $guru->id }}, '{{ addslashes($guru->nama) }}')">
+                                <div class="guru-avatar">
+                <div class="guru-avatar-ring"></div>
+
+                @if($guru->photo)
+                    <img 
+                        src="{{ asset('storage/' . $guru->photo) }}" 
+                        alt="{{ $guru->nama }}"
+                        class="guru-avatar-img">
+                @else
+                    {{ strtoupper(substr($guru->nama, 0, 1)) }}{{ strtoupper(substr(explode(' ', $guru->nama)[1] ?? 'K', 0, 1)) }}
+                @endif
+
+            </div>
                     <div class="guru-name">{{ $guru->nama }}</div>
-                    <div class="guru-nip">{{ $guru->nip ?? 'Guru BK' }}</div>
+                   
                     <div class="guru-select-tag">
                         <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -1164,7 +1289,7 @@
             </div>
 
             <p id="jadwal-kosong" style="display:none; padding:20px 0; color:#94a3b8; font-size:0.88rem; text-align:center;">
-                😔 Belum ada jadwal untuk guru ini. Coba pilih guru lain.
+                Belum ada jadwal untuk guru ini. Coba pilih guru lain.
             </p>
         </div>
 
@@ -1174,7 +1299,7 @@
     <div id="modal-tipe" class="modal-overlay" onclick="if(event.target===this) tutupModalTipe()">
         <div class="modal-box" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <div class="modal-header-icon">🎯</div>
+               
                 <div class="modal-header-text">
                     <div class="modal-title">Tipe Konseling</div>
                     <div class="modal-sub">Pilih jenis konseling yang sesuai kebutuhanmu</div>
@@ -1206,129 +1331,181 @@
     </div>
 
     <!-- Modal 2: Form Booking -->
-    <div id="modal-form" class="modal-overlay" onclick="if(event.target===this) tutupModalForm()" style="overflow-y:auto;">
-        <div class="modal-box wide" onclick="event.stopPropagation()" style="margin:auto;">
-            <div class="modal-header">
-                <div class="modal-header-icon">📝</div>
-                <div class="modal-header-text">
-                    <div class="modal-title">Form Booking Konseling</div>
-                    <div class="modal-sub">Isi data dengan lengkap dan jelas</div>
-                </div>
-                <button class="modal-close" onclick="tutupModalForm()">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+<div id="modal-form" class="modal-overlay" onclick="if(event.target===this) tutupModalForm()" style="overflow-y:auto;">
+    <div class="modal-box wide" onclick="event.stopPropagation()" style="margin:auto;">
+        <div class="modal-header">
+            <div class="modal-header-text">
+                <div class="modal-title">Form Booking Konseling</div>
+                <div class="modal-sub">Isi data dengan lengkap dan jelas</div>
             </div>
-            <div class="modal-body" style="padding-bottom:8px;">
-                <form id="form-booking" action="{{ route('siswa.konseling.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="jadwal_id" id="form_jadwal_id">
-                    <input type="hidden" name="tanggal" id="form_tanggal">
-                    <input type="hidden" name="tipe_konseling" id="form_tipe_konseling">
+            <button class="modal-close" onclick="tutupModalForm()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body space-y-5 py-6"> <!-- padding top & bottom ditambah -->
 
-                    <div class="form-group">
-                        <label class="form-label">Nama Siswa</label>
+            <form id="form-booking" action="{{ route('siswa.konseling.store') }}" method="POST">
+                @csrf
+
+                <input type="hidden" name="jadwal_id" id="form_jadwal_id">
+                <input type="hidden" name="tanggal" id="form_tanggal">
+                <input type="hidden" name="tipe_konseling" id="form_tipe_konseling">
+
+                <!-- Nama -->
+                <div class="my-4"> <!-- margin top & bottom -->
+                    <label class="text-sm font-semibold text-gray-700 mb-1 block">
+                        Nama Siswa
+                    </label>
+                    <div class="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
+                        <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A7.968 7.968 0 0112 15c2.5 0 4.77 1.15 6.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
                         <input type="text"
                                value="{{ auth()->user()->siswa->nama ?? auth()->user()->name ?? '' }}"
                                readonly
-                               class="form-input readonly">
+                               class="bg-transparent w-full text-sm text-gray-700 outline-none">
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Kelas <span class="req">*</span></label>
-                        @php $userKelas = auth()->user()->siswa->kelas ?? null; @endphp
-                        <select id="form_kelas" name="kelas" class="form-select" {{ $userKelas ? 'disabled' : '' }} required>
-                            @if($userKelas)
-                                <option value="{{ $userKelas }}" selected>{{ $userKelas }}</option>
-                            @else
-                                <option value="">-- Pilih Kelas --</option>
-                                @foreach(['X-A','X-B','X-C','XI-A','XI-B','XI-C','XII-A','XII-B','XII-C'] as $k)
-                                    <option value="{{ $k }}">{{ $k }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                        @if($userKelas)
-                            <input type="hidden" name="kelas" value="{{ $userKelas }}">
-                        @endif
-                    </div>
+                <!-- Kelas -->
+           <div class="my-4">
+    <label class="text-sm font-semibold text-gray-700 mb-1 block">
+        Kelas <span class="text-red-500">*</span>
+    </label>
 
-                    <div class="form-group">
-                        <label class="form-label">Topik Konseling <span class="req">*</span></label>
-                        <select name="topik_id" id="form_topik_id" class="form-select" required>
-                            <option value="">-- Pilih Topik --</option>
-                            @foreach ($topiks as $topik)
-                                <option value="{{ $topik->id }}">{{ $topik->nama_topik }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+    <select name="class_id"
+        class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-red-200 focus:border-red-400 transition"
+        required>
 
-                    <div class="form-group">
-                        <label class="form-label">Hal yang ingin dibicarakan <span class="req">*</span></label>
-                        <textarea name="catatan_siswa" id="form_catatan" rows="4"
-                                  placeholder="Ceritakan masalah atau topik yang ingin kamu diskusikan dengan guru BK..."
-                                  class="form-textarea"
-                                  required minlength="10" maxlength="1000"></textarea>
-                        <div class="form-hint">Minimal 10 karakter, maksimal 1000 karakter</div>
-                    </div>
+        <option value="">Pilih Kelas</option>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn-submit">
-                            Kirim Permintaan Booking ✉️
-                        </button>
-                        <button type="button" onclick="tutupModalForm()" class="btn-back">Batal</button>
-                    </div>
-                </form>
-            </div>
-            <div style="padding:0 28px 20px;"></div>
+        @foreach ($classRooms as $class)
+            <option value="{{ $class->id }}"
+                {{ auth()->user()->siswa->class_id == $class->id ? 'selected' : '' }}>
+                
+                {{ $class->grade_level }} {{ $class->major->name }} {{ $class->name }}
+
+            </option>
+        @endforeach
+
+    </select>
+</div>
+
+  
+                <!-- TOPIK -->
+                <div class="my-4">
+                    <label class="text-sm font-semibold text-gray-700 mb-1 block">
+                        Topik Konseling <span class="text-red-500">*</span>
+                    </label>
+                    <select name="topik_id"
+                            class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-red-200 focus:border-red-400 transition"
+                            required>
+                        <option value="">Pilih Topik Konseling</option>
+                        @foreach ($topiks as $topik)
+                            <option value="{{ $topik->id }}">{{ $topik->nama_topik }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- CATATAN -->
+                <div class="my-4">
+                    <label class="text-sm font-semibold text-gray-700 mb-1 block">
+                        Ceritakan masalahmu <span class="text-red-500">*</span>
+                    </label>
+                    <textarea name="catatan_siswa"
+                              rows="4"
+                              placeholder="Contoh: Saya ingin berdiskusi tentang pilihan kuliah setelah lulus..."
+                              class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-red-200 focus:border-red-400 transition resize-none"
+                              required></textarea>
+                    <p class="text-xs text-gray-400 mt-1">
+                        Minimal 10 karakter
+                    </p>
+                </div>
+
+                <!-- INFO BOX -->
+                <div class="bg-red-50 border border-red-100 rounded-xl p-3 text-xs text-red-600 my-4">
+                    Permintaan konseling akan ditinjau oleh guru BK.  
+                    Silakan tunggu konfirmasi setelah mengirim booking.
+                </div>
+
+                <!-- BUTTON -->
+                <div class="flex gap-3 pt-2">
+                    <button type="button"
+                            onclick="tutupModalForm()"
+                            class="flex-1 border border-gray-200 py-2 rounded-xl text-sm hover:bg-gray-50 transition">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="flex-1 bg-red-500 text-white py-2 rounded-xl text-sm font-semibold hover:bg-red-600 transition">
+                        Kirim Booking
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
+</div>
+  <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div>
+                    <h4 class="font-bold text-red-500 mb-4 text-base">SMK Telkom Purwokerto</h4>
+                    <div class="space-y-2 text-sm text-gray-500">
+                        <p class="font-medium text-gray-700">Contact us</p>
+                        <p>bkstematel@gmail.com</p>
+                       <p>Jl. DI Panjaitan No.128</p>
+                        <p>Purwokerto Selatan, Banyumas</p>
+                        <p>Jawa Tengah 53147</p>
+                        <p>Indonesia</p>
+                    </div>
+                    <div class="flex space-x-3 mt-4">
+                        <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                    </div>
+                </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <a href="{{ route('siswa.dashboard') }}" class="footer-logo">
-                        <div class="logo-icon">TS</div>
-                        <div class="logo-text">
-                            <span class="school-name">SMK Telkom</span>
-                            <span class="school-location">Purwokerto</span>
-                        </div>
-                    </a>
-                    <p>Platform pembelajaran dan konseling terpadu untuk siswa SMK Telkom Sandy Putra Purwokerto.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Layanan Kami</h4>
-                    <ul>
-                        <li><a href="{{ route('siswa.karir') }}">Karir</a></li>
-                        <li><a href="{{ route('siswa.belajar') }}">Belajar</a></li>
-                        <li><a href="{{ route('siswa.pribadi') }}">Pribadi</a></li>
-                        <li><a href="{{ route('siswa.sosial') }}">Sosial</a></li>
-                        <li><a href="{{ route('siswa.konseling') }}">Konseling</a></li>
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-4 text-sm">Layanan Kami</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><a href="{{ route('siswa.karir') }}" class="hover:text-red-500 transition">Karir</a></li>
+                        <li><a href="{{ route('siswa.belajar') }}" class="hover:text-red-500 transition">Belajar</a></li>
+                        <li><a href="{{ route('siswa.pribadi') }}" class="hover:text-red-500 transition">Pribadi</a></li>
+                        <li><a href="{{ route('siswa.sosial') }}" class="hover:text-red-500 transition">Sosial</a></li>
+                        <li><a href="{{ route('siswa.konseling') }}" class="hover:text-red-500 transition">Konseling</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>Tentang</h4>
-                    <ul>
-                        <li><a href="#">Tentang Kami</a></li>
-                        <li><a href="#">Tim Guru BK</a></li>
-                        <li><a href="#">Kebijakan</a></li>
-                        <li><a href="#">Kontak</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Kontak</h4>
-                    <ul>
-                        <li><a href="mailto:bksmatel@gmail.com">bksmatel@gmail.com</a></li>
-                        <li><a href="#">+62 862722551</a></li>
-                        <li><a href="#">Purwokerto, Jawa Tengah</a></li>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-4 text-sm">About</h4>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                      
+                  
+                        <li><a href="{{ route('siswa.dashboard') }}#guru" class="hover:text-red-500 transition">Tim Guru BK</a></li>
+                        <li><a href="{{ route('siswa.dashboard') }}#motivasi" class="hover:text-red-500 transition">Motivasi Siswa</a></li>
+                        <li><a href="{{ route('siswa.dashboard') }}#lulus" class="hover:text-red-500 transition">Perencanaan Karir</a></li>
+                        <li><a href="{{ route('siswa.konseling') }}" class="hover:text-red-500 transition">Ajukan Konseling</a></li>
+                        <li><a href="{{ route('siswa.profile.edit') }}" class="hover:text-red-500 transition">Profil Siswa</a></li>
+                   
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <span class="footer-school">SMK Telkom Sandy Putra Purwokerto</span>
-                <span>© {{ date('Y') }} SMK Telkom Sandy Putra Purwokerto. All rights reserved.</span>
+
+            <div class="border-t border-gray-100 mt-10 pt-6 text-center text-xs text-gray-400">
+                © {{ date('Y') }} SMK Telkom Purwokerto. All rights reserved.
             </div>
         </div>
     </footer>
@@ -1455,17 +1632,17 @@
                 tutupModalForm();
             }
         });
-    </script>
+   
 
-    <style>
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        @keyframes fadeInRow {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-    </style>
+   
+  
+        const menuBtn = document.getElementById("menuBtn");
+        const navMenu = document.getElementById("navMenu");
 
+        menuBtn.addEventListener("click", () => {
+            navMenu.classList.toggle("show");
+        });
+   
+ </script>
 </body>
 </html>

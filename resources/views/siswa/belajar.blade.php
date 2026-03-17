@@ -19,9 +19,10 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+         * { font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background: #f8f9ff;
             overflow-x: hidden;
         }
@@ -55,7 +56,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-weight: 900;
             font-size: 1.2rem;
             color: #1e293b;
@@ -131,18 +132,21 @@
         .profile-btn:hover { background: #f1f5f9; }
 
         /* ===== HERO ===== */
-        .hero {
-            background: white;
-            padding: 60px 24px 80px;
-            position: relative;
-            overflow: hidden;
-        }
+            .hero {
+                background: white;
+                padding: 30px 24px 80px; /* tadi 100px */
+                position: relative;
+                overflow: hidden;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+            }
 
         .hero::before {
             content: '';
             position: absolute;
             top: -100px; right: -100px;
-            width: 400px; height: 400px;
+            width: 400px; height: 500px;
             background: radial-gradient(circle, rgba(230,51,41,0.08) 0%, transparent 70%);
             pointer-events: none;
         }
@@ -199,7 +203,7 @@
         }
 
         .hero h1 {
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-size: 2.8rem;
             font-weight: 900;
             line-height: 1.2;
@@ -226,7 +230,7 @@
             color: #64748b;
             font-size: 1rem;
             line-height: 1.7;
-            margin-bottom: 32px;
+            margin-bottom: 10px;
         }
 
         .hero-cta {
@@ -288,15 +292,15 @@
             50% { transform: scale(1.08); }
         }
 
-        .brain-emoji {
+       .brain-emoji {
             position: relative;
             z-index: 2;
-            font-size: 180px;
-            line-height: 280px;
-            text-align: center;
+            width: 300px;    
+            height: auto;     
             display: block;
-            animation: float 3s ease-in-out infinite;
-            filter: drop-shadow(0 20px 40px rgba(230,51,41,0.2));
+            margin: 0 auto;
+            animation: brainLook 4s ease-in-out infinite;
+            filter: drop-shadow(0 20px 40px rgba(184, 20, 20, 0.2));
         }
 
         @keyframes float {
@@ -786,18 +790,59 @@
             opacity: 1;
             transform: translateY(0);
         }
-
+.menu-btn{
+    display:none;
+    font-size:26px;
+    background:none;
+    border:none;
+    cursor:pointer;
+}
         /* Responsive */
         @media (max-width: 768px) {
             .hero-inner { grid-template-columns: 1fr; text-align: center; }
             .hero h1 { font-size: 2rem; }
             .hero-image { order: -1; }
             .brain-container { width: 200px; height: 200px; }
-            .brain-emoji { font-size: 120px; line-height: 200px; }
+            .brain-emoji {   width: 320px;  height: auto;     }
             .stats-inner { grid-template-columns: repeat(2, 1fr); }
             .category-grid, .materi-grid { grid-template-columns: 1fr; }
             .bimbingan-banner { flex-direction: column; padding: 40px; text-align: center; }
             .footer-top { grid-template-columns: 1fr 1fr; }
+           
+
+    .menu-btn{
+        display:block;
+    }
+   
+
+.nav-links a.active::after{
+    display:none;
+}
+
+    .nav-links{
+        position:absolute;
+        top:64px;
+        left:0;
+        width:100%;
+        background:white;
+        flex-direction:column;
+        gap:0;
+        display:none;
+        border-top:1px solid #eee;
+    }
+
+    .nav-links li{
+        border-bottom:1px solid #f1f1f1;
+    }
+
+    .nav-links a{
+        display:block;
+        padding:14px 20px;
+    }
+
+    .nav-links.show{
+        display:flex;
+    }
         }
 
         /* Profile dropdown */
@@ -849,53 +894,80 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.10);
         }
+        .logo-img{
+                width:40px;
+                height:60px;
+                object-fit:contain;
+            }
+           
     </style>
 </head>
 <body>
 
     <!-- Navigation -->
-    <nav>
-        <div class="nav-inner">
-            <a href="{{ route('siswa.dashboard') }}" class="logo">
-                <div class="logo-icon">TS</div>
-                <div class="logo-text">
-                    <span class="school-name">SMK Telkom</span>
-                    <span class="school-location">Purwokerto</span>
-                </div>
-            </a>
+   <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="nav-inner">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
 
-            <ul class="nav-links">
-                <li><a href="{{ route('siswa.dashboard') }}">Home</a></li>
-                <li><a href="{{ route('siswa.karir') }}">Karir</a></li>
-                <li><a href="{{ route('siswa.belajar') }}" class="active">Belajar</a></li>
-                <li><a href="{{ route('siswa.pribadi') }}">Pribadi</a></li>
-                <li><a href="{{ route('siswa.sosial') }}">Sosial</a></li>
-                <li><a href="{{ route('siswa.konseling') }}">Konseling</a></li>
-                @guest
-                    <li><a href="{{ route('login') }}">Login</a></li>
-                @endguest
-            </ul>
+    <button id="menuBtn" class="menu-btn">
+        ☰
+    </button>
 
-            @auth
-            <div class="profile-wrapper">
-                <button class="profile-btn">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                </button>
-                <div class="profile-dropdown">
-                    <div class="dropdown-header">
-                        <div class="name">{{ auth()->user()->name ?? 'Nama Siswa' }}</div>
-                        <div class="email">{{ auth()->user()->email ?? 'siswa@email.com' }}</div>
+    <img src="{{ asset('images/telkom.png') }}" alt="Logo Telkom" class="logo-img">
+
+    <div>
+        <p class="font-bold text-gray-900 text-sm leading-tight">SMK Telkom</p>
+        <p class="text-gray-500 text-xs leading-tight">Purwokerto</p>
+    </div>
+
+</div>
+
+             <ul class="nav-links" id="navMenu">
+            <li><a href="{{ route('siswa.dashboard') }}">Home</a></li>
+            <li><a href="{{ route('siswa.karir') }}" >Karir</a></li>
+            <li><a href="{{ route('siswa.belajar') }}"class="active">Belajar</a></li>
+            <li><a href="{{ route('siswa.pribadi') }}">Pribadi</a></li>
+            <li><a href="{{ route('siswa.sosial') }}">Sosial</a></li>
+            <li><a href="{{ route('siswa.konseling') }}">Konseling</a></li>
+        </ul>
+            @guest
+                <li><a href="{{ route('login') }}">Login</a></li>
+            @endguest
+        </ul>
+
+                 @auth
+                <!-- Profile -->
+                <div class="relative group">
+                    <button class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </button>
+                   <div class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100">
+                       <div class="px-4 py-3 border-b border-gray-100 ">
+                           <p class="text-sm font-semibold text-gray-800 break-words mb-1">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-500 break-words">{{ auth()->user()->email }}</p>
+                        </div>
+                       @auth
+                        @if(auth()->user()->guruBk|| auth()->user()->role === 'admin')
+                            <a href="/admin" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">
+                                Dashboard Admin
+                            </a>
+                        @endif
+                            @if(auth()->user()->siswa)
+                                <a href="{{ route('siswa.profile.edit') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">
+                                    Edit Profile
+                                </a>
+                            @endif
+                        @endauth
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 text-sm">Logout</button>
+                        </form>
                     </div>
-                    <a href="{{ route('siswa.profile.edit') ?? '#' }}" class="dropdown-item">Edit Profile</a>
-                    <form method="POST" action="{{ route('logout') ?? '#' }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;">Logout</button>
-                    </form>
                 </div>
-            </div>
-            @endauth
+                @endauth
         </div>
     </nav>
 
@@ -903,12 +975,9 @@
     <section class="hero">
         <div class="hero-inner">
             <div class="hero-text">
-                <div class="hero-badge">
-                    <span class="dot"></span>
-                    Platform Belajar Terbaik
-                </div>
+                
                 <h1>Sulit fokus, atur waktu, atau pahami <span>pelajaran?</span></h1>
-                <p>Yuk konsultasi dengan Guru BK untuk solusi belajar yang lebih baik. Akses materi, video tutorial, dan latihan soal kapan saja!</p>
+                <p>Yuk konsultasi dengan Guru BK untuk solusi belajar yang lebih baik. </p>
                 <a href="{{ route('siswa.konseling') ?? '#' }}" class="hero-cta">
                     Mulai Bimbingan
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -917,158 +986,174 @@
                 </a>
             </div>
 
-            <div class="hero-image">
-                <div class="brain-container">
-                    <div class="brain-bg"></div>
-                    <span class="brain-emoji">🧠</span>
-                    <div class="float-badge b1">📚 Materi</div>
-                    <div class="float-badge b2">🎥 Video</div>
-                    <div class="float-badge b3">✏️ Latihan</div>
-                    <div class="float-badge b4">🏆 Ujian</div>
-                </div>
+           <div class="hero-image">
+    <div class="brain-container">
+                <div class="brain-bg"></div>
+                  <img src="{{ asset('images/belajar.png') }}" alt="" class="brain-emoji ">
+                <div class="float-badge b1">📚 Materi</div>
+                <div class="float-badge b2">🎥 Video</div>
+                <div class="float-badge b3">✏️ Latihan</div>
+                <div class="float-badge b4">🏆 Ujian</div>
             </div>
+        </div>
         </div>
     </section>
 
-    <!-- Stats -->
-    <section class="stats-section">
-        <div class="stats-inner">
-            <div class="stat-card">
-                <div class="stat-number">500+</div>
-                <div class="stat-label">Materi Tersedia</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">120+</div>
-                <div class="stat-label">Video Tutorial</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">1.2K+</div>
-                <div class="stat-label">Latihan Soal</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">98%</div>
-                <div class="stat-label">Tingkat Kepuasan</div>
-            </div>
+   
+   
+
+   <!-- Categories -->
+<section>
+    <div class="categories-section">
+        <div class="section-header scroll-reveal">
+            <div class="section-tag">📚 Dukungan Belajar</div>
+            <h2 class="section-title">Panduan Belajar untuk Siswa</h2>
+            <p class="section-sub">
+                Temukan berbagai panduan yang membantu kamu memahami cara belajar yang lebih efektif,
+                mengatur waktu dengan baik, dan menjaga semangat belajar di sekolah.
+            </p>
         </div>
-    </section>
 
-    <!-- Categories -->
-    <section>
-        <div class="categories-section">
-            <div class="section-header scroll-reveal">
-                <div class="section-tag">🎓 Kategori Belajar</div>
-                <h2 class="section-title">Materi Belajar Lengkap</h2>
-                <p class="section-sub">Akses berbagai materi pembelajaran yang disediakan oleh guru dan tutor kami untuk mendukung proses belajar kamu.</p>
+        <div class="category-grid">
+
+            <div class="category-card orange scroll-reveal">
+                <div class="cat-icon">🧠</div>
+                <div class="cat-title">Strategi Belajar</div>
+                <p class="cat-desc">
+                    Pelajari berbagai strategi belajar yang dapat membantu kamu memahami materi
+                    dengan lebih mudah, meningkatkan fokus, serta membuat proses belajar menjadi
+                    lebih efektif dan tidak membosankan.
+                </p>
             </div>
 
-            <div class="category-grid">
-                <div class="category-card orange scroll-reveal">
-                    <div class="cat-icon">📖</div>
-                    <div class="cat-title">Materi Akademik</div>
-                    <p class="cat-desc">Dapatkan akses ke materi pembelajaran yang komprehensif untuk semua mata pelajaran dengan penjelasan mudah dipahami.</p>
-                    <a href="#materi-terbaru" class="cat-link">
-                        Lihat Materi
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
-                    </a>
-                </div>
-
-                <div class="category-card cyan scroll-reveal" style="transition-delay: 0.1s">
-                    <div class="cat-icon">🎥</div>
-                    <div class="cat-title">Video Tutorial</div>
-                    <p class="cat-desc">Tonton video tutorial dari guru berpengalaman untuk memahami materi dengan lebih mudah dan menyenangkan.</p>
-                    <a href="#materi-terbaru" class="cat-link">
-                        Tonton Video
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
-                    </a>
-                </div>
-
-                <div class="category-card lime scroll-reveal" style="transition-delay: 0.2s">
-                    <div class="cat-icon">✏️</div>
-                    <div class="cat-title">Latihan Soal</div>
-                    <p class="cat-desc">Kerjakan berbagai latihan soal untuk menguji pemahaman dan persiapan ujian kamu agar lebih siap dan percaya diri.</p>
-                    <a href="#materi-terbaru" class="cat-link">
-                        Mulai Latihan
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
-                    </a>
-                </div>
+            <div class="category-card cyan scroll-reveal" style="transition-delay: 0.1s">
+                <div class="cat-icon">⏰</div>
+                <div class="cat-title">Manajemen Waktu</div>
+                <p class="cat-desc">
+                    Pelajari cara mengatur waktu antara belajar, kegiatan sekolah, dan waktu
+                    istirahat agar kamu tetap produktif tanpa merasa terlalu terbebani oleh
+                    tugas atau aktivitas harian.
+                </p>
             </div>
-        </div>
-    </section>
 
-    <!-- Artikel Belajar Section -->
-    <section class="py-16">
-        <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-2 text-center">
-                Artikel <span class="text-red-500">Belajar</span>
-            </h2>
-            <p class="text-gray-500 text-center mb-10">Baca artikel terbaru seputar strategi belajar dan pengembangan akademik</p>
-
-            @php $materis = $materis ?? collect(); @endphp
-
-            @if($materis->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                @foreach($materis as $materi)
-                <div class="artikel-card">
-                    <div class="w-28 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                        @if($materi->thumbnail)
-                            <img src="{{ asset('storage/' . $materi->thumbnail) }}" alt="{{ $materi->judul }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-gray-900 text-sm mb-1 line-clamp-2">{{ $materi->judul }}</h4>
-                        <p class="text-gray-500 text-xs leading-relaxed line-clamp-3 mb-3">{{ Str::limit(strip_tags($materi->konten), 100) }}</p>
-                        <div class="text-xs text-gray-400 flex items-center gap-2 mb-2">
-                            <span>{{ optional($materi->guru)->nama ?? optional($materi->guru)->name ?? 'Guru BK' }}</span>
-                            <span>•</span>
-                            <span>{{ optional($materi->created_at)->format('d M Y') }}</span>
-                        </div>
-                        <a href="{{ route('materi.show', $materi->slug) }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 uppercase tracking-wide transition">Read More →</a>
-                    </div>
-                </div>
-                @endforeach
+            <div class="category-card lime scroll-reveal" style="transition-delay: 0.2s">
+                <div class="cat-icon">💡</div>
+                <div class="cat-title">Motivasi Belajar</div>
+                <p class="cat-desc">
+                    Temukan berbagai tips untuk meningkatkan motivasi belajar, membangun
+                    kebiasaan positif, serta menjaga semangat agar kamu tetap percaya diri
+                    dalam menghadapi tantangan di sekolah.
+                </p>
             </div>
-            @else
-            <div class="text-center py-16 text-gray-400">
-                <svg class="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                <p class="text-lg font-medium">Belum ada artikel belajar</p>
-                <p class="text-sm mt-1">Artikel akan muncul di sini setelah ditambahkan oleh guru.</p>
-            </div>
-            @endif
-        </div>
-    </section>
 
-    <!-- Bimbingan Banner -->
-    <div style="padding: 0 24px; max-width: 1200px; margin: 0 auto 80px; " class="scroll-reveal">
-        <div class="bimbingan-banner">
-            <div class="banner-text">
-                <h2>Masih butuh <span>bantuan belajar?</span></h2>
-                <p>Konsultasikan masalah belajar kamu dengan Guru BK kami. Kami siap membantu kamu menemukan cara belajar yang paling efektif!</p>
-            </div>
-            <a href="{{ route('siswa.konseling') ?? '#' }}" class="banner-btn">Konsultasi Sekarang 🎯</a>
         </div>
     </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-100 py-12 mt-8">
+  <!-- Artikel Belajar Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-6">
+
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-2">
+            Artikel <span class="text-red-500">Belajar</span>
+        </h2>
+
+        <p class="text-gray-500 text-center mb-14">
+            Baca artikel terbaru seputar strategi belajar dan pengembangan akademik
+        </p>
+
+        @php $materis = $materis ?? collect(); @endphp
+
+        @if($materis->count() > 0)
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            @foreach($materis as $materi)
+
+            <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition overflow-hidden flex flex-col">
+
+                <!-- Thumbnail -->
+                <div class="h-48 w-full bg-gray-100">
+                    @if($materi->thumbnail)
+                        <img 
+                        src="{{ asset('storage/' . $materi->thumbnail) }}"
+                        alt="{{ $materi->judul }}"
+                        class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                            </svg>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Content -->
+                <div class="p-6 flex flex-col flex-1">
+
+                    <h4 class="font-bold text-gray-900 text-lg mb-2 line-clamp-2">
+                        {{ $materi->judul }}
+                    </h4>
+
+                    <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
+                        {{ Str::limit(strip_tags($materi->konten), 120) }}
+                    </p>
+
+                    <div class="text-xs text-gray-400 flex items-center gap-2 mb-5">
+                        <span>{{ optional($materi->guru)->nama ?? optional($materi->guru)->name ?? 'Guru BK' }}</span>
+                        <span>•</span>
+                        <span>{{ optional($materi->created_at)->format('d M Y') }}</span>
+                    </div>
+
+                    <a 
+                    href="{{ route('materi.show', $materi->slug) }}"
+                    class="mt-auto inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 transition">
+                        Baca Artikel
+                    </a>
+
+                </div>
+
+            </div>
+
+            @endforeach
+
+        </div>
+
+        @else
+
+        <div class="text-center py-16 text-gray-400">
+
+            <svg class="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
+
+            <p class="text-lg font-medium">Belum ada artikel belajar</p>
+            <p class="text-sm mt-1">
+                Artikel akan muncul di sini setelah ditambahkan oleh guru.
+            </p>
+
+        </div>
+
+        @endif
+
+    </div>
+</section>
+  
+   <!-- Footer -->
+   <footer class="bg-white border-t border-gray-100 py-12">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div>
-                    <h4 class="font-bold text-red-500 mb-4 text-base">SMK Telkom Sandy Putra Purwokerto</h4>
+                    <h4 class="font-bold text-red-500 mb-4 text-base">SMK Telkom Purwokerto</h4>
                     <div class="space-y-2 text-sm text-gray-500">
                         <p class="font-medium text-gray-700">Contact us</p>
-                        <p>bktelsmatel@gmail.com</p>
-                        <p>+62 862722531</p>
-                        <p>123 Ave, New York, USA</p>
+                        <p>bkstematel@gmail.com</p>
+                       <p>Jl. DI Panjaitan No.128</p>
+                        <p>Purwokerto Selatan, Banyumas</p>
+                        <p>Jawa Tengah 53147</p>
+                        <p>Indonesia</p>
                     </div>
                     <div class="flex space-x-3 mt-4">
                         <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
@@ -1081,8 +1166,8 @@
                             <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
                         </a>
                         <a href="#" class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-red-100 transition">
-                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073 1.281
-        </a>
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
                     </div>
                 </div>
 
@@ -1100,17 +1185,20 @@
                 <div>
                     <h4 class="font-bold text-gray-800 mb-4 text-sm">About</h4>
                     <ul class="space-y-2 text-sm text-gray-500">
-                        <li>Egesta vitae.</li>
-                        <li>Viverra lorem ac.</li>
-                        <li>Eget ac tellus.</li>
-                        <li>Erat nulla.</li>
-                        <li>Vulputate proin.</li>
+                      
+                  
+                        <li><a href="{{ route('siswa.dashboard') }}#guru" class="hover:text-red-500 transition">Tim Guru BK</a></li>
+                        <li><a href="{{ route('siswa.dashboard') }}#motivasi" class="hover:text-red-500 transition">Motivasi Siswa</a></li>
+                        <li><a href="{{ route('siswa.dashboard') }}#lulus" class="hover:text-red-500 transition">Perencanaan Karir</a></li>
+                        <li><a href="{{ route('siswa.konseling') }}" class="hover:text-red-500 transition">Ajukan Konseling</a></li>
+                        <li><a href="{{ route('siswa.profile.edit') }}" class="hover:text-red-500 transition">Profil Siswa</a></li>
+                   
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-gray-100 mt-10 pt-6 text-center text-xs text-gray-400">
-                © {{ date('Y') }} SMK Telkom Sandy Putra Purwokerto. All rights reserved.
+                © {{ date('Y') }} SMK Telkom Purwokerto. All rights reserved.
             </div>
         </div>
     </footer>
@@ -1155,6 +1243,12 @@
         }, { threshold: 0.5 });
 
         counters.forEach(c => statsObserver.observe(c));
+        const menuBtn = document.getElementById("menuBtn");
+        const navMenu = document.getElementById("navMenu");
+
+        menuBtn.addEventListener("click", () => {
+            navMenu.classList.toggle("show");
+        });
     </script>
 
 </body>

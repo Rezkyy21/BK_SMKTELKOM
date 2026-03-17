@@ -34,9 +34,9 @@ class CareerPlan extends Model
     ];
 
     protected $casts = [
-        'submitted_at' => 'timestamp',
+        'submitted_at' => 'datetime',
     ];
-
+    
     /**
      * Relasi ke User (siswa).
      */

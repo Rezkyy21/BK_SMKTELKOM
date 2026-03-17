@@ -29,6 +29,17 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+           ->brandLogo(new \Illuminate\Support\HtmlString('
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <img src="'.asset('images/telkom.png').'" style="height:40px;">
+                    <div style="line-height:1.2">
+                        <div style="font-weight:600;">SMK Telkom Purwokerto</div>
+                        <div style="font-size:12px; opacity:0.7;">Web Konseling</div>
+                    </div>
+                </div>
+            '))
+            ->homeUrl('/siswa/dashboard')
+           
             // Filament should not register its own login page.  We use a
             // single shared `/login` view for all users so pass `null` here.
             ->login(null)
@@ -36,6 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

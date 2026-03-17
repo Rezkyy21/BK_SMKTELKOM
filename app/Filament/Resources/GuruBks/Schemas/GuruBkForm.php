@@ -5,6 +5,7 @@ namespace App\Filament\Resources\GuruBks\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\FileUpload;
 
 class GuruBkForm
 {
@@ -12,6 +13,7 @@ class GuruBkForm
     {
         return $schema
             ->components([
+                
                 TextInput::make('nama')
                     ->required()
                     ->label('Nama Guru'),
@@ -19,14 +21,22 @@ class GuruBkForm
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->label('NIP'),
+                FileUpload::make('photo')
+                ->label('Foto Guru')
+                ->image()
+                ->disk('public')       // WAJIB
+                ->directory('guru-bk')
+                ->visibility('public')
+                ->nullable(),
                 TextInput::make('email')
                     ->email()
                     ->required()
                     ->label('Email'),
-                TextInput::make('password')
+               TextInput::make('password')
                     ->password()
-                    ->required()
-                    ->label('Password'),
+                    ->label('Password')
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn ($operation) => $operation === 'create'),
                 Select::make('status')
                     ->options([
                         'aktif' => 'Aktif',

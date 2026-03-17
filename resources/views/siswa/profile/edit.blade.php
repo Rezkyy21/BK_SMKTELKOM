@@ -75,7 +75,7 @@
 
         .badge-icon {
             width: 46px; height: 46px;
-            background: var(--red);
+            background: #ffffff;
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             font-size: 22px;
@@ -84,7 +84,7 @@
         }
 
         .badge-text {
-            font-family: 'Syne', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             font-size: 13px;
             font-weight: 700;
             color: #fff;
@@ -109,8 +109,8 @@
         }
 
         .panel-headline h2 {
-            font-family: 'Syne', sans-serif;
-            font-size: 38px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 55px;
             font-weight: 800;
             color: #fff;
             line-height: 1.1;
@@ -157,7 +157,7 @@
             font-size: 12px;
             font-weight: 600;
             color: rgba(255,255,255,0.4);
-            font-family: 'Syne', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         .step-item.active .step-dot {
@@ -186,12 +186,11 @@
             line-height: 1.6;
         }
 
-        /* Right / main area */
-        .main-area {
-            margin-left: 380px;
-            flex: 1;
-            padding: 56px 60px 80px;
-            min-height: 100vh;
+       .main-area{
+        flex:1;
+        padding:60px 20px;
+        max-width:900px;
+        margin:auto;
         }
 
         .form-header {
@@ -214,7 +213,7 @@
         }
 
         .form-header h1 {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-size: 32px;
             font-weight: 800;
             color: var(--charcoal);
@@ -305,7 +304,7 @@
         }
 
         .section-title-text h3 {
-            font-family: 'Syne', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-size: 16px;
             font-weight: 700;
             color: var(--charcoal);
@@ -440,7 +439,7 @@
             border: none;
             border-radius: 14px;
             padding: 17px 28px;
-            font-family: 'Syne', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-size: 16px;
             font-weight: 700;
             letter-spacing: 0.01em;
@@ -494,18 +493,7 @@
 
         .footer-link a:hover { color: var(--red-dark); }
 
-        /* Floating decorative shape */
-        .deco-ring {
-            position: fixed;
-            right: -60px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 220px; height: 220px;
-            border-radius: 50%;
-            border: 40px solid rgba(227,24,55,0.04);
-            pointer-events: none;
-            z-index: 0;
-        }
+      
 
         /* Responsive */
         @media (max-width: 960px) {
@@ -513,60 +501,35 @@
             .main-area { margin-left: 0; padding: 36px 24px 60px; }
             .fields-grid { grid-template-columns: 1fr; }
         }
+        .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.field-input {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.field-input:hover {
+    white-space: normal;
+}
     </style>
 </head>
 <body>
 
-    <!-- Left Panel -->
-    <aside class="left-panel">
-        <div class="school-badge">
-            <div class="badge-icon">📡</div>
-            <div class="badge-text">
-                SMK Telkom
-                <span>Purwokerto · Sistem Informasi</span>
-            </div>
-        </div>
-
-        <div class="panel-headline">
-            <h2>Selamat<br>Datang,<br><em>Siswa Baru.</em></h2>
-            <p>Lengkapi profilmu untuk mulai mengakses semua fitur pembelajaran digital.</p>
-        </div>
-
-        <div class="steps-list">
-            <div class="step-item active">
-                <div class="step-dot">1</div>
-                <span class="step-label">Data Pribadi</span>
-            </div>
-            <div class="step-item active">
-                <div class="step-dot">2</div>
-                <span class="step-label">Informasi Pendidikan</span>
-            </div>
-            <div class="step-item active">
-                <div class="step-dot">3</div>
-                <span class="step-label">Buat Password</span>
-            </div>
-            <div class="step-item">
-                <div class="step-dot">4</div>
-                <span class="step-label">Dashboard Siswa</span>
-            </div>
-        </div>
-
-        <div class="panel-footer">
-            © 2025 SMK Telkom Purwokerto<br>Sistem Informasi Akademik
-        </div>
-    </aside>
-
-    <div class="deco-ring"></div>
+   
 
     <!-- Main Form Area -->
     <main class="main-area">
         <div class="form-header">
             <div class="tag">
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
-                Langkah Terakhir
+                Profil
             </div>
-            <h1>Lengkapi Profilmu</h1>
-            <p>Hanya butuh beberapa menit untuk mengisi data ini.</p>
+           <h1>Informasi Profil</h1>
+        <p>Pastikan data yang kamu isi sudah benar.</p>
         </div>
 
         <!-- Error alert (hidden by default in static preview) -->
@@ -577,9 +540,12 @@
             </ul>
         </div> -->
 
-        <form method="POST" action="#">
-
+        <form method="POST" action="{{ route('siswa.profile.update') }}">
+        @csrf
+        @method('PATCH')
+        <div class="form-grid">
             <!-- Card 1: Data Pribadi -->
+             
             <div class="section-card">
                 <div class="section-title">
                     <div class="section-icon">👤</div>
@@ -589,21 +555,17 @@
                     </div>
                 </div>
                 <div class="fields-grid">
-                    <div class="field-group field-full">
+                    <div class="field-group">
                         <label for="nama">Nama Lengkap</label>
-                        <input id="nama" type="text" value="Budi Santoso" disabled class="field-input">
+                       <input id="nama" type="text" value="{{ $siswa->nama }}" disabled class="field-input">
                         <span class="field-hint">Data terdaftar — tidak dapat diubah</span>
                     </div>
-                    <div class="field-group">
+                   <div class="field-group">
                         <label for="nis">NIS</label>
-                        <input id="nis" type="text" value="2024001234" disabled class="field-input">
+                        <input id="nis" type="text" value="{{ $siswa->nis }}" disabled class="field-input">
                         <span class="field-hint">Nomor Induk Siswa</span>
                     </div>
-                    <div class="field-group">
-                        <label for="kelas">Kelas</label>
-                        <input id="kelas" type="text" value="XII RPL 1" disabled class="field-input">
-                        <span class="field-hint">Kelas saat ini</span>
-                    </div>
+                  
                 </div>
             </div>
 
@@ -613,36 +575,34 @@
                     <div class="section-icon">🎓</div>
                     <div class="section-title-text">
                         <h3>Informasi Pendidikan</h3>
-                        <p>Pilih jurusan dan kelas yang sesuai</p>
+                        <p>kelas yang sesuai</p>
                     </div>
                 </div>
-                <div class="fields-grid">
-                    <div class="field-group field-full">
-                        <label for="major_id">Jurusan <span class="req">*</span></label>
-                        <select id="major_id" name="major_id" class="field-input" required>
-                            <option value="">— Pilih Jurusan —</option>
-                            <option value="1">Rekayasa Perangkat Lunak (RPL)</option>
-                            <option value="2">Teknik Komputer & Jaringan (TKJ)</option>
-                            <option value="3">Multimedia (MM)</option>
-                        </select>
-                    </div>
-                    <div class="field-group field-full">
-                        <label for="class_id">Kelas <span class="req">*</span></label>
-                        <select id="class_id" name="class_id" class="field-input" required>
-                            <option value="">— Pilih Kelas —</option>
-                            <option value="1">RPL - XII A (Grade 12)</option>
-                            <option value="2">RPL - XII B (Grade 12)</option>
-                            <option value="3">TKJ - XI A (Grade 11)</option>
-                        </select>
-                    </div>
+              
+            <div class="field-group field-full">
+    <label for="class_id">Kelas <span class="req">*</span></label>
+    <select id="class_id" name="class_id" class="field-input" required>
+        <option value="">— Pilih Kelas —</option>
+
+        @foreach($classRooms as $class)
+            <option value="{{ $class->id }}"
+                {{ old('class_id', $siswa->class_id) == $class->id ? 'selected' : '' }}>
+                {{ $class->grade_level }} {{ $class->major->name }} {{ $class->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+           
                     <div class="field-group field-full">
                         <label for="tahun_masuk">Tahun Masuk <span class="req">*</span></label>
                         <input id="tahun_masuk" name="tahun_masuk" type="number" min="2000" max="2025"
-                               class="field-input" placeholder="Contoh: 2023" required>
+                        class="field-input" placeholder="Contoh: 2023"
+                        value="{{ old('tahun_masuk', $siswa->academicYear->start_year ?? '') }}" required>
                     </div>
                 </div>
             </div>
-
+</div>
             <!-- Card 3: Password -->
             <div class="section-card">
                 <div class="section-title">
@@ -655,9 +615,7 @@
                 <div class="fields-grid">
                     <div class="field-group field-full">
                         <label for="password">Password Baru <span class="req">*</span></label>
-                        <input id="password" name="password" type="password"
-                               class="field-input" placeholder="Minimal 8 karakter"
-                               minlength="8" required oninput="checkStrength(this.value)">
+                       <input id="password" name="password" type="password" class="field-input" placeholder="Minimal 8 karakter" minlength="8" required oninput="checkStrength(this.value)">
                         <div class="pw-strength">
                             <div class="pw-bar" id="bar1"></div>
                             <div class="pw-bar" id="bar2"></div>
@@ -668,9 +626,7 @@
                     </div>
                     <div class="field-group field-full">
                         <label for="password_confirmation">Konfirmasi Password <span class="req">*</span></label>
-                        <input id="password_confirmation" name="password_confirmation" type="password"
-                               class="field-input" placeholder="Ulangi password baru"
-                               minlength="8" required>
+                        <input id="password_confirmation" name="password_confirmation" type="password" class="field-input" placeholder="Ulangi password baru" minlength="8" required>
                     </div>
                 </div>
             </div>
@@ -687,9 +643,10 @@
                     Simpan Profil &amp; Lanjutkan
                     <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </button>
-                <div class="footer-link">
-                    Ada pertanyaan? <a href="#">Hubungi Guru BK</a>
-                </div>
+               <div class="footer-link">
+    Ada pertanyaan? 
+    <a href="mailto:bkstematel@gmail.com">Hubungi Guru BK</a>
+</div>
             </div>
         </form>
     </main>
