@@ -1370,20 +1370,21 @@
                 </div>
 
                 <!-- Kelas -->
-           <div class="my-4">
+          <div class="my-4">
     <label class="text-sm font-semibold text-gray-700 mb-1 block">
         Kelas <span class="text-red-500">*</span>
     </label>
 
     <select name="class_id"
         class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-red-200 focus:border-red-400 transition"
+        {{ auth()->user()->siswa ? '' : 'disabled' }}
         required>
 
         <option value="">Pilih Kelas</option>
 
         @foreach ($classRooms as $class)
             <option value="{{ $class->id }}"
-                {{ auth()->user()->siswa->class_id == $class->id ? 'selected' : '' }}>
+                {{ optional(auth()->user()->siswa)->class_id == $class->id ? 'selected' : '' }}>
                 
                 {{ $class->grade_level }} {{ $class->major->name }} {{ $class->name }}
 
@@ -1391,8 +1392,13 @@
         @endforeach
 
     </select>
-</div>
 
+    @if(!auth()->user()->siswa)
+        <p class="text-xs text-gray-400 mt-1">
+           Hanya Siswa yang Dapat Melakukan Proses Ini
+        </p>
+    @endif
+</div>
   
                 <!-- TOPIK -->
                 <div class="my-4">
@@ -1573,7 +1579,7 @@
                     tbody.innerHTML = '';
 
                     if (slots.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="3" class="jadwal-placeholder">😔 Belum ada jadwal tersedia untuk guru ini.</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="3" class="jadwal-placeholder">Belum ada jadwal tersedia untuk guru ini.</td></tr>`;
                         return;
                     }
 
@@ -1646,3 +1652,5 @@
  </script>
 </body>
 </html>
+
+
