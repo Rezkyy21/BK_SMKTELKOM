@@ -16,44 +16,50 @@ class ProfileController extends Controller
     /**
      * Show the profile edit form (first time login).
      */
-    public function edit(): View
-    {
-        $siswa = auth()->user()->siswa;
-        $majors = Major::all();
-       $classRooms = ClassRoom::with('major')->get();
-        
-        return view('siswa.profile.edit', compact('siswa', 'majors', 'classRooms'));
-    }
+    
+   public function edit(): View
+{
+    $siswa = auth()->user()->siswa;
+    $majors = Major::all();
+
+    // Contoh: hanya menampilkan tahun aktif saja
+    $academicYears = AcademicYear::where('is_active', true)->get();
+
+    // Contoh lain: hanya 5 tahun terakhir
+    // $academicYears = AcademicYear::orderBy('name', 'desc')->take(5)->get();
+
+    $classRooms = ClassRoom::with('major')->get();
+
+    return view('siswa.profile.edit', compact('siswa', 'majors', 'classRooms', 'academicYears'));
+}
 
     /**
      * Update the siswa's profile and password.
      */
     public function update(Request $request): RedirectResponse
 {
+   
     $siswa = auth()->user()->siswa;
     $user = auth()->user();
 
     $validated = $request->validate([
-       
-        'password' => ['required', 'string', 'min:8', 'confirmed'],
-        'tahun_masuk' => ['required', 'digits:4', 'integer', 'min:2000', 'max:' . date('Y')],
-        'class_id' => ['required', 'exists:classes,id'],
-    ], [
-        'major_id.required' => 'Jurusan wajib diisi',
-        'major_id.exists' => 'Jurusan tidak valid',
-        'password.required' => 'Password baru wajib diisi',
-        'password.min' => 'Password minimal 8 karakter',
-        'password.confirmed' => 'Konfirmasi password tidak sesuai',
-        'tahun_masuk.required' => 'Tahun masuk wajib diisi',
-        'tahun_masuk.digits' => 'Tahun masuk harus 4 digit (mis. 2023)',
-        'tahun_masuk.integer' => 'Tahun masuk tidak valid',
-        'tahun_masuk.max' => 'Tahun masuk tidak boleh lebih besar dari tahun sekarang',
-    ]);
-
-  $siswa->update([
-   
-    'class_id' => $request->class_id, 
-    'tahun_masuk' => $validated['tahun_masuk'],
+    'password' => ['required', 'string', 'min:8', 'confirmed'],
+    'academic_year_id' => ['required', 'exists:academic_years,id'],
+    'class_id' => ['required', 'exists:classes,id'],
+], [
+    'academic_year_id.required' => 'Tahun masuk wajib diisi',
+    'academic_year_id.exists' => 'Tahun masuk tidak valid',
+    'class_id.required' => 'Tahun masuk wajib diisi',
+    'class_id.exists' => 'Tahun masuk tidak valid',
+    'password.required' => 'Password baru wajib diisi',
+    'password.min' => 'Password minimal 8 karakter',
+    'password.confirmed' => 'Konfirmasi password tidak sesuai',
+]);
+$class = ClassRoom::find($validated['class_id']);
+ $siswa->update([
+    'class_id' => $validated['class_id'],
+    'academic_year_id' => $validated['academic_year_id'],
+    'major_id' => $class->major_id,
     'is_password_changed' => 1,
 ]);
 
@@ -70,5 +76,7 @@ class ProfileController extends Controller
     $classRooms = ClassRoom::where('academic_year_id', AcademicYear::where('is_active', true)->first()->id)->get();
 
     return view('siswa.profile.edit', compact('siswa', 'majors', 'classRooms'));
+    
 }
+
 }

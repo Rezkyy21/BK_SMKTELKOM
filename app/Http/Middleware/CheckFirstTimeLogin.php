@@ -20,7 +20,7 @@ class CheckFirstTimeLogin
             $siswa = auth()->user()->siswa;
 
             // If siswa hasn't completed profile and is not already on profile edit page
-            if ($siswa && $siswa->needsProfileCompletion() && 
+           if ($siswa && !$siswa->is_password_changed &&
                 !$request->routeIs('siswa.profile.edit') && 
                 !$request->routeIs('siswa.profile.update')) {
                 

@@ -18,74 +18,83 @@ use App\Imports\SiswaImport;
 class SiswasTable
 {
     public static function configure(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('nis')->label('NIS')->searchable()->sortable(),
-               TextColumn::make('nama')->label('Nama')->searchable()->sortable(),
-                TextColumn::make('user.email')->label('Email')->searchable()->sortable(),
-                BadgeColumn::make('user.status_akun')->label('Status')->colors([
-                    'success' => 'aktif',
-                    'danger' => 'nonaktif',
-                ])->sortable(),
-            ])
-            ->filters([
-               SelectFilter::make('status_akun')
-    ->label('Status Akun')
-    ->options([
-        'aktif' => 'Aktif',
-        'nonaktif' => 'Nonaktif',
-    ])
-    ->query(function (Builder $query, $data) {
-        if (!$data['value']) {
-            return $query;
-        }
+{
+    return $table
+        ->columns([
+            TextColumn::make('nis')->label('NIS')->searchable()->sortable(),
+            TextColumn::make('nama')->label('Nama')->searchable()->sortable(),
+            TextColumn::make('user.email')->label('Email')->searchable()->sortable(),
+            BadgeColumn::make('user.status_akun')->label('Status')->colors([
+                'success' => 'aktif',
+                'danger' => 'nonaktif',
+            ])->sortable(),
+           TextColumn::make('classRoom.full_name')
+                ->label('Kelas')
+                ->sortable()
+                ->placeholder('-'),
 
-        return $query->whereHas('user', function ($q) use ($data) {
-            $q->where('status_akun', $data['value']);
-        });
-    }),
-            ])
-            ->recordActions([
-                EditAction::make(),
-                Action::make('deactivate')
-                    ->label('Nonaktifkan')
-                    ->requiresConfirmation()
-                    ->visible(fn($record) => $record->user?->status_akun === 'aktif')
-                    ->action(function ($record) {
-                        $record->user?->update(['status_akun' => 'nonaktif']);
-                    }),
-                Action::make('activate')
-                    ->label('Aktifkan')
-                    ->requiresConfirmation()
-                    ->visible(fn($record) => $record->user?->status_akun === 'nonaktif')
-                    ->action(function ($record) {
-                        $record->user?->update(['status_akun' => 'aktif']);
-                    }),
-            ])
-            ->toolbarActions([
-                Action::make('download_template')
-                    ->label('Download Template')
-                    ->url(route('filament.siswa.template')),
+          TextColumn::make('academicYear.name')
+                ->label('Tahun Ajaran')
+                ->sortable()
+                ->placeholder('-'),
+        ])
+        ->filters([
+            SelectFilter::make('status_akun')
+                ->label('Status Akun')
+                ->options([
+                    'aktif' => 'Aktif',
+                    'nonaktif' => 'Nonaktif',
+                ])
+                ->query(function (Builder $query, $data) {
+                    if (!$data['value']) {
+                        return $query;
+                    }
 
-                Action::make('import_siswa')
-                    ->label('Import Siswa')
-                    ->form([
-                        FileUpload::make('file')->required(),
-                    ])
-                    ->action(function (array $data) {
-                        if (empty($data['file'])) {
-                            return;
-                        }
+                    return $query->whereHas('user', function ($q) use ($data) {
+                        $q->where('status_akun', $data['value']);
+                    });
+                }),
+        ])
+        ->recordActions([
+            EditAction::make(),
+            Action::make('deactivate')
+                ->label('Nonaktifkan')
+                ->requiresConfirmation()
+                ->visible(fn($record) => $record->user?->status_akun === 'aktif')
+                ->action(fn($record) => $record->user?->update(['status_akun' => 'nonaktif'])),
 
-                        $path = $data['file'];
-                        // Filament FileUpload returns path; pass to Excel
-                        Excel::import(new SiswaImport(), storage_path('app/' . $path));
-                    }),
+            Action::make('activate')
+                ->label('Aktifkan')
+                ->requiresConfirmation()
+                ->visible(fn($record) => $record->user?->status_akun === 'nonaktif')
+                ->action(fn($record) => $record->user?->update(['status_akun' => 'aktif'])),
+        ])
+        ->toolbarActions([
+            Action::make('download_template')
+                ->label('Download Template')
+                ->url(route('filament.siswa.template')),
 
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+            Action::make('import_siswa')
+                ->label('Import Siswa')
+                ->form([
+                    FileUpload::make('file')
+                        ->disk('local')
+                        ->directory('imports')
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    if (empty($data['file'])) {
+                        return;
+                    }
+
+                    $path = $data['file'];
+
+                    Excel::import(new SiswaImport(), $path);
+                }),
+
+            BulkActionGroup::make([
+                DeleteBulkAction::make(),
+            ]),
+        ]);
+}
 }

@@ -6,6 +6,7 @@ use App\Filament\Resources\Laporans\Pages\CreateLaporan;
 use App\Filament\Resources\Laporans\Pages\EditLaporan;
 use App\Filament\Resources\Laporans\Pages\ListLaporans;
 use App\Filament\Resources\Laporans\Schemas\LaporanForm;
+use App\Filament\Resources\Laporans\Pages;
 use App\Filament\Resources\Laporans\Tables\LaporansTable;
 use App\Models\Laporan;
 use BackedEnum;
@@ -43,11 +44,14 @@ protected static string|UnitEnum|null $navigationGroup = 'Konseling';
     }
 
     public static function getPages(): array
-    {
-        return [
-            'index' => ListLaporans::route('/'),
-            'create' => CreateLaporan::route('/create'),
-            'edit' => EditLaporan::route('/{record}/edit'),
-        ];
-    }
+{
+    return [
+        'index' => Pages\ListLaporans::route('/'),
+        'create' => Pages\CreateLaporan::route('/create'),
+        'edit' => Pages\EditLaporan::route('/{record}/edit'),
+
+        // 🔥 TAMBAH INI
+        'view' => Pages\ViewLaporan::route('/{record}'),
+    ];
+}
 }

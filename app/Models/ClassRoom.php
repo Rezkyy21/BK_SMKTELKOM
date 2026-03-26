@@ -36,6 +36,7 @@ class ClassRoom extends Model
     {
         return $this->belongsTo(Major::class);
     }
+    
 
     /**
      * Each class belongs to an academic year.

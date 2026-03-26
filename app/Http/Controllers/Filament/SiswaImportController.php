@@ -7,20 +7,21 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Response;
+use Maatwebsite\Excel\Concerns\FromArray;
 
 class SiswaImportController extends Controller
 {
     public function template()
-    {
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="siswa_template.csv"',
-        ];
-
-        $columns = "nama_lengkap,nis,email_sekolah\n";
-
-        return response($columns, 200, $headers);
-    }
+{
+    return Excel::download(new class implements FromArray {
+        public function array(): array
+        {
+            return [
+                ['nama_lengkap', 'nis', 'email_sekolah'], // header
+            ];
+        }
+    }, 'siswa_template.xlsx');
+}
 
     public function import(Request $request)
     {

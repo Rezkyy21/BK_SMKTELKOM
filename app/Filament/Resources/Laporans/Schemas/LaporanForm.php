@@ -15,73 +15,101 @@ class LaporanForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([
-                Hidden::make('guru_id')
-                    ->default(auth()->user()?->guruBk?->id ?? null),
-                
-                Grid::make(2)
-                    ->schema([
-                        Select::make('booking_id')
-                            ->relationship('booking', 'id')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->siswa->nama} - {$record->topik->nama_topik}")
-                            ->required()
-                            ->label('Jadwal Konseling'),
-                        
-                        Select::make('status')
-                            ->options([
-                                'draft' => 'Draft',
-                                'submitted' => 'Submitted (Menunggu Verifikasi)',
-                                'approved' => 'Approved (Sudah Diverifikasi)',
-                            ])
-                            ->default('draft')
-                            ->required()
-                            ->helperText('Ubah ke "Submitted" ketika laporan siap untuk diverifikasi'),
-                        
-                        TextInput::make('durasi_sesi')
-                            ->numeric()
-                            ->default(30)
-                            ->suffix('menit')
-                            ->label('Durasi Sesi'),
-                        
-                        Select::make('metode_konseling')
-                            ->options([
-                                'individual' => 'Individual',
-                                'group' => 'Group',
-                                'class' => 'Class',
-                            ])
-                            ->label('Metode Konseling'),
-                    ]),
-                
-                Textarea::make('catatan_sesi')
-                    ->label('Catatan Jalannya Sesi')
-                    ->rows(4)
-                    ->placeholder('Deskripsikan jalannya sesi konseling...')
+    ->components([
+
+        // 🔹 HEADER (INFO UTAMA)
+        Grid::make(3)
+            ->schema([
+                Select::make('guru_id')
+                    ->relationship('guru', 'nama')
+                    ->label('Guru BK')
+                    ->searchable()
+                    ->preload()
                     ->required(),
-                
-                Textarea::make('assessment')
-                    ->label('Assessment / Diagnosis')
-                    ->rows(4)
-                    ->placeholder('Penilaian kondisi siswa...')
+
+                Select::make('booking_id')
+                    ->relationship(
+                        name: 'booking',
+                        titleAttribute: 'id',
+                        modifyQueryUsing: function ($query, $livewire) {
+                            $query->whereDoesntHave('laporan')
+                                ->where('status', 'accepted');
+
+                            if ($livewire instanceof \Filament\Resources\Pages\EditRecord) {
+                                $record = $livewire->record;
+
+                                if ($record?->booking_id) {
+                                    $query->orWhere('id', $record->booking_id);
+                                }
+                            }
+                        }
+                    )
+                    ->getOptionLabelFromRecordUsing(
+                        fn ($record) => "{$record->siswa->nama} - {$record->topik->nama_topik}"
+                    )
+                    ->label('Jadwal Konseling')
+                    ->searchable()
                     ->required(),
-                
-                Textarea::make('kesimpulan')
-                    ->label('Kesimpulan')
-                    ->rows(3)
-                    ->placeholder('Kesimpulan hasil konseling...')
+
+                Select::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'submitted' => 'Submitted',
+                        'approved' => 'Approved',
+                    ])
+                    ->default('draft')
                     ->required(),
-                
-                Textarea::make('rekomendasi')
-                    ->label('Rekomendasi')
-                    ->rows(3)
-                    ->placeholder('Rekomendasi dan saran...')
-                    ->required(),
-                
-                Textarea::make('tindak_lanjut')
-                    ->label('Tindak Lanjut')
-                    ->rows(3)
-                    ->placeholder('Rencana follow-up atau tindak lanjut...')
-                    ->required(),
-            ]);
+            ]),
+
+        // 🔹 DETAIL SESI
+        Grid::make(2)
+            ->schema([
+                TextInput::make('durasi_sesi')
+                    ->numeric()
+                    ->default(30)
+                    ->suffix('menit')
+                    ->label('Durasi Sesi'),
+
+                Select::make('metode_konseling')
+                    ->options([
+                        'individual' => 'Individual',
+                        'group' => 'Group',
+                        'class' => 'Class',
+                    ])
+                    ->label('Metode Konseling'),
+            ]),
+
+        // 🔹 ISI LAPORAN (FULL WIDTH BIAR NYAMAN NULIS)
+        Textarea::make('catatan_sesi')
+            ->label('Catatan Jalannya Sesi')
+            ->rows(4)
+            ->columnSpanFull()
+            ->required(),
+
+        Textarea::make('assessment')
+            ->label('Assessment / Diagnosis')
+            ->rows(4)
+            ->columnSpanFull()
+            ->required(),
+
+        Textarea::make('kesimpulan')
+            ->label('Kesimpulan')
+            ->rows(3)
+            ->columnSpanFull()
+            ->required(),
+
+        Textarea::make('rekomendasi')
+            ->label('Rekomendasi')
+            ->rows(3)
+            ->columnSpanFull()
+            ->required(),
+
+        Textarea::make('tindak_lanjut')
+            ->label('Tindak Lanjut')
+            ->rows(3)
+            ->columnSpanFull()
+            ->required(),
+    ]);
     }
 }
 

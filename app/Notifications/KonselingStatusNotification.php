@@ -12,14 +12,16 @@ class KonselingStatusNotification extends Notification
     use Queueable;
 
     public Booking $booking;
+public ?string $alasan;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Booking $booking)
-    {
-        $this->booking = $booking;
-    }
+   public function __construct(Booking $booking, $alasan = null)
+{
+    $this->booking = $booking;
+    $this->alasan = $alasan;
+}
 
     /**
      * Get the notification's delivery channels.
@@ -48,16 +50,22 @@ class KonselingStatusNotification extends Notification
     /**
      * Mail representation.
      */
-    public function toMail($notifiable)
-    {
-        $status = $this->booking->status;
-        $statusText = $status === 'disetujui' ? 'diterima' : ($status === 'ditolak' ? 'ditolak' : $status);
+   public function toMail($notifiable)
+{
+    $status = $this->booking->status;
+    $statusText = $status === 'disetujui' ? 'diterima' : ($status === 'ditolak' ? 'ditolak' : $status);
 
-        return (new \Illuminate\Notifications\Messages\MailMessage)
-                    ->subject('Status Booking Konseling')
-                    ->greeting("Halo {$notifiable->name},")
-                    ->line("Booking konseling Anda telah {$statusText}.")
-                    ->action('Lihat di Dashboard', url(route('siswa.konseling')))
-                    ->line('Terima kasih telah menggunakan layanan kami.');
+    $mail = (new \Illuminate\Notifications\Messages\MailMessage)
+        ->subject('Status Booking Konseling')
+        ->greeting("Halo {$notifiable->name},")
+        ->line("Booking konseling Anda telah {$statusText}.");
+
+    if ($status === 'ditolak' && $this->alasan) {
+        $mail->line("Alasan penolakan: {$this->alasan}");
     }
+
+    return $mail
+        ->action('Lihat di Dashboard', url(route('siswa.konseling')))
+        ->line('Terima kasih telah menggunakan layanan kami.');
+}
 }

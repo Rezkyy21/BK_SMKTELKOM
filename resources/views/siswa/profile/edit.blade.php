@@ -584,23 +584,31 @@
     <select id="class_id" name="class_id" class="field-input" required>
         <option value="">— Pilih Kelas —</option>
 
-        @foreach($classRooms as $class)
-            <option value="{{ $class->id }}"
-                {{ old('class_id', $siswa->class_id) == $class->id ? 'selected' : '' }}>
-                {{ $class->grade_level }} {{ $class->major->name }} {{ $class->name }}
-            </option>
-        @endforeach
+       @foreach($classRooms as $class)
+    <option value="{{ $class->id }}"
+        {{ old('class_id', $siswa->class_id) == $class->id ? 'selected' : '' }}>
+        {{ $class->grade_level }} {{ $class->major->name }} {{ $class->name }}
+    </option>
+@endforeach
     </select>
 </div>
 
            
-                    <div class="field-group field-full">
-                        <label for="tahun_masuk">Tahun Masuk <span class="req">*</span></label>
-                        <input id="tahun_masuk" name="tahun_masuk" type="number" min="2000" max="2025"
-                        class="field-input" placeholder="Contoh: 2023"
-                        value="{{ old('tahun_masuk', $siswa->academicYear->start_year ?? '') }}" required>
-                    </div>
-                </div>
+               
+              <div class="field-group field-full">
+                <label for="academic_year_id">Tahun Masuk <span class="req">*</span></label>
+
+              <select id="academic_year_id" name="academic_year_id" class="field-input" required>
+    <option value="">-- Pilih Tahun --</option>
+    @foreach ($academicYears as $year)
+        <option value="{{ $year->id }}"
+            {{ old('academic_year_id', $siswa->academic_year_id ?? '') == $year->id ? 'selected' : '' }}>
+            {{ $year->name }}
+        </option>
+    @endforeach
+</select>
+            </div>
+              
             </div>
 </div>
             <!-- Card 3: Password -->

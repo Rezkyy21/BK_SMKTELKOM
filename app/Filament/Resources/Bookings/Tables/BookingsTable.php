@@ -10,10 +10,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\SelectFilter;
-
+use App\Notifications\KonselingStatusNotification;
 
 class BookingsTable
 {
+    
     public static function configure(Table $table): Table
     {
         return $table
@@ -92,10 +93,19 @@ class BookingsTable
                                     ->required()
                                     ->maxLength(500),
                             ])
-                            ->action(fn ($record, array $data) => $record->update([
-                                'status' => 'ditolak',
-                                'catatan_siswa' => $data['alasan_penolakan'],
-                            ]))
+                            ->action(function ($record, array $data) {
+
+                                // simpan ke database
+                                $record->update([
+                                    'status' => 'ditolak',
+                                    'catatan_siswa' => $data['alasan_penolakan'],
+                                ]);
+
+                                // kirim notifikasi + email
+                                $record->siswa->user->notify(
+                                    new KonselingStatusNotification($record, $data['alasan_penolakan'])
+                                );
+                            })
                             ->visible(fn ($record) => $record->status === 'menunggu'),
                     ]),
                 EditAction::make(),
@@ -107,5 +117,6 @@ class BookingsTable
             ]);
             
     }
+    
 }
 
