@@ -80,10 +80,26 @@ class SiswaController extends Controller
         return redirect()->route('login')->with('info', 'Silakan login untuk mengakses layanan konseling.');
     }
 
-    $gurus = GuruBk::with('jadwals')->where('status', 'aktif')->get();
-    $topiks = Topik::all();
+  $gurus = GuruBk::with(['jadwals', 'classRooms.major'])
+    ->where('status', 'aktif')
+    ->get();
 
+$gurus->transform(function ($guru) {
+    $guru->classes_json = $guru->classRooms->map(function ($c) {
+        return [
+            'id' => $c->id,
+            'grade_level' => $c->grade_level,
+            'name' => $c->name,
+            'major' => $c->major ? $c->major->name : ''
+        ];
+    });
+    return $guru;
+
+});
+    $topiks = Topik::all();
     $classRooms = ClassRoom::with('major')->get();
+
+  
 
 
     return view('siswa.konseling', compact('gurus', 'topiks', 'classRooms'));
@@ -148,55 +164,85 @@ class SiswaController extends Controller
      * Store the konseling booking.
      */
     public function storeKonseling(Request $request)
-    {
-        $validated = $request->validate([
-            'jadwal_id' => 'required|exists:jadwal,id',
-            'tanggal' => 'required|date|after_or_equal:today',
-            'tipe_konseling' => 'required|in:individu,kelompok',
-            'topik_id' => 'required|exists:topik,id',
-            'catatan_siswa' => 'required|string|min:10|max:1000',
-        ], [
-            'jadwal_id.required' => 'Pilih jadwal konseling terlebih dahulu',
-            'jadwal_id.exists' => 'Jadwal yang dipilih tidak ditemukan',
-            'tanggal.required' => 'Tanggal konseling wajib dipilih',
-            'tanggal.after_or_equal' => 'Tanggal harus hari ini atau setelahnya',
-            'tipe_konseling.required' => 'Pilih tipe konseling (Individu atau Kelompok)',
-            'tipe_konseling.in' => 'Tipe konseling tidak valid',
-            'topik_id.required' => 'Pilih topik terlebih dahulu',
-            'topik_id.exists' => 'Topik yang dipilih tidak ditemukan',
-            'catatan_siswa.required' => 'Deskripsi masalah tidak boleh kosong',
-            'catatan_siswa.min' => 'Deskripsi minimal 10 karakter',
-            'catatan_siswa.max' => 'Deskripsi maksimal 1000 karakter',
-        ]);
+{
+    $user = auth()->user();
 
-     $user = auth()->user();
-$siswa = $user->siswa;
-$kelas = \App\Models\ClassRoom::with('major')
+
+    // 1️⃣ Validasi input dasar
+    $validated = $request->validate([
+        'jadwal_id' => 'required|exists:jadwal,id',
+        'tanggal' => 'required|date|after_or_equal:today',
+        'tipe_konseling' => 'required|in:individu,kelompok',
+        'topik_id' => 'required|exists:topik,id',
+        'catatan_siswa' => 'required|string|min:10|max:1000',
+        'guru_id' => 'required|exists:guru_bk,id', // wajib kirim guru_id dari frontend
+        'class_id' => 'required|exists:classes,id'
+    ], [
+        'jadwal_id.required' => 'Pilih jadwal konseling terlebih dahulu',
+        'jadwal_id.exists' => 'Jadwal yang dipilih tidak ditemukan',
+        'tanggal.required' => 'Tanggal konseling wajib dipilih',
+        'tanggal.after_or_equal' => 'Tanggal harus hari ini atau setelahnya',
+        'tipe_konseling.required' => 'Pilih tipe konseling (Individu atau Kelompok)',
+        'tipe_konseling.in' => 'Tipe konseling tidak valid',
+        'topik_id.required' => 'Pilih topik terlebih dahulu',
+        'topik_id.exists' => 'Topik yang dipilih tidak ditemukan',
+        'catatan_siswa.required' => 'Deskripsi masalah tidak boleh kosong',
+        'catatan_siswa.min' => 'Deskripsi minimal 10 karakter',
+        'catatan_siswa.max' => 'Deskripsi maksimal 1000 karakter',
+        'guru_id.required' => 'Guru BK wajib dipilih',
+        'guru_id.exists' => 'Guru BK tidak ditemukan',
+        'class_id.required' => 'Kelas wajib dipilih',
+        'class_id.exists' => 'Kelas tidak ditemukan',
+    ]);
+
+    // 2️⃣ Ambil jadwal
+    $jadwal = Jadwal::find($validated['jadwal_id']);
+    if (!$jadwal) {
+        return back()->withErrors(['jadwal_id' => 'Jadwal tidak ditemukan.']);
+    }
+
+    // 3️⃣ Pastikan jadwal sesuai guru yang dipilih
+    if ($jadwal->guru_id != $validated['guru_id']) {
+        return back()->withErrors(['jadwal_id' => 'Jadwal tidak sesuai dengan guru yang dipilih.']);
+    }
+
+    
+    // 4️⃣ Ambil user & siswa
+    $user = auth()->user();
+    $siswa = $user->siswa;
+  $kelasSiswa = $siswa->classRoom;
+  
+
+if ($kelasSiswa->guru_id != $validated['guru_id']) {
+    return back()->withErrors([
+        'guru_id' => 'Pilih guru yang mengajar sesuai kelasmu.'
+    ]);
+}
+
+    // 5️⃣ Ambil kelas & format
+    $kelas = \App\Models\ClassRoom::with('major') 
     ->find($request->class_id);
-
-       $formatKelas = 
+   $formatKelas = 
     ($kelas->grade_level ?? '-') . ' ' .
     ($siswa->major->name ?? '-') . ' ' .
     ($kelas->name ?? '-');
 
-        if (!$siswa) {
-            return back()->withErrors(['error' => 'Data siswa tidak ditemukan. Hubungi admin.']);
-        }
+    // 6️⃣ Buat booking
+    Booking::create([
+        'jadwal_id' => $validated['jadwal_id'],
+        'tanggal' => $validated['tanggal'],
+        'siswa_id' => $siswa->id,
+        'topik_id' => $validated['topik_id'],
+        'tipe_konseling' => $validated['tipe_konseling'],
+        'catatan_siswa' => $validated['catatan_siswa'],
+        'kelas' => $formatKelas,
+        'status' => 'menunggu',
+        'mode_konseling' => 'offline',
+        'mode_identitas' => 'asli',
+    ]);
 
-        Booking::create([
-            'jadwal_id' => $validated['jadwal_id'],
-            'tanggal' => $validated['tanggal'],
-            'siswa_id' => $siswa->id,
-            'topik_id' => $validated['topik_id'],
-            'tipe_konseling' => $validated['tipe_konseling'],
-            'catatan_siswa' => $validated['catatan_siswa'],
-            'kelas' => $formatKelas,
-            'status' => 'menunggu',
-            'mode_konseling' => 'offline',
-            'mode_identitas' => 'asli',
-        ]);
-
-        return redirect()->route('siswa.konseling')
-            ->with('success', 'Permintaan konseling Anda telah dikirim. Tunggu konfirmasi dari guru BK.');
+    return redirect()->route('siswa.konseling')
+    ->with('success', 'Permintaan konseling Anda telah dikirim. Tunggu konfirmasi dari guru BK.');
+    
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Major;
 use App\Models\User;
+use App\Models\GuruBk;
 use App\Models\AcademicYear;
 
 class ClassRoom extends Model
@@ -37,6 +38,11 @@ class ClassRoom extends Model
         return $this->belongsTo(Major::class);
     }
     
+
+     public function guru()
+    {
+        return $this->belongsTo(GuruBK::class, 'guru_id'); // relasi FK
+    }
 
     /**
      * Each class belongs to an academic year.

@@ -37,6 +37,10 @@ class GuruBk extends Model
     {
         return $this->hasMany(Materi::class, 'guru_id');
     }
+    public function classRooms()
+{
+    return $this->hasMany(ClassRoom::class, 'guru_id');
+}
 }
 
 

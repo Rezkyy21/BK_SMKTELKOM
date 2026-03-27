@@ -1221,10 +1221,15 @@
                         <div class="section-label-sub">Klik kartu guru untuk melihat jadwal tersedia</div>
                     </div>
 
-                    <div class="guru-grid">
-                        @forelse($gurus as $guru)
-                            <div class="guru-card" id="guru-card-{{ $guru->id }}" onclick="pilihGuru({{ $guru->id }}, '{{ addslashes($guru->nama) }}')">
-                                <div class="guru-avatar">
+                <div class="guru-grid">
+    @forelse($gurus as $guru)
+
+        <div class="guru-card"
+             data-classes='@json($guru->classRooms->values() ?? [])'
+             id="guru-card-{{ $guru->id }}"
+             onclick="pilihGuru({{ $guru->id }}, '{{ addslashes($guru->nama) }}')">
+
+            <div class="guru-avatar">
                 <div class="guru-avatar-ring"></div>
 
                 @if($guru->photo)
@@ -1233,26 +1238,25 @@
                         alt="{{ $guru->nama }}"
                         class="guru-avatar-img">
                 @else
-                    {{ strtoupper(substr($guru->nama, 0, 1)) }}{{ strtoupper(substr(explode(' ', $guru->nama)[1] ?? 'K', 0, 1)) }}
+                    {{ strtoupper(substr($guru->nama, 0, 1)) }}
+                    {{ strtoupper(substr(explode(' ', $guru->nama)[1] ?? 'K', 0, 1)) }}
                 @endif
-
             </div>
-                    <div class="guru-name">{{ $guru->nama }}</div>
-                   
-                    <div class="guru-select-tag">
-                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        Lihat Jadwal
-                    </div>
-                </div>
-            @empty
-                <div class="empty-guru">
-                    <div style="font-size:2.5rem;margin-bottom:10px;">👩‍🏫</div>
-                    <div>Tidak ada guru BK tersedia saat ini.</div>
-                </div>
-            @endforelse
+
+            <div class="guru-name">{{ $guru->nama }}</div>
+
+            <div class="guru-select-tag">
+                Lihat Jadwal
+            </div>
         </div>
+
+    @empty
+        <div class="empty-guru">
+            <div>👩‍🏫</div>
+            <div>Tidak ada guru BK tersedia.</div>
+        </div>
+    @endforelse
+</div>
 
         <!-- Step 2: Jadwal -->
         <div id="jadwal-wrap">
@@ -1332,6 +1336,7 @@
 
     <!-- Modal 2: Form Booking -->
 <div id="modal-form" class="modal-overlay" onclick="if(event.target===this) tutupModalForm()" style="overflow-y:auto;">
+    
     <div class="modal-box wide" onclick="event.stopPropagation()" style="margin:auto;">
         <div class="modal-header">
             <div class="modal-header-text">
@@ -1348,7 +1353,7 @@
 
             <form id="form-booking" action="{{ route('siswa.konseling.store') }}" method="POST">
                 @csrf
-
+                <input type="hidden" name="guru_id" id="form_guru_id">
                 <input type="hidden" name="jadwal_id" id="form_jadwal_id">
                 <input type="hidden" name="tanggal" id="form_tanggal">
                 <input type="hidden" name="tipe_konseling" id="form_tipe_konseling">
@@ -1522,29 +1527,52 @@
         let slots = [];
 
         function pilihGuru(guruId, guruName) {
-            selectedGuruId = guruId;
-            selectedGuruName = guruName;
+    selectedGuruId = guruId;
+    selectedGuruName = guruName;
+    
 
-            // Update card styles
-            document.querySelectorAll('.guru-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            document.getElementById('guru-card-' + guruId).classList.add('active');
+    // highlight card
+    document.querySelectorAll('.guru-card').forEach(card => {
+        card.classList.remove('active');
+    });
 
-            // Update label
-            document.getElementById('guru-label').textContent = guruName;
+    const selectedCard = document.getElementById('guru-card-' + guruId);
+    selectedCard.classList.add('active');
 
-            // Show jadwal section with animation
-            const wrap = document.getElementById('jadwal-wrap');
-            wrap.classList.add('visible');
+    // ✅ AMBIL DATA KELAS DARI GURU
+    const classes = JSON.parse(selectedCard.dataset.classes || '[]');
 
-            // Scroll to jadwal
-            setTimeout(() => {
-                wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 100);
+    const select = document.querySelector('select[name="class_id"]');
 
-            loadJadwal(guruId);
-        }
+    // reset
+    select.innerHTML = '<option value="">Pilih Kelas</option>';
+
+    if (classes.length === 0) {
+        select.innerHTML = '<option value="">Guru ini belum punya kelas</option>';
+        return;
+    }
+
+    // isi dropdown
+    classes.forEach(cls => {
+        const option = document.createElement('option');
+        option.value = cls.id;
+        option.textContent = `${cls.grade_level}  ${cls.major?.name ?? ''} ${cls.name}`;
+        select.appendChild(option);
+    });
+
+    // lanjut normal
+    document.getElementById('guru-label').textContent = guruName;
+
+    const wrap = document.getElementById('jadwal-wrap');
+    wrap.classList.add('visible');
+
+    setTimeout(() => {
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+
+    loadJadwal(guruId);
+}
+
 
         function batalPilihGuru() {
             selectedGuruId = null;
@@ -1611,9 +1639,13 @@
                 });
         }
 
-        function bukaAtur(jadwalId, tanggal) {
+       function bukaAtur(jadwalId, tanggal) {
             document.getElementById('form_jadwal_id').value = jadwalId;
             document.getElementById('form_tanggal').value = tanggal;
+
+            // ✅ TAMBAHAN
+            document.getElementById('form_guru_id').value = selectedGuruId;
+
             document.getElementById('modal-tipe').classList.add('open');
         }
 
@@ -1652,5 +1684,8 @@
  </script>
 </body>
 </html>
+
+
+
 
 

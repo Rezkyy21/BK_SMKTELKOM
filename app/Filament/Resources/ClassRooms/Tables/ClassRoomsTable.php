@@ -39,10 +39,19 @@ class ClassRoomsTable
     TextColumn::make('name')
         ->label('Nama Kelas'),
 
+        TextColumn::make('guru.nama')
+        ->label('Guru BK')
+        ->searchable()
+        ->sortable(),
+
        
 ])
             
             ->filters([
+                SelectFilter::make('guru_id')
+    ->label('Guru BK')
+    ->options(\App\Models\GuruBk::pluck('nama','id'))
+    ->searchable(),
                
                    SelectFilter::make('grade_level')
         ->label('Tingkat')

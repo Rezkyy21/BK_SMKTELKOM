@@ -30,6 +30,12 @@ class ClassRoomForm
                     ->label('Jurusan')
                     ->relationship('major', 'name')
                     ->required(),
+                    Select::make('guru_id')
+                    ->label('Guru BK')
+                    ->relationship('guru', 'nama') 
+                    ->required()
+                   
+                
             ]);
     }
 }
