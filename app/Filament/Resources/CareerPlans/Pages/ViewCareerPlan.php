@@ -21,7 +21,9 @@ class ViewCareerPlan extends ViewRecord
                     ->schema([
                         TextEntry::make('student_name')->label('Nama Siswa'),
                         TextEntry::make('nis')->label('NIS'),
-                        TextEntry::make('class_name')->label('Kelas'),
+                       TextEntry::make('user.siswa.classRoom.full_name')
+                        ->label('Kelas')
+                        ->placeholder('-'),
                         TextEntry::make('graduation_year')->label('Tahun Kelulusan'),
                     ])
                     ->columns(2),

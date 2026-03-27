@@ -17,9 +17,7 @@ class CareerPlansTable
         return $table
             ->columns([
                 // always-visible core fields
-                TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
+              
                 TextColumn::make('category')
                     ->badge()
                     ->searchable(),
@@ -27,8 +25,11 @@ class CareerPlansTable
                     ->searchable(),
                 TextColumn::make('nis')
                     ->searchable(),
-                TextColumn::make('class_name')
-                    ->searchable(),
+               TextColumn::make('user.siswa.classRoom.full_name')
+                    ->label('Kelas')
+                    ->sortable()
+                    ->searchable()
+                    ->placeholder('-'),
                 TextColumn::make('graduation_year')
                     ->numeric()
                     ->sortable(),
