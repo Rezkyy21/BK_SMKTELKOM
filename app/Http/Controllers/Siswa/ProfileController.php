@@ -22,15 +22,12 @@ class ProfileController extends Controller
     $siswa = auth()->user()->siswa;
     $majors = Major::all();
 
-    // Contoh: hanya menampilkan tahun aktif saja
-    $academicYears = AcademicYear::where('is_active', true)->get();
-
-    // Contoh lain: hanya 5 tahun terakhir
-    // $academicYears = AcademicYear::orderBy('name', 'desc')->take(5)->get();
+    $activeYear = AcademicYear::where('is_active', true)->first();
+    $academicYears = AcademicYear::orderBy('start_year', 'desc')->get();
 
     $classRooms = ClassRoom::with('major')->get();
 
-    return view('siswa.profile.edit', compact('siswa', 'majors', 'classRooms', 'academicYears'));
+    return view('siswa.profile.edit', compact('siswa', 'majors', 'classRooms', 'academicYears', 'activeYear'));
 }
 
     /**
@@ -43,29 +40,33 @@ class ProfileController extends Controller
     $user = auth()->user();
 
     $validated = $request->validate([
-    'password' => ['required', 'string', 'min:8', 'confirmed'],
-    'academic_year_id' => ['required', 'exists:academic_years,id'],
-    'class_id' => ['required', 'exists:classes,id'],
-], [
-    'academic_year_id.required' => 'Tahun masuk wajib diisi',
-    'academic_year_id.exists' => 'Tahun masuk tidak valid',
-    'class_id.required' => 'Tahun masuk wajib diisi',
-    'class_id.exists' => 'Tahun masuk tidak valid',
-    'password.required' => 'Password baru wajib diisi',
-    'password.min' => 'Password minimal 8 karakter',
-    'password.confirmed' => 'Konfirmasi password tidak sesuai',
-]);
-$class = ClassRoom::find($validated['class_id']);
- $siswa->update([
-    'class_id' => $validated['class_id'],
-    'academic_year_id' => $validated['academic_year_id'],
-    'major_id' => $class->major_id,
-    'is_password_changed' => 1,
-]);
-
-    $user->update([
-        'password' => Hash::make($validated['password']),
+        'email' => ['nullable', 'email', 'unique:users,email,' . auth()->id()],
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
+        'academic_year_id' => ['required', 'exists:academic_years,id'],
+    ], [
+        'email.email' => 'Email tidak valid',
+        'email.unique' => 'Email sudah terdaftar',
+        'academic_year_id.required' => 'Tahun masuk wajib diisi',
+        'academic_year_id.exists' => 'Tahun masuk tidak valid',
+        'password.required' => 'Password baru wajib diisi',
+        'password.min' => 'Password minimal 8 karakter',
+        'password.confirmed' => 'Konfirmasi password tidak sesuai',
     ]);
+    $siswa->update([
+        'academic_year_id' => $validated['academic_year_id'],
+        'is_password_changed' => 1,
+    ]);
+
+    $userData = [
+        'password' => Hash::make($validated['password']),
+        'tahun_masuk' => AcademicYear::find($validated['academic_year_id'])->start_year ?? $user->tahun_masuk,
+    ];
+
+    if (!empty($validated['email'])) {
+        $userData['email'] = $validated['email'];
+    }
+
+    $user->update($userData);
 
     return redirect()->route('siswa.dashboard')
         ->with('success', 'Profil dan password berhasil diperbarui. Selamat datang!');

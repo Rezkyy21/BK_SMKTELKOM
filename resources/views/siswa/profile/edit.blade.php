@@ -580,17 +580,12 @@
                 </div>
               
             <div class="field-group field-full">
-    <label for="class_id">Kelas <span class="req">*</span></label>
-    <select id="class_id" name="class_id" class="field-input" required>
-        <option value="">— Pilih Kelas —</option>
-
-       @foreach($classRooms as $class)
-    <option value="{{ $class->id }}"
-        {{ old('class_id', $siswa->class_id) == $class->id ? 'selected' : '' }}>
-        {{ $class->grade_level }} {{ $class->major->name }} {{ $class->name }}
-    </option>
-@endforeach
-    </select>
+    <label for="class_display">Kelas</label>
+    <input id="class_display" type="text" 
+        value="{{ $siswa->classRoom->name ?? '-' }}" 
+        disabled 
+        class="field-input">
+    <span class="field-hint">Kelas ditentukan dari data sekolah — tidak dapat diubah</span>
 </div>
 
            
@@ -600,9 +595,12 @@
 
               <select id="academic_year_id" name="academic_year_id" class="field-input" required>
     <option value="">-- Pilih Tahun --</option>
+    @php
+        $selectedYearId = old('academic_year_id', $siswa->academic_year_id ?? $activeYear->id ?? null);
+    @endphp
     @foreach ($academicYears as $year)
         <option value="{{ $year->id }}"
-            {{ old('academic_year_id', $siswa->academic_year_id ?? '') == $year->id ? 'selected' : '' }}>
+            {{ $selectedYearId == $year->id ? 'selected' : '' }}>
             {{ $year->name }}
         </option>
     @endforeach
@@ -621,6 +619,12 @@
                     </div>
                 </div>
                 <div class="fields-grid">
+                    <div class="field-group field-full">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" class="field-input" placeholder="Masukkan email aktif kamu" value="{{ old('email', auth()->user()->email) }}">
+                        <span class="field-hint">Email ini akan digunakan untuk menerima notifikasi</span>
+                    </div>
+
                     <div class="field-group field-full">
                         <label for="password">Password Baru <span class="req">*</span></label>
                        <input id="password" name="password" type="password" class="field-input" placeholder="Minimal 8 karakter" minlength="8" required oninput="checkStrength(this.value)">

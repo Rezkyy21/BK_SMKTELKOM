@@ -10,19 +10,28 @@ return new class extends Migration
     {
         Schema::create('laporan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->constrained('booking')->cascadeOnDelete();
+            $table->foreignId('siswa_id')->constrained('siswas')->cascadeOnDelete();
             $table->foreignId('guru_id')->constrained('guru_bk')->cascadeOnDelete();
-            
-            // Laporan details
-            $table->text('catatan_sesi')->nullable()->comment('Catatan jalannya sesi konseling');
-            $table->text('assessment')->nullable()->comment('Penilaian/diagnosis');
-            $table->text('kesimpulan')->nullable();
-            $table->text('rekomendasi')->nullable();
-            $table->string('tindak_lanjut')->nullable()->comment('Follow-up atau tindak lanjut');
-            $table->integer('durasi_sesi')->default(30)->comment('Durasi dalam menit');
-            $table->string('metode_konseling')->nullable()->comment('Metode yang digunakan: individual, group, etc');
-            $table->enum('status', ['draft', 'submitted', 'approved'])->default('draft');
-            
+            $table->foreignId('booking_id')->nullable()->nullOnDelete();
+
+            // Data siswa (snapshot saat laporan dibuat)
+            $table->string('nama_siswa');
+            $table->string('nis');
+            $table->string('kelas');
+            $table->string('jenis_kelamin');
+
+            // Data sesi
+            $table->integer('durasi')->comment('dalam menit');
+            $table->string('metode_konseling'); // individu / kelompok
+            $table->string('nama_guru');
+
+            // Isi laporan
+            $table->text('catatan_sesi');
+            $table->text('diagnosis');
+            $table->text('tindakan');
+            $table->text('kesimpulan');
+            $table->text('tindak_lanjut');
+
             $table->timestamps();
         });
     }

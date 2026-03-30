@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\Select;
 use App\Models\Major;
 use UnitEnum;
@@ -35,8 +36,24 @@ class ClassRoomResource extends Resource
     }
  public static function canViewAny(): bool
     {
-        return auth()->check() && auth()->user()->role === 'admin';
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk']);
     }
+
+    public static function canCreate(): bool
+    {
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk']);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk']);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk']);
+    }
+
     public static function table(Table $table): Table
     {
         return ClassRoomsTable::configure($table);

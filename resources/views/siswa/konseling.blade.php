@@ -1063,6 +1063,24 @@
     justify-content: center;
 }
 
+        .guru-card-recommended {
+            max-width: 320px;
+            margin: 0 auto;
+            transform: scale(1.08);
+            box-shadow: 0 16px 48px rgba(230,51,41,0.25);
+            border: 2px solid var(--red) !important;
+        }
+
+        .guru-card-recommended .guru-avatar {
+            width: 84px;
+            height: 84px;
+        }
+
+        .guru-card-recommended .guru-name {
+            font-size: 1rem;
+            font-weight: 900;
+        }
+
 .guru-avatar-img {
     width: 100%;
     height: 100%;
@@ -1190,15 +1208,89 @@
     <!-- Main Content -->
     <div class="main-wrap">
 
-        {{-- Notifications --}}
+        {{-- Notifications - Show Only Latest --}}
         @if(auth()->user()->unreadNotifications->count())
+            @php 
+                $latestNotif = auth()->user()->unreadNotifications->first();
+                $waLink = null;
+                $guruNama = 'Guru BK Anda';
+                
+                // Try 1: Direct wa_link from notification
+                if (isset($latestNotif->data['wa_link']) && $latestNotif->data['wa_link']) {
+                    $waLink = $latestNotif->data['wa_link'];
+                    $guruNama = $latestNotif->data['guru_nama'] ?? $guruNama;
+                }
+                
+                // Try 2: From booking if we have booking_id  
+                // Use 'guru' not 'guruBk' because Jadwal relationship is 'guru'
+                if (!$waLink && isset($latestNotif->data['booking_id'])) {
+                    $booking = \App\Models\Booking::with('jadwal.guru')->find($latestNotif->data['booking_id']);
+                    
+                    if ($booking && $booking->jadwal && $booking->jadwal->guru) {
+                        $guru = $booking->jadwal->guru;
+                        if ($guru->no_whatsapp) {
+                            $cleaned = preg_replace('/[^0-9]/', '', $guru->no_whatsapp);
+                            if ($cleaned) {
+                                $waLink = 'https://wa.me/' . $cleaned . '?text=' . urlencode('Halo ' . $guru->nama . ', saya ingin mengkonfirmasi jadwal konseling kami.');
+                                $guruNama = $guru->nama;
+                            }
+                        }
+                    }
+                }
+                
+                // Try 3: Get ANY guru with wa from siswa's recent booking
+                if (!$waLink && auth()->user()->siswa) {
+                    $booking = \App\Models\Booking::where('siswa_id', auth()->user()->siswa->id)
+                        ->with('jadwal.guru')
+                        ->orderBy('id', 'desc')
+                        ->first();
+                    
+                    if ($booking && $booking->jadwal && $booking->jadwal->guru && $booking->jadwal->guru->no_whatsapp) {
+                        $guru = $booking->jadwal->guru;
+                        $cleaned = preg_replace('/[^0-9]/', '', $guru->no_whatsapp);
+                        if ($cleaned) {
+                            $waLink = 'https://wa.me/' . $cleaned . '?text=' . urlencode('Halo ' . $guru->nama . ', saya ingin mengkonfirmasi jadwal konseling kami.');
+                            $guruNama = $guru->nama;
+                        }
+                    }
+                }
+            @endphp
             <div style="margin-bottom:20px;">
-                @foreach(auth()->user()->unreadNotifications as $notif)
-                    <div class="notif-box">
-                        🔔 {{ $notif->data['message'] ?? 'Anda memiliki notifikasi baru.' }}
+                <!-- Booking Status Notification -->
+                <div style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #86efac; border-left: 5px solid #22c55e; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; color: #166534; position: relative;">
+                    <button type="button" onclick="this.parentElement.style.display='none';" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: #22c55e; font-size: 1.2rem; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        @php
+                            $notifStatus = $latestNotif->data['status'] ?? null;
+                        @endphp
+                        @if(in_array($notifStatus, ['menunggu', 'disetujui']) && (strpos($latestNotif->data['message'], 'disetujui') !== false || strpos($latestNotif->data['message'], 'diterima') !== false))
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            <strong style="font-size: 1rem;">✅ Booking Anda Telah Disetujui!</strong>
+                        @else
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
+                            <strong style="font-size: 1rem;">⚠️ Update Booking</strong>
+                        @endif
                     </div>
-                @endforeach
-                @php auth()->user()->unreadNotifications->markAsRead(); @endphp
+                    <p style="font-size: 0.9rem; margin-bottom: 14px; color: #15803d;">{{ $latestNotif->data['message'] ?? 'Ada update untuk booking Anda.' }}</p>
+                    
+                    @if($waLink)
+                        <a href="{{ $waLink }}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #22c55e; color: white; padding: 11px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; cursor: pointer; border: none;">
+                            <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.116 1.529 5.843L0 24l6.335-1.505A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.732.886.939-3.618-.235-.373A9.818 9.818 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/>
+                            </svg>
+                            💬 Hubungi via WhatsApp
+                        </a>
+                    @else
+                        <p style="font-size: 0.85rem; color: #15803d; margin: 0;">
+                            <strong>ℹ️ Catatan:</strong> Silakan hubungi {{ $guruNama }} melalui nomor WhatsApp yang tersedia.
+                        </p>
+                    @endif
+                </div>
             </div>
         @endif
 
@@ -1208,6 +1300,10 @@
                     @foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach
                 </ul>
             </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert-error">⚠️ {{ session('error') }}</div>
         @endif
 
         @if (session('success'))
@@ -1221,42 +1317,95 @@
                         <div class="section-label-sub">Klik kartu guru untuk melihat jadwal tersedia</div>
                     </div>
 
-                <div class="guru-grid">
-    @forelse($gurus as $guru)
+                    <!-- Rekomendasi Guru BK -->
+                    @if($recommendedGuru)
+                    <div class="mb-8">
+                        <div class="flex items-center justify-center gap-3 mb-6">
+                            <div class="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-semibold border-2 border-red-200">
+                                ⭐ Rekomendasi untuk Kamu
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="guru-card guru-card-recommended border-2 border-red-300"
+                                 data-classes='@json($recommendedGuru->classRooms->values() ?? [])'
+                                 id="guru-card-{{ $recommendedGuru->id }}"
+                                 onclick="pilihGuru({{ $recommendedGuru->id }}, '{{ addslashes($recommendedGuru->nama) }}')">
 
-        <div class="guru-card"
-             data-classes='@json($guru->classRooms->values() ?? [])'
-             id="guru-card-{{ $guru->id }}"
-             onclick="pilihGuru({{ $guru->id }}, '{{ addslashes($guru->nama) }}')">
+                                <div class="guru-avatar">
+                                    <div class="guru-avatar-ring"></div>
 
-            <div class="guru-avatar">
-                <div class="guru-avatar-ring"></div>
+                                    @if($recommendedGuru->photo)
+                                        <img
+                                            src="{{ asset('storage/' . $recommendedGuru->photo) }}"
+                                            alt="{{ $recommendedGuru->nama }}"
+                                            class="guru-avatar-img">
+                                    @else
+                                        {{ strtoupper(substr($recommendedGuru->nama, 0, 1)) }}
+                                        {{ strtoupper(substr(explode(' ', $recommendedGuru->nama)[1] ?? 'K', 0, 1)) }}
+                                    @endif
+                                </div>
 
-                @if($guru->photo)
-                    <img 
-                        src="{{ asset('storage/' . $guru->photo) }}" 
-                        alt="{{ $guru->nama }}"
-                        class="guru-avatar-img">
-                @else
-                    {{ strtoupper(substr($guru->nama, 0, 1)) }}
-                    {{ strtoupper(substr(explode(' ', $guru->nama)[1] ?? 'K', 0, 1)) }}
-                @endif
-            </div>
+                                <div class="guru-name">{{ $recommendedGuru->nama }}</div>
 
-            <div class="guru-name">{{ $guru->nama }}</div>
+                                <div class="guru-select-tag">
+                                    @if($recommendedGuru->jadwals && $recommendedGuru->jadwals->count() > 0)
+                                        Lihat Jadwal
+                                    @else
+                                        Tidak ada jadwal
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="guru-select-tag">
-                Lihat Jadwal
-            </div>
-        </div>
+                    <!-- Divider -->
+                    <div class="flex items-center justify-center mb-8">
+                        <div class="flex-1 h-px bg-gray-200"></div>
+                        <div class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold mx-4">
+                            👥 Semua Guru BK
+                        </div>
+                        <div class="flex-1 h-px bg-gray-200"></div>
+                    </div>
+                    @endif
+                        <div class="guru-grid">
+                            @forelse($otherGurus as $guru)
+                                <div class="guru-card"
+                                     data-classes='@json($guru->classRooms->values() ?? [])'
+                                     id="guru-card-{{ $guru->id }}"
+                                     onclick="pilihGuru({{ $guru->id }}, '{{ addslashes($guru->nama) }}')">
 
-    @empty
-        <div class="empty-guru">
-            <div>👩‍🏫</div>
-            <div>Tidak ada guru BK tersedia.</div>
-        </div>
-    @endforelse
-</div>
+                                    <div class="guru-avatar">
+                                        <div class="guru-avatar-ring"></div>
+
+                                        @if($guru->photo)
+                                            <img
+                                                src="{{ asset('storage/' . $guru->photo) }}"
+                                                alt="{{ $guru->nama }}"
+                                                class="guru-avatar-img">
+                                        @else
+                                            {{ strtoupper(substr($guru->nama, 0, 1)) }}
+                                            {{ strtoupper(substr(explode(' ', $guru->nama)[1] ?? 'K', 0, 1)) }}
+                                        @endif
+                                    </div>
+
+                                    <div class="guru-name">{{ $guru->nama }}</div>
+
+                                    <div class="guru-select-tag">
+                                        @if($guru->jadwals && $guru->jadwals->count() > 0)
+                                            Lihat Jadwal
+                                        @else
+                                            Tidak ada jadwal
+                                        @endif
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="empty-guru">
+                                    <div>👩‍🏫</div>
+                                    <div>Tidak ada guru BK lainnya tersedia.</div>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
 
         <!-- Step 2: Jadwal -->
         <div id="jadwal-wrap">
@@ -1375,35 +1524,21 @@
                 </div>
 
                 <!-- Kelas -->
-          <div class="my-4">
-    <label class="text-sm font-semibold text-gray-700 mb-1 block">
-        Kelas <span class="text-red-500">*</span>
-    </label>
-
-    <select name="class_id"
-        class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-red-200 focus:border-red-400 transition"
-        {{ auth()->user()->siswa ? '' : 'disabled' }}
-        required>
-
-        <option value="">Pilih Kelas</option>
-
-        @foreach ($classRooms as $class)
-            <option value="{{ $class->id }}"
-                {{ optional(auth()->user()->siswa)->class_id == $class->id ? 'selected' : '' }}>
-                
-                {{ $class->grade_level }} {{ $class->major->name }} {{ $class->name }}
-
-            </option>
-        @endforeach
-
-    </select>
-
-    @if(!auth()->user()->siswa)
-        <p class="text-xs text-gray-400 mt-1">
-           Hanya Siswa yang Dapat Melakukan Proses Ini
-        </p>
-    @endif
-</div>
+                <div class="my-4">
+                    <label class="text-sm font-semibold text-gray-700 mb-1 block">
+                        Kelas
+                    </label>
+                    <input type="hidden" name="class_id" value="{{ $studentClass->id ?? '' }}">
+                    <div class="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
+                        <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        <input type="text"
+                               value="{{ $studentClass ? $studentClass->grade_level . ' ' . ($studentClass->major->name ?? '') . ' ' . $studentClass->name : '-' }}"
+                               readonly
+                               class="bg-transparent w-full text-sm text-gray-700 outline-none">
+                    </div>
+                </div>
   
                 <!-- TOPIK -->
                 <div class="my-4">
@@ -1543,22 +1678,29 @@
     const classes = JSON.parse(selectedCard.dataset.classes || '[]');
 
     const select = document.querySelector('select[name="class_id"]');
+    const hiddenClassIdInput = document.querySelector('input[name="class_id"]');
 
-    // reset
-    select.innerHTML = '<option value="">Pilih Kelas</option>';
+    if (select) {
+        // reset
+        select.innerHTML = '<option value="">Pilih Kelas</option>';
 
-    if (classes.length === 0) {
-        select.innerHTML = '<option value="">Guru ini belum punya kelas</option>';
-        return;
+        if (classes.length === 0) {
+            select.innerHTML = '<option value="">Guru ini belum punya kelas</option>';
+        } else {
+            // isi dropdown
+            classes.forEach(cls => {
+                const option = document.createElement('option');
+                option.value = cls.id;
+                option.textContent = `${cls.grade_level}  ${cls.major?.name ?? ''} ${cls.name}`;
+                select.appendChild(option);
+            });
+        }
     }
 
-    // isi dropdown
-    classes.forEach(cls => {
-        const option = document.createElement('option');
-        option.value = cls.id;
-        option.textContent = `${cls.grade_level}  ${cls.major?.name ?? ''} ${cls.name}`;
-        select.appendChild(option);
-    });
+    // Set hidden class_id if present (student class is default)
+    if (hiddenClassIdInput && hiddenClassIdInput.value === '') {
+        hiddenClassIdInput.value = '{{ $studentClass->id ?? '' }}';
+    }
 
     // lanjut normal
     document.getElementById('guru-label').textContent = guruName;
@@ -1614,23 +1756,24 @@
                     slots.forEach((slot, i) => {
                         const tr = document.createElement('tr');
                         tr.style.animation = `fadeInRow 0.3s ease ${i * 0.06}s both`;
+
+                        const isFull = slot.kuota <= 0;
+                        const actionButton = isFull
+                            ? '<button type="button" class="atur-btn" style="opacity:0.5;cursor:not-allowed;" disabled>Kuota Penuh</button>'
+                            : `<button type="button" onclick="bukaAtur(${slot.jadwal_id}, '${slot.tanggal}')" class="atur-btn">Booking <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></button>`;
+
                         tr.innerHTML = `
                             <td>
                                 <div style="font-weight:600;color:#1e293b;">${slot.tanggal_label}</div>
+                                <small style="color:#64748b;">Kuota: ${slot.kuota} siswa</small>
                             </td>
                             <td>
                                 <span class="waktu-badge">
                                     🕐 ${slot.waktu_label}
                                 </span>
                             </td>
-                            <td style="text-align:right;">
-                                <button type="button" onclick="bukaAtur(${slot.jadwal_id}, '${slot.tanggal}')" class="atur-btn">
-                                    Booking
-                                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                                    </svg>
-                                </button>
-                            </td>`;
+                            <td style="text-align:right;">${actionButton}</td>`;
+
                         tbody.appendChild(tr);
                     });
                 })

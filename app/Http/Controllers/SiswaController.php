@@ -80,77 +80,118 @@ class SiswaController extends Controller
         return redirect()->route('login')->with('info', 'Silakan login untuk mengakses layanan konseling.');
     }
 
-  $gurus = GuruBk::with(['jadwals', 'classRooms.major'])
-    ->where('status', 'aktif')
-    ->get();
+  $recommendedGuru = null;
+  $student = auth()->user()->siswa;
 
-$gurus->transform(function ($guru) {
-    $guru->classes_json = $guru->classRooms->map(function ($c) {
-        return [
-            'id' => $c->id,
-            'grade_level' => $c->grade_level,
-            'name' => $c->name,
-            'major' => $c->major ? $c->major->name : ''
-        ];
-    });
-    return $guru;
+  // Recommended guru: guru yang mengajar kelas siswa (jika ada)
+  // Tidak perlu punya jadwal aktif untuk ditampilkan
+  if ($student && $student->classRoom && $student->classRoom->guru_id) {
+      $recommendedGuru = GuruBk::with(['jadwals' => function($q) {
+          $q->where('is_active', true);
+      }])
+      ->where('status', 'aktif')
+      ->find($student->classRoom->guru_id);
+  }
 
-});
+  // Tampilkan SEMUA gurus yang aktif (baik punya jadwal atau tidak)
+  $otherGurus = GuruBk::where('status', 'aktif')
+      ->with(['jadwals' => function($q) {
+          $q->where('is_active', true);
+      }])
+      ->when($recommendedGuru, fn($q) => $q->where('id', '!=', $recommendedGuru->id))
+      ->get();
+
+  // Add classes_json to recommended guru if exists
+  if ($recommendedGuru) {
+      $recommendedGuru->classes_json = $recommendedGuru->classRooms->map(function ($c) {
+          return [
+              'id' => $c->id,
+              'grade_level' => $c->grade_level,
+              'name' => $c->name,
+              'major' => $c->major ? $c->major->name : ''
+          ];
+      });
+  }
+
+  $otherGurus = $otherGurus->map(function ($guru) {
+      $guru->classes_json = $guru->classRooms->map(function ($c) {
+          return [
+              'id' => $c->id,
+              'grade_level' => $c->grade_level,
+              'name' => $c->name,
+              'major' => $c->major ? $c->major->name : ''
+          ];
+      });
+      return $guru;
+  });
+
     $topiks = Topik::all();
     $classRooms = ClassRoom::with('major')->get();
+    $studentClass = auth()->user()->siswa->classRoom ?? null;
 
-  
-
-
-    return view('siswa.konseling', compact('gurus', 'topiks', 'classRooms'));
+    return view('siswa.konseling', compact('recommendedGuru', 'otherGurus', 'topiks', 'classRooms', 'studentClass'));
    
 }
 
     /**
-     * Get jadwal for a specific guru dengan slot tanggal (2 minggu ke depan).
+     * Get jadwal for a specific guru dengan slot tanggal (7 hari ke depan).
+     * Supports multiple slots per day per guru.
      */
     public function getGuruJadwals($guruId): JsonResponse
     {
         \Carbon\Carbon::setLocale('id');
-        // Only get active jadwal with available quota (kuota > 0)
+        
+        // Get active jadwal for the guru
         $jadwals = Jadwal::where('guru_id', $guruId)
             ->where('is_active', true)
-            ->where('kuota', '>', 0)
             ->orderBy('hari')
             ->orderBy('jam_mulai')
             ->get();
 
-        $hariMap = ['senin' => 1, 'selasa' => 2, 'rabu' => 3, 'kamis' => 4, 'jumat' => 5, 'sabtu' => 6];
         $slots = [];
-        $start = now()->startOfDay();
-        $end = now()->addWeeks(2);
+        $startDate = now()->startOfDay();
+        $endDate = $startDate->copy()->addDays(6); // 7 days: today to today+6
 
-        foreach ($jadwals as $j) {
-            $dayOfWeek = $hariMap[strtolower($j->hari)] ?? 0;
-            $current = $start->copy();
-            $jamMulai = is_string($j->jam_mulai) ? $j->jam_mulai : $j->jam_mulai->format('H:i');
-            $jamSelesai = is_string($j->jam_selesai) ? $j->jam_selesai : $j->jam_selesai->format('H:i');
-            while ($current->lte($end)) {
-                if ($current->dayOfWeek() === $dayOfWeek) {
+        foreach ($jadwals as $jadwal) {
+            $date = $startDate->copy();
+            // Find dates within 7-day window that match this jadwal's day
+            while ($date->lte($endDate)) {
+                if (strtolower($date->englishDayOfWeek) === $this->hariToEnglish($jadwal->hari)) {
+                    // Calculate remaining kuota
+                    $bookedCount = Booking::where('jadwal_id', $jadwal->id)
+                        ->where('tanggal', $date->format('Y-m-d'))
+                        ->whereIn('status', ['menunggu', 'disetujui'])
+                        ->count();
+                    
+                    $remainingKuota = max(0, $jadwal->kuota - $bookedCount);
+
+                    $jamMulai = is_string($jadwal->jam_mulai) ? $jadwal->jam_mulai : $jadwal->jam_mulai->format('H:i');
+                    $jamSelesai = is_string($jadwal->jam_selesai) ? $jadwal->jam_selesai : $jadwal->jam_selesai->format('H:i');
+
                     $slots[] = [
-                        'id' => $j->id,
-                        'jadwal_id' => $j->id,
-                        'hari' => $j->hari,
+                        'id' => $jadwal->id,
+                        'jadwal_id' => $jadwal->id,
+                        'hari' => $jadwal->hari,
                         'jam_mulai' => $jamMulai,
                         'jam_selesai' => $jamSelesai,
-                        'tanggal' => $current->format('Y-m-d'),
-                        'tanggal_label' => $current->locale('id')->translatedFormat('l, d F Y'),
+                        'tanggal' => $date->format('Y-m-d'),
+                        'tanggal_label' => $date->translatedFormat('l, d F Y'),
                         'waktu_label' => substr($jamMulai, 0, 5) . ' - ' . substr($jamSelesai, 0, 5),
-                        'kuota' => $j->kuota,
+                        'kuota' => $remainingKuota,
+                        'kuota_total' => $jadwal->kuota,
                     ];
+                    
+                    break; // One occurrence per jadwal per 7-day window
                 }
-                $current->addDay();
+                $date->addDay();
             }
         }
 
+        // Sort by date and time
         usort($slots, function ($a, $b) {
-            $d = strcmp($a['tanggal'], $b['tanggal']);
-            return $d !== 0 ? $d : strcmp($a['jam_mulai'], $b['jam_mulai']);
+            $dateCompare = strcmp($a['tanggal'], $b['tanggal']);
+            if ($dateCompare !== 0) return $dateCompare;
+            return strcmp($a['jam_mulai'], $b['jam_mulai']);
         });
 
         return response()->json([
@@ -161,12 +202,37 @@ $gurus->transform(function ($guru) {
     }
 
     /**
+     * Helper method to convert Indonesian day names to English day names.
+     */
+    private function hariToEnglish(string $hari): string
+    {
+        return match(strtolower($hari)) {
+            'senin'  => 'monday',
+            'selasa' => 'tuesday',
+            'rabu'   => 'wednesday',
+            'kamis'  => 'thursday',
+            'jumat'  => 'friday',
+            'sabtu'  => 'saturday',
+            'minggu' => 'sunday',
+            default  => $hari,
+        };
+    }
+
+    /**
      * Store the konseling booking.
      */
     public function storeKonseling(Request $request)
 {
     $user = auth()->user();
 
+    // Check for existing active booking
+    $existingBooking = Booking::where('siswa_id', $user->siswa->id)
+        ->whereIn('status', ['menunggu', 'disetujui'])
+        ->first();
+
+    if ($existingBooking) {
+        return back()->with('error', 'Kamu masih memiliki booking yang aktif. Selesaikan atau tunggu konfirmasi sebelum membuat booking baru.');
+    }
 
     // 1️⃣ Validasi input dasar
     $validated = $request->validate([
@@ -210,14 +276,7 @@ $gurus->transform(function ($guru) {
     // 4️⃣ Ambil user & siswa
     $user = auth()->user();
     $siswa = $user->siswa;
-  $kelasSiswa = $siswa->classRoom;
-  
-
-if ($kelasSiswa->guru_id != $validated['guru_id']) {
-    return back()->withErrors([
-        'guru_id' => 'Pilih guru yang mengajar sesuai kelasmu.'
-    ]);
-}
+    $kelasSiswa = $siswa->classRoom;
 
     // 5️⃣ Ambil kelas & format
     $kelas = \App\Models\ClassRoom::with('major') 

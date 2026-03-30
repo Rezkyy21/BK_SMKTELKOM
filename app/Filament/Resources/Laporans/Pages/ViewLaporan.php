@@ -21,19 +21,19 @@ public function infolist(Schema $schema): Schema
             // 🔹 DATA SISWA - DIATAS
             Section::make('Data Siswa')
                 ->schema([
-                    TextEntry::make('booking.siswa.nama')
+                    TextEntry::make('nama_siswa')
                         ->label('Nama Siswa'),
 
-                    TextEntry::make('booking.siswa.classRoom.full_name')
+                    TextEntry::make('kelas')
                         ->label('Kelas'),
 
                     TextEntry::make('guru.nama')
                         ->label('Guru BK'),
 
-                    TextEntry::make('booking.topik.nama_topik')
+                    TextEntry::make('topik')
                         ->label('Topik Konseling'),
 
-                    TextEntry::make('booking.jadwal')
+                    TextEntry::make('jadwal')
                         ->label('Jadwal Konseling')
                         ->formatStateUsing(function ($state, $record) {
                             $jadwal = $record->booking?->jadwal;

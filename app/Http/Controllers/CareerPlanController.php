@@ -134,45 +134,54 @@ class CareerPlanController extends Controller
         $careerPlan->business_name = null;
         $careerPlan->business_idea = null;
 
-        match ($validated['category']) {
-            'kuliah' => [
-                $careerPlan->student_name = $validated['student_name'] ?? null,
-                $careerPlan->nis = $validated['nis'] ?? null,
-                $careerPlan->class_name = $validated['class_name'] ?? null,
-                $careerPlan->graduation_year = $validated['graduation_year'] ?? null,
-                $careerPlan->campus_name = $validated['campus_name'] ?? null,
-                $careerPlan->study_program = $validated['study_program'] ?? null,
-                $careerPlan->entrance_year = $validated['entrance_year'] ?? null,
-                $careerPlan->target_university = $validated['target_university'] ?? null,
-                $careerPlan->target_major = $validated['target_major'] ?? null,
-            ],
-            'kerja' => [
-                $careerPlan->student_name = $validated['student_name'] ?? null,
-                $careerPlan->nis = $validated['nis'] ?? null,
-                $careerPlan->class_name = $validated['class_name'] ?? null,
-                $careerPlan->graduation_year = $validated['graduation_year'] ?? null,
-                $careerPlan->target_company = $validated['target_company'] ?? null,
-                $careerPlan->target_position = $validated['target_position'] ?? null,
-                $careerPlan->accepted_year = $validated['accepted_year'] ?? null,
-            ],
-            'usaha' => [
-                $careerPlan->student_name = $validated['student_name'] ?? null,
-                $careerPlan->nis = $validated['nis'] ?? null,
-                $careerPlan->class_name = $validated['class_name'] ?? null,
-                $careerPlan->graduation_year = $validated['graduation_year'] ?? null,
-                $careerPlan->business_type = $validated['business_type'] ?? null,
-                $careerPlan->business_name = $validated['business_name'] ?? null,
-                $careerPlan->established_year = $validated['established_year'] ?? null,
-                $careerPlan->business_idea = $validated['business_idea'] ?? null,
-            ],
-            default => null,
-        };
+        // Update berdasarkan kategori - gunakan if/elseif bukan match
+        if ($validated['category'] === 'kuliah') {
+            $careerPlan->student_name = $validated['student_name'] ?? null;
+            $careerPlan->nis = $validated['nis'] ?? null;
+            $careerPlan->class_name = $validated['class_name'] ?? null;
+            $careerPlan->graduation_year = $validated['graduation_year'] ?? null;
+            $careerPlan->campus_name = $validated['campus_name'] ?? null;
+            $careerPlan->study_program = $validated['study_program'] ?? null;
+            $careerPlan->entrance_year = $validated['entrance_year'] ?? null;
+            $careerPlan->target_university = $validated['target_university'] ?? null;
+            $careerPlan->target_major = $validated['target_major'] ?? null;
+        } elseif ($validated['category'] === 'kerja') {
+            $careerPlan->student_name = $validated['student_name'] ?? null;
+            $careerPlan->nis = $validated['nis'] ?? null;
+            $careerPlan->class_name = $validated['class_name'] ?? null;
+            $careerPlan->graduation_year = $validated['graduation_year'] ?? null;
+            $careerPlan->target_company = $validated['target_company'] ?? null;
+            $careerPlan->target_position = $validated['target_position'] ?? null;
+            $careerPlan->accepted_year = $validated['accepted_year'] ?? null;
+        } elseif ($validated['category'] === 'usaha') {
+            $careerPlan->student_name = $validated['student_name'] ?? null;
+            $careerPlan->nis = $validated['nis'] ?? null;
+            $careerPlan->class_name = $validated['class_name'] ?? null;
+            $careerPlan->graduation_year = $validated['graduation_year'] ?? null;
+            $careerPlan->business_type = $validated['business_type'] ?? null;
+            $careerPlan->business_name = $validated['business_name'] ?? null;
+            $careerPlan->established_year = $validated['established_year'] ?? null;
+            $careerPlan->business_idea = $validated['business_idea'] ?? null;
+        }
+
+        // By default keep as draft on update
+        if ($request->input('action') === 'submit') {
+            $careerPlan->status = 'submitted';
+            $careerPlan->submitted_at = \Carbon\Carbon::now();
+        } else {
+            $careerPlan->status = 'draft';
+            $careerPlan->submitted_at = null;
+        }
 
         $careerPlan->save();
 
+        $message = $request->input('action') === 'submit'
+            ? 'Rencana karir berhasil disubmit ke guru BK!'
+            : 'Rencana karir berhasil disimpan!';
+
         return redirect()
             ->route('siswa.karir')
-            ->with('success', 'Rencana karir berhasil disimpan!');
+            ->with('success', $message);
     }
 
     /**

@@ -19,8 +19,12 @@ class CheckFirstTimeLogin
         if (auth()->check() && auth()->user()->role === 'siswa') {
             $siswa = auth()->user()->siswa;
 
+            // Allow career-plan routes for imported siswa even before password change,
+            // so mereka tetap bisa submit rencana karir sekaligus sinkronisasi dengan guru BK.
+            $isCareerPlanRoute = $request->routeIs('career-plan.*');
+
             // If siswa hasn't completed profile and is not already on profile edit page
-           if ($siswa && !$siswa->is_password_changed &&
+            if ($siswa && !$siswa->is_password_changed && !$isCareerPlanRoute &&
                 !$request->routeIs('siswa.profile.edit') && 
                 !$request->routeIs('siswa.profile.update')) {
                 

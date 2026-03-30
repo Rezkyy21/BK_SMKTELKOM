@@ -16,6 +16,7 @@ class GuruBk extends Model
         'nip',
         'nama',
         'status',
+        'no_whatsapp',
     ];
 
     public function user(): BelongsTo

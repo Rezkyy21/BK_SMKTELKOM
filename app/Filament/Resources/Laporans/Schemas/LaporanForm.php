@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources\Laporans\Schemas;
 
-use Filament\Schemas\Components\Grid;
+use App\Models\Booking;
+use App\Models\Siswa;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class LaporanForm
@@ -15,101 +16,78 @@ class LaporanForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-    ->components([
-
-        // 🔹 HEADER (INFO UTAMA)
-        Grid::make(3)
-            ->schema([
-                Select::make('guru_id')
-                    ->relationship('guru', 'nama')
-                    ->label('Guru BK')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-
-                Select::make('booking_id')
-                    ->relationship(
-                        name: 'booking',
-                        titleAttribute: 'id',
-                        modifyQueryUsing: function ($query, $livewire) {
-                            $query->whereDoesntHave('laporan')
-                                ->where('status', 'accepted');
-
-                            if ($livewire instanceof \Filament\Resources\Pages\EditRecord) {
-                                $record = $livewire->record;
-
-                                if ($record?->booking_id) {
-                                    $query->orWhere('id', $record->booking_id);
+            ->components([
+                // Section 1: Data Siswa (auto-filled from accepted booking)
+                Section::make('Data Siswa')
+                    ->schema([
+                        Select::make('booking_id')
+                            ->label('Booking Siswa (disetujui)')
+                            ->options(fn () => Booking::with('siswa.classRoom')
+                                ->where('status', 'disetujui')
+                                ->doesntHave('laporan')
+                                ->get()
+                                ->mapWithKeys(fn (Booking $booking) => [$booking->id => $booking->siswa ? $booking->siswa->nama . ' - ' . $booking->tanggal : 'Booking #' . $booking->id])
+                                ->toArray())
+                            ->searchable()
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                $booking = Booking::with(['siswa.classRoom'])->find($state);
+                                if ($booking?->siswa && $booking->status === 'disetujui') {
+                                    $set('booking_id', $booking->id);
+                                    $set('siswa_id', $booking->siswa_id);
+                                    $set('nama_siswa', $booking->siswa->nama);
+                                    $set('nis', $booking->siswa->nis);
+                                    $set('kelas', $booking->siswa->classRoom?->name ?? '-');
+                                    $set('jenis_kelamin', $booking->siswa->jenis_kelamin);
                                 }
-                            }
-                        }
-                    )
-                    ->getOptionLabelFromRecordUsing(
-                        fn ($record) => "{$record->siswa->nama} - {$record->topik->nama_topik}"
-                    )
-                    ->label('Jadwal Konseling')
-                    ->searchable()
-                    ->required(),
+                            }),
+                        TextInput::make('siswa_id')
+                            ->hidden()
+                            ->dehydrated(),
+                        TextInput::make('nama_siswa')->label('Nama')->readOnly(),
+                        TextInput::make('nis')->label('NIS')->readOnly(),
+                        TextInput::make('kelas')->label('Kelas')->readOnly(),
+                        TextInput::make('jenis_kelamin')->label('Jenis Kelamin')->readOnly(),
+                    ])->columns(2),
 
-                Select::make('status')
-                    ->options([
-                        'draft' => 'Draft',
-                        'submitted' => 'Submitted',
-                        'approved' => 'Approved',
-                    ])
-                    ->default('draft')
-                    ->required(),
-            ]),
+                // Section 2: Data Sesi
+                Section::make('Data Sesi')
+                    ->schema([
+                        TextInput::make('durasi')
+                            ->label('Durasi (menit)')
+                            ->numeric()
+                            ->required(),
+                        Select::make('metode_konseling')
+                            ->label('Metode Konseling')
+                            ->options(['individu' => 'Individu', 'kelompok' => 'Kelompok'])
+                            ->required(),
+                        TextInput::make('nama_guru')
+                            ->label('Guru BK')
+                            ->default(fn() => auth()->user()->guruBk?->nama)
+                            ->readOnly(),
+                    ])->columns(3),
 
-        // 🔹 DETAIL SESI
-        Grid::make(2)
-            ->schema([
-                TextInput::make('durasi_sesi')
-                    ->numeric()
-                    ->default(30)
-                    ->suffix('menit')
-                    ->label('Durasi Sesi'),
-
-                Select::make('metode_konseling')
-                    ->options([
-                        'individual' => 'Individual',
-                        'group' => 'Group',
-                        'class' => 'Class',
-                    ])
-                    ->label('Metode Konseling'),
-            ]),
-
-        // 🔹 ISI LAPORAN (FULL WIDTH BIAR NYAMAN NULIS)
-        Textarea::make('catatan_sesi')
-            ->label('Catatan Jalannya Sesi')
-            ->rows(4)
-            ->columnSpanFull()
-            ->required(),
-
-        Textarea::make('assessment')
-            ->label('Assessment / Diagnosis')
-            ->rows(4)
-            ->columnSpanFull()
-            ->required(),
-
-        Textarea::make('kesimpulan')
-            ->label('Kesimpulan')
-            ->rows(3)
-            ->columnSpanFull()
-            ->required(),
-
-        Textarea::make('rekomendasi')
-            ->label('Rekomendasi')
-            ->rows(3)
-            ->columnSpanFull()
-            ->required(),
-
-        Textarea::make('tindak_lanjut')
-            ->label('Tindak Lanjut')
-            ->rows(3)
-            ->columnSpanFull()
-            ->required(),
-    ]);
+                // Section 3: Isi Laporan
+                Section::make('Isi Laporan')
+                    ->schema([
+                        Textarea::make('catatan_sesi')
+                            ->label('Catatan Jalannya Sesi')
+                            ->rows(4)->required()->columnSpanFull(),
+                        Textarea::make('diagnosis')
+                            ->label('Diagnosis / Penggalian Masalah')
+                            ->rows(4)->required()->columnSpanFull(),
+                        Textarea::make('tindakan')
+                            ->label('Tindakan')
+                            ->rows(3)->required()->columnSpanFull(),
+                        Textarea::make('kesimpulan')
+                            ->label('Kesimpulan')
+                            ->rows(3)->required()->columnSpanFull(),
+                        Textarea::make('tindak_lanjut')
+                            ->label('Tindak Lanjut')
+                            ->rows(3)->required()->columnSpanFull(),
+                    ]),
+            ]);
     }
 }
 

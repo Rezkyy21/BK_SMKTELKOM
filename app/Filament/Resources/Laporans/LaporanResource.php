@@ -24,7 +24,30 @@ protected static ?string $pluralLabel = 'Laporan';
 protected static ?string $modelLabel = 'Laporan';
 protected static string|UnitEnum|null $navigationGroup = 'Konseling';
 
- protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk', 'guru']);
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk', 'guru']);
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk', 'guru']);
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk', 'guru']);
+    }
+
+    public static function canView($record): bool
+    {
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'guru_bk', 'guru']);
+    }
 
     public static function form(Schema $schema): Schema
     {

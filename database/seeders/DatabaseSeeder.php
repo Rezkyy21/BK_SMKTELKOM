@@ -11,6 +11,7 @@ use App\Models\Major;
 use App\Models\ClassRoom;
 use App\Models\AcademicYear;
 use Database\Seeders\KategoriMateriSeeder;
+use Database\Seeders\ClassSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -28,13 +29,14 @@ class DatabaseSeeder extends Seeder
         // =========================
         $academicYears = [];
         $yearsData = [
+            ['name' => '2023/2024', 'start_year' => 2023, 'end_year' => 2024, 'is_active' => false],
             ['name' => '2024/2025', 'start_year' => 2024, 'end_year' => 2025, 'is_active' => false],
             ['name' => '2025/2026', 'start_year' => 2025, 'end_year' => 2026, 'is_active' => true],
             ['name' => '2026/2027', 'start_year' => 2026, 'end_year' => 2027, 'is_active' => false],
         ];
 
         foreach ($yearsData as $yearData) {
-            $academicYears[$yearData['name']] = AcademicYear::firstOrCreate(
+            $academicYears[$yearData['name']] = AcademicYear::updateOrCreate(
                 ['name' => $yearData['name']],
                 $yearData
             );
@@ -42,9 +44,8 @@ class DatabaseSeeder extends Seeder
 
         // Ensure only one active year
         $activeYearName = '2025/2026';
-        AcademicYear::query()->update(['is_active' => false]);
+        AcademicYear::query()->where('name', '!=', $activeYearName)->update(['is_active' => false]);
         $activeYear = $academicYears[$activeYearName];
-        $activeYear->update(['is_active' => true]);
 
         // =========================
         // 2. Majors (Jurusan)
@@ -57,18 +58,7 @@ class DatabaseSeeder extends Seeder
         // =========================
         // 3. Classes (ClassRoom)
         // =========================
-        foreach ($majors as $major) {
-            for ($grade = 10; $grade <= 12; $grade++) {
-                for ($i = 1; $i <= 8; $i++) {
-                    ClassRoom::firstOrCreate([
-                        'major_id' => $major->id,
-                        'grade_level' => $grade,
-                       'name' => "{$i}",
-                        'academic_year_id' => $activeYear->id,
-                    ]);
-                }
-            }
-        }
+        $this->call(ClassSeeder::class);
 
         // =========================
         // 4. Admin User
@@ -133,12 +123,25 @@ class DatabaseSeeder extends Seeder
         // =========================
         // 7. Real Test Siswa
         // =========================
-        $realMajor = Major::where('name', 'RPL')->first();
-        $realClassRoom = ClassRoom::where('major_id', $realMajor->id)
-            ->where('academic_year_id', $activeYear->id)
-            ->where('grade_level', 12)
-            ->where('name', '12-3')
-            ->first();
+        $realMajor = Major::firstWhere('name', 'RPL');
+        if (! $realMajor) {
+            $realMajor = Major::firstOrCreate(['name' => 'RPL']);
+        }
+
+       $realClassRoom = ClassRoom::where('major_id', $realMajor->id)
+    ->where('grade_level', 12)
+    ->where('name', '12 RPL-3')
+    ->first();
+
+if (! $realClassRoom) {
+    $realClassRoom = ClassRoom::where('major_id', $realMajor->id)
+        ->where('grade_level', 12)
+        ->first();
+}
+
+if (! $realClassRoom) {
+    $realClassRoom = ClassRoom::first();
+}
 
         $realUser = User::updateOrCreate(['email' => '541231069@student.smktelkom-pwt.sch.id'], [
             'name' => 'Farrezki Maulana Putra',

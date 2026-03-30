@@ -377,101 +377,86 @@ Form Rencana Kuliah
 </h2>
 
 <form action="{{ route('career-plan.update') }}" method="POST">
-@csrf
-@method('PATCH')
+    @csrf
+    @method('PATCH')
 
-<input type="hidden" name="category" value="kuliah">
+    <input type="hidden" name="category" value="kuliah">
 
-<div class="grid md:grid-cols-2 gap-6">
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <label class="text-sm font-medium text-gray-700">Nama</label>
+            <input type="text" name="student_name"
+                value="{{ old('student_name', $careerPlan->student_name ?? auth()->user()->name) }}"
+                placeholder="Nama Lengkap"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
 
-<div>
-<label class="text-sm font-medium text-gray-700">Nama</label>
-<input type="text" name="student_name"
-value="{{ old('student_name', $careerPlan->student_name ?? auth()->user()->name) }}"
-placeholder="Nama Lengkap"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
+        <div>
+            <label class="text-sm font-medium text-gray-700">NIS</label>
+            <input type="text" name="nis"
+                value="{{ old('nis', $careerPlan->nis ?? '') }}"
+                placeholder="NIS"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
 
-<div>
-<label class="text-sm font-medium text-gray-700">NIS</label>
-<input type="text" name="nis"
-value="{{ old('nis', $careerPlan->nis ?? '') }}"
-placeholder="NIS"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
+        <div>
+            <label class="text-sm font-medium text-gray-700">Kelas</label>
+            <input type="text" name="class_name"
+                value="{{ old('class_name', $careerPlan->class_name ?? auth()->user()->classRoom?->name ?? '') }}"
+                placeholder="Kelas"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
 
-<div>
-<label class="text-sm font-medium text-gray-700">Kelas</label>
-<input type="text" name="class_name"
-value="{{ old('class_name', $careerPlan->class_name ?? auth()->user()->classRoom?->name ?? '') }}"
-placeholder="Kelas"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
+        <div>
+            <label class="text-sm font-medium text-gray-700">Tahun Lulus</label>
+            <input type="number" name="graduation_year"
+                value="{{ old('graduation_year', $careerPlan->graduation_year ?? '') }}"
+                placeholder="Tahun Lulus"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
 
-<div>
-<label class="text-sm font-medium text-gray-700">Tahun Lulus</label>
-<input type="number" name="graduation_year"
-value="{{ old('graduation_year', $careerPlan->graduation_year ?? '') }}"
-placeholder="Tahun Lulus"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
+        <div>
+            <label class="text-sm font-medium text-gray-700">Tahun Masuk</label>
+            <input type="number" name="entrance_year"
+                value="{{ old('entrance_year', $careerPlan->entrance_year ?? auth()->user()->tahun_masuk ?? '') }}"
+                placeholder="Tahun Masuk"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
 
-<div>
-<label class="text-sm font-medium text-gray-700">Tahun Masuk</label>
-<input type="number" name="entrance_year"
-value="{{ old('entrance_year', $careerPlan->entrance_year ?? auth()->user()->tahun_masuk ?? '') }}"
-placeholder="Tahun Masuk"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
+        <div>
+            <label class="text-sm font-medium text-gray-700">Target Universitas</label>
+            <input type="text" name="target_university"
+                value="{{ $careerPlan->target_university ?? '' }}"
+                placeholder="Contoh: Universitas Indonesia"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
 
-<div>
-<label class="text-sm font-medium text-gray-700">Target Universitas</label>
-<input type="text" name="target_university"
-value="{{ $careerPlan->target_university ?? '' }}"
-placeholder="Contoh: Universitas Indonesia"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
+        <div class="md:col-span-2">
+            <label class="text-sm font-medium text-gray-700">Target Program Studi</label>
+            <input type="text" name="target_major"
+                value="{{ $careerPlan->target_major ?? '' }}"
+                placeholder="Contoh: Teknik Informatika"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
+    </div>
 
-<div class="md:col-span-2">
-<label class="text-sm font-medium text-gray-700">Target Program Studi</label>
-<input type="text" name="target_major"
-value="{{ $careerPlan->target_major ?? '' }}"
-placeholder="Contoh: Teknik Informatika"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
-</div>
+    <div class="flex flex-col gap-4 mt-6 md:flex-row">
+        <button type="submit" name="action" value="draft"
+            class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-xl font-semibold">
+            Simpan Draft
+        </button>
 
-<form action="{{ route('career-plan.update') }}" method="POST">
-@csrf
-@method('PATCH')
+        <button type="submit" name="action" value="submit"
+            class="flex-1 bg-red-700 hover:bg-red-800 text-white py-3 rounded-xl font-semibold">
+            Submit ke Guru BK
+        </button>
 
-<input type="hidden" name="category" value="kuliah">
-
-<!-- semua input -->
-
-<div class="flex gap-4 mt-6">
-<button type="submit"
-class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-xl font-semibold">
-Simpan Draft
-</button>
-
-<button type="button" onclick="backToChoice()"
-class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-semibold">
-Kembali
-</button>
-</div>
-
+        <button type="button" onclick="backToChoice()"
+            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-semibold">
+            Kembali
+        </button>
+    </div>
 </form>
-
-<form action="{{ route('career-plan.submit') }}" method="POST">
-@csrf
-<button type="submit"
-class="w-full mt-4 bg-red-700 hover:bg-red-800 text-white py-3 rounded-xl font-semibold">
-Submit ke Guru BK
-</button>
-</form>
-</div>
-
 
 
 <!-- KERJA -->
@@ -482,103 +467,81 @@ Form Rencana Kerja
 </h2>
 
 <form action="{{ route('career-plan.update') }}" method="POST">
-@csrf
-@method('PATCH')
+    @csrf
+    @method('PATCH')
 
-<input type="hidden" name="category" value="kerja">
+    <input type="hidden" name="category" value="kerja">
 
-<div class="grid md:grid-cols-2 gap-6">
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <label class="text-sm font-medium text-gray-700">Nama</label>
+            <input type="text" name="student_name"
+                value="{{ old('student_name', $careerPlan->student_name ?? auth()->user()->name) }}"
+                placeholder="Nama Lengkap"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
 
-<div>
-<label class="text-sm font-medium text-gray-700">Nama</label>
-<input type="text" name="student_name"
-value="{{ old('student_name', $careerPlan->student_name ?? auth()->user()->name) }}"
-placeholder="Nama Lengkap"
-class="mt-1 w-full border rounded-lg px-4 py-2">
+        <div>
+            <label class="text-sm font-medium text-gray-700">NIS</label>
+            <input type="text" name="nis"
+                value="{{ old('nis', $careerPlan->nis ?? '') }}"
+                placeholder="NIS"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
+
+        <div>
+            <label class="text-sm font-medium text-gray-700">Kelas</label>
+            <input type="text" name="class_name"
+                value="{{ old('class_name', $careerPlan->class_name ?? auth()->user()->classRoom?->name ?? '') }}"
+                placeholder="Kelas"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
+
+        <div>
+            <label class="text-sm font-medium text-gray-700">Tahun Lulus</label>
+            <input type="number" name="graduation_year"
+                value="{{ old('graduation_year', $careerPlan->graduation_year ?? '') }}"
+                placeholder="Tahun Lulus"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
+
+        <div>
+            <label class="text-sm font-medium text-gray-700">Perusahaan Target</label>
+            <input type="text" name="target_company"
+                value="{{ $careerPlan->target_company ?? '' }}"
+                placeholder="Contoh: Telkom Indonesia"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
+
+        <div>
+            <label class="text-sm font-medium text-gray-700">Posisi Target</label>
+            <input type="text" name="target_position"
+                value="{{ $careerPlan->target_position ?? '' }}"
+                placeholder="Contoh: Web Developer"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="text-sm font-medium text-gray-700">Tahun Target Diterima</label>
+            <input type="number" name="accepted_year"
+                value="{{ old('accepted_year', $careerPlan->accepted_year ?? '') }}"
+                placeholder="Contoh: 2026"
+                class="mt-1 w-full border rounded-lg px-4 py-2">
+        </div>
+    </div>
+
+    <div class="flex gap-4 mt-6">
+        <button type="submit"
+            class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-xl font-semibold">
+            Simpan Draft
+        </button>
+
+        <button type="button" onclick="backToChoice()"
+            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-semibold">
+            Kembali
+        </button>
+    </div>
 </div>
-
-<div>
-<label class="text-sm font-medium text-gray-700">NIS</label>
-<input type="text" name="nis"
-value="{{ old('nis', $careerPlan->nis ?? '') }}"
-placeholder="NIS"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
-
-<div>
-<label class="text-sm font-medium text-gray-700">Kelas</label>
-<input type="text" name="class_name"
-value="{{ old('class_name', $careerPlan->class_name ?? auth()->user()->classRoom?->name ?? '') }}"
-placeholder="Kelas"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
-
-<div>
-<label class="text-sm font-medium text-gray-700">Tahun Lulus</label>
-<input type="number" name="graduation_year"
-value="{{ old('graduation_year', $careerPlan->graduation_year ?? '') }}"
-placeholder="Tahun Lulus"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
-
-<div>
-<label class="text-sm font-medium text-gray-700">Perusahaan Target</label>
-<input type="text" name="target_company"
-value="{{ $careerPlan->target_company ?? '' }}"
-placeholder="Contoh: Telkom Indonesia"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
-
-<div>
-<label class="text-sm font-medium text-gray-700">Posisi Target</label>
-<input type="text" name="target_position"
-value="{{ $careerPlan->target_position ?? '' }}"
-placeholder="Contoh: Web Developer"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
-
-<div class="md:col-span-2">
-<label class="text-sm font-medium text-gray-700">Tahun Target Diterima</label>
-<input type="number" name="accepted_year"
-value="{{ old('accepted_year', $careerPlan->accepted_year ?? '') }}"
-placeholder="Contoh: 2026"
-class="mt-1 w-full border rounded-lg px-4 py-2">
-</div>
-
-</div>
-
-<form action="{{ route('career-plan.update') }}" method="POST">
-@csrf
-@method('PATCH')
-
-<input type="hidden" name="category" value="kuliah">
-
-<!-- semua input -->
-
-<div class="flex gap-4 mt-6">
-<button type="submit"
-class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-xl font-semibold">
-Simpan Draft
-</button>
-
-<button type="button" onclick="backToChoice()"
-class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-semibold">
-Kembali
-</button>
-</div>
-
-</form>
-
-<form action="{{ route('career-plan.submit') }}" method="POST">
-@csrf
-<button type="submit"
-class="w-full mt-4 bg-red-700 hover:bg-red-800 text-white py-3 rounded-xl font-semibold">
-Submit ke Guru BK
-</button>
-</form>
-
-</div>
-
 
 
 <!-- USAHA -->
@@ -659,41 +622,22 @@ placeholder="Jelaskan ide usaha yang ingin kamu bangun..."
 class="mt-1 w-full border rounded-lg px-4 py-2">{{ $careerPlan->business_idea ?? '' }}</textarea>
 </div>
 
-</div>
+    <div class="flex flex-col gap-4 mt-6 md:flex-row">
+        <button type="submit" name="action" value="draft"
+            class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-xl font-semibold">
+            Simpan Draft
+        </button>
 
+        <button type="submit" name="action" value="submit"
+            class="flex-1 bg-red-700 hover:bg-red-800 text-white py-3 rounded-xl font-semibold">
+            Submit ke Guru BK
+        </button>
 
-<form action="{{ route('career-plan.update') }}" method="POST">
-@csrf
-@method('PATCH')
-
-<input type="hidden" name="category" value="kuliah">
-
-<!-- semua input -->
-
-<div class="flex gap-4 mt-6">
-<button type="submit"
-class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-xl font-semibold">
-Simpan Draft
-</button>
-
-<button type="button" onclick="backToChoice()"
-class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-semibold">
-Kembali
-</button>
-</div>
-
-</form>
-
-<form action="{{ route('career-plan.submit') }}" method="POST">
-@csrf
-<button type="submit"
-class="w-full mt-4 bg-red-700 hover:bg-red-800 text-white py-3 rounded-xl font-semibold">
-Submit ke Guru BK
-</button>
-</form>
-
-
-
+        <button type="button" onclick="backToChoice()"
+            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-semibold">
+            Kembali
+        </button>
+    </div
 </div>
 
 

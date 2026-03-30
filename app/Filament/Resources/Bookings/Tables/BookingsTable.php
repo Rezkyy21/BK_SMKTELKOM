@@ -19,7 +19,7 @@ class BookingsTable
     {
         return $table
         ->modifyQueryUsing(fn (Builder $query) => 
-            $query->with(['siswa.kelas.major'])
+            $query->with(['siswa.classRoom.major'])
                 ->whereDoesntHave('laporan')
         )
             ->modifyQueryUsing(fn (Builder $query) => $query->whereDoesntHave('laporan'))
@@ -28,18 +28,8 @@ class BookingsTable
                     ->label('ID'),
                 TextColumn::make('siswa.nama')
                     ->label('Siswa'),
-                    TextColumn::make('siswa.kelas')
-                    ->label('Kelas')
-                    ->formatStateUsing(function ($record) {
-                        $kelas = $record->siswa?->kelas;
-
-                        if (!$kelas) return '-';
-
-                        return 
-                            ($kelas->grade_level ?? '-') . ' ' .
-                            ($kelas->major->name ?? '-') . ' ' .
-                            ($kelas->name ?? '-');
-                    }),
+                TextColumn::make('siswa.classRoom.name')
+                    ->label('Kelas'),
                 TextColumn::make('tanggal')
                     ->label('Tanggal')
                     ->date('d/m/Y')
@@ -76,13 +66,18 @@ class BookingsTable
                     ->modalWidth('lg')
                     ->modalHeading('Detail Booking')
                    ->modalContent(fn ($record) => view('filament.bookings.detail-modal', [
-                            'booking' => $record->load(['siswa.kelas.major','jadwal','topik'])
+                            'booking' => $record->load(['siswa.classRoom.major','jadwal','topik'])
                         ]))
                     ->modalActions([
                         Action::make('approve')
                             ->label('Setujui Konseling')
                             ->color('success')
-                            ->action(fn ($record) => $record->update(['status' => 'disetujui']))
+                            ->action(function ($record) {
+                                $record->update(['status' => 'disetujui']);
+                                
+                                // Send notification to student
+                                $record->siswa->user->notify(new \App\Notifications\BookingDiterimaNotification($record));
+                            })
                             ->visible(fn ($record) => $record->status === 'menunggu'),
                         Action::make('reject')
                             ->label('Tolak Konseling')

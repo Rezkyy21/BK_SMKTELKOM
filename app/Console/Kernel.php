@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // register our custom command here
         Commands\PromoteStudents::class,
+        Commands\DeactivateOldStudents::class,
     ];
 
     /**
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
     {
         // contoh: jalankan setiap hari pada pukul 00:01
         $schedule->command('students:promote')->dailyAt('00:01');
+        $schedule->command('students:deactivate-old')->dailyAt('00:00');
     }
 
     /**

@@ -99,6 +99,15 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        // Check if enrollment is 3+ years old
+        $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
+        if ($activeYear && $siswa->academicYear && $siswa->academicYear->start_year <= $activeYear->start_year - 3) {
+            $user->update(['status_akun' => 'nonaktif']);
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => 'Akun kamu sudah tidak aktif karena sudah melewati masa studi.',
+            ]);
+        }
+
         // Login
         Auth::login($user, $request->boolean('remember'));
     }

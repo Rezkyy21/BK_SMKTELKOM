@@ -55,6 +55,11 @@ class BookingObserver
                     $booking->jadwal->increment('kuota');
                 }
             }
+
+            // Hard delete booking when rejected
+            if ($new === 'ditolak') {
+                $booking->delete();
+            }
         }
     }
 }

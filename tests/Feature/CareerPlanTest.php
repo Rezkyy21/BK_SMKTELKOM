@@ -111,4 +111,34 @@ class CareerPlanTest extends TestCase
             'business_idea' => 'Jualan online',
         ]);
     }
+
+    /** @test */
+    public function siswa_can_direct_submit_without_prior_draft()
+    {
+        $user = User::factory()->create(['role' => 'siswa']);
+        $this->actingAs($user);
+
+        $response = $this->patch(route('career-plan.update'), [
+            'category' => 'kerja',
+            'student_name' => 'Rina',
+            'nis' => '777888',
+            'class_name' => '12 RPL 1',
+            'graduation_year' => 2025,
+            'target_company' => 'XYZ Corp',
+            'target_position' => 'QA Engineer',
+            'accepted_year' => 2025,
+            'action' => 'submit',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('career_plans', [
+            'user_id' => $user->id,
+            'category' => 'kerja',
+            'status' => 'submitted',
+        ]);
+
+        $careerPlan = CareerPlan::where('user_id', $user->id)->first();
+        $this->assertNotNull($careerPlan);
+        $this->assertNotNull($careerPlan->submitted_at);
+    }
 }

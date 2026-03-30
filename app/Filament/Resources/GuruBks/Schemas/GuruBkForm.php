@@ -6,6 +6,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\FileUpload;
+use Illuminate\Validation\Rules\Unique;
 
 class GuruBkForm
 {
@@ -31,7 +32,13 @@ class GuruBkForm
                 TextInput::make('email')
                     ->email()
                     ->required()
-                    ->label('Email'),
+                    ->unique(
+                        table: 'users',
+                        column: 'email',
+                        ignoreRecord: true,
+                    )
+                    ->label('Email')
+                    ->visibleOn('create'),
                TextInput::make('password')
                     ->password()
                     ->label('Password')
@@ -46,6 +53,11 @@ class GuruBkForm
                     ->default('aktif')
                     ->required()
                     ->label('Status'),
+                TextInput::make('no_whatsapp')
+                    ->label('Nomor WhatsApp')
+                    ->placeholder('628123456789')
+                    ->helperText('Format: 628xxx tanpa + atau spasi')
+                    ->nullable(),
             ]);
     }
 }

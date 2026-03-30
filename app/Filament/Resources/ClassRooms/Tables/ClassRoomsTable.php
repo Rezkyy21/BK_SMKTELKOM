@@ -16,7 +16,7 @@ class ClassRoomsTable
         return $table
           
                ->columns([
-    TextColumn::make('full_name')
+    TextColumn::make('name')
         ->label('Kelas')
         ->searchable()
         ->sortable(),
@@ -37,7 +37,7 @@ class ClassRoomsTable
         ->sortable(),
 
     TextColumn::make('name')
-        ->label('Nama Kelas'),
+        ->label('Kelas'),
 
         TextColumn::make('guru.nama')
         ->label('Guru BK')
