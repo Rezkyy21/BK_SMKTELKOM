@@ -11,7 +11,11 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+// guest middleware still prevents authenticated users from seeing the
+// form, but we also add our custom RedirectIfAuthenticated so that the
+// post-login redirect takes the user's role into account instead of the
+// static HOME constant.
+Route::middleware(['guest', \App\Http\Middleware\RedirectIfAuthenticated::class])->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 

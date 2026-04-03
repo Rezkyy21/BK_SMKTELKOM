@@ -10,11 +10,29 @@ return new class extends Migration
     {
         Schema::create('laporan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->unique()->constrained('booking')->cascadeOnDelete();
+            $table->foreignId('siswa_id')->constrained('siswas')->cascadeOnDelete();
             $table->foreignId('guru_id')->constrained('guru_bk')->cascadeOnDelete();
+            $table->foreignId('booking_id')->nullable()->nullOnDelete();
+
+            // Data siswa (snapshot saat laporan dibuat)
+            $table->string('nama_siswa');
+            $table->string('nis');
+            $table->string('kelas');
+            $table->string('jenis_kelamin');
+
+            // Data sesi
+            $table->integer('durasi')->comment('dalam menit');
+            $table->string('metode_konseling'); // individu / kelompok
+            $table->string('nama_guru');
+
+            // Isi laporan
+            $table->text('catatan_sesi');
+            $table->text('diagnosis');
+            $table->text('tindakan');
             $table->text('kesimpulan');
-            $table->text('rekomendasi');
-            $table->timestamp('created_at')->useCurrent();
+            $table->text('tindak_lanjut');
+
+            $table->timestamps();
         });
     }
 

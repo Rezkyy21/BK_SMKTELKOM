@@ -14,6 +14,7 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        // guests should be redirected to the public dashboard
+        $response->assertRedirect(route('siswa.dashboard'));
     }
 }
