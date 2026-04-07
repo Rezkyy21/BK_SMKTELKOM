@@ -13,6 +13,7 @@ class Laporan extends Model
     protected $fillable = [
         'siswa_id', 'guru_id', 'booking_id',
         'nama_siswa', 'nis', 'kelas', 'jenis_kelamin',
+        'topik', 'jadwal',
         'durasi', 'metode_konseling', 'nama_guru',
         'catatan_sesi', 'diagnosis', 'tindakan',
         'kesimpulan', 'tindak_lanjut',

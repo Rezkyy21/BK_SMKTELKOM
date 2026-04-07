@@ -23,13 +23,7 @@ class Siswa extends Model
     protected $casts = [
         'is_password_changed' => 'boolean',
     ];
-    public function getFullKelasAttribute()
-        {
-            return 
-                ($this->kelas->grade_level ?? '-') . ' ' .
-                ($this->major->name ?? '-') . ' ' .
-                ($this->kelas->name ?? '-');
-        }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -44,14 +38,10 @@ class Siswa extends Model
     {
         return $this->belongsTo(ClassRoom::class, 'class_id');
     }
-    
-    public function kelas()
-{
-    return $this->belongsTo(ClassRoom::class, 'class_id');
-}
- public function academicYear() {
-    return $this->belongsTo(AcademicYear::class, 'academic_year_id'); 
-}
+
+    public function academicYear() {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id'); 
+    }
 
     public function needsProfileCompletion(): bool
     {

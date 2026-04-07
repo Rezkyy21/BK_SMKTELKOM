@@ -63,19 +63,30 @@ class SiswaImport implements ToCollection, WithHeadingRow
             }
 
             // ── Siswa baru → buat akun user + record siswa ──
-            $email = $nis . '@student.smktelkom-pwt.sch.id';
+            $email = trim((string) ($row->get('email') ?? '')) ?: ($nis . '@student.smktelkom-pwt.sch.id');
 
-            $user = User::updateOrCreate(
-                ['email' => $email],
-                [
+            $existingUser = User::where('email', $email)->first();
+            if ($existingUser) {
+                if ($existingUser->role !== 'siswa') {
+                    throw new \Exception("Email siswa tidak dapat menggunakan akun yang sudah terdaftar sebagai {$existingUser->role}.");
+                }
+
+                if ($existingUser->siswa) {
+                    throw new \Exception('Email siswa sudah terhubung dengan akun siswa lain. Periksa data import.');
+                }
+
+                $user = $existingUser;
+            } else {
+                $user = User::create([
                     'name'        => $nama,
+                    'email'       => $email,
                     'password'    => bcrypt($nis), // password default = NIS
                     'role'        => 'siswa',
                     'status_akun' => 'aktif',
                     'major_id'    => $majorId,
                     'class_id'    => $classId,
-                ]
-            );
+                ]);
+            }
 
             Siswa::create([
                 'user_id'             => $user->id,

@@ -375,7 +375,7 @@
                     @if (!$user || !$user->classRoom)
                         Data kelas Anda belum tersedia.
                     @else
-                        Anda saat ini di kelas {{ $user->classRoom->grade_level }}.
+                        Anda saat ini di kelas {{ $user->classRoom->full_name }}.
                     @endif
                 </p>
             </div>

@@ -22,16 +22,12 @@
 
            <p>
            @php
-                $kelas = $booking->siswa->kelas ?? null;
+                $kelas = $booking->siswa->classRoom ?? null;
             @endphp
 
             <p>
                 <strong>Kelas:</strong>
-                {{
-                    $kelas
-                    ? ($kelas->grade_level . ' ' . ($kelas->major->name ?? '-') . ' ' . $kelas->name)
-                    : '-'
-                }}
+                {{ $kelas ? $kelas->full_name : '-' }}
             </p>
 
             <p>

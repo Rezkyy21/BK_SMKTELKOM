@@ -279,12 +279,9 @@ class SiswaController extends Controller
     $kelasSiswa = $siswa->classRoom;
 
     // 5️⃣ Ambil kelas & format
-    $kelas = \App\Models\ClassRoom::with('major') 
-    ->find($request->class_id);
-   $formatKelas = 
-    ($kelas->grade_level ?? '-') . ' ' .
-    ($siswa->major->name ?? '-') . ' ' .
-    ($kelas->name ?? '-');
+    $kelas = \App\Models\ClassRoom::with('major')
+        ->find($request->class_id);
+    $formatKelas = $kelas?->full_name ?? '-';
 
     // 6️⃣ Buat booking
     Booking::create([

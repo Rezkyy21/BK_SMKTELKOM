@@ -582,7 +582,7 @@
             <div class="field-group field-full">
     <label for="class_display">Kelas</label>
     <input id="class_display" type="text" 
-        value="{{ $siswa->classRoom->name ?? '-' }}" 
+        value="{{ $siswa->classRoom?->full_name ?? '-' }}" 
         disabled 
         class="field-input">
     <span class="field-hint">Kelas ditentukan dari data sekolah — tidak dapat diubah</span>
@@ -621,7 +621,7 @@
                 <div class="fields-grid">
                     <div class="field-group field-full">
                         <label for="email">Email</label>
-                        <input id="email" name="email" type="email" class="field-input" placeholder="Masukkan email aktif kamu" value="{{ old('email', auth()->user()->email) }}">
+                        <input id="email" name="email" type="email" class="field-input" placeholder="Masukkan email aktif kamu" value="{{ old('email', $siswa->user->email ?? auth()->user()->email) }}">
                         <span class="field-hint">Email ini akan digunakan untuk menerima notifikasi</span>
                     </div>
 

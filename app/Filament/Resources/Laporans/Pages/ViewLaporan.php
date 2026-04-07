@@ -31,14 +31,30 @@ public function infolist(Schema $schema): Schema
                         ->label('Guru BK'),
 
                     TextEntry::make('topik')
-                        ->label('Topik Konseling'),
+                        ->label('Topik Konseling')
+                        ->formatStateUsing(function ($state, $record) {
+                            if (!empty($state)) {
+                                return $state;
+                            }
+
+                            $record->loadMissing(['booking.topik']);
+
+                            return $record->booking?->topik?->nama_topik ?? '-';
+                        }),
 
                     TextEntry::make('jadwal')
                         ->label('Jadwal Konseling')
                         ->formatStateUsing(function ($state, $record) {
+                            if (!empty($state)) {
+                                return $state;
+                            }
+
+                            $record->loadMissing(['booking.jadwal']);
                             $jadwal = $record->booking?->jadwal;
 
-                            if (!$jadwal) return '-';
+                            if (!$jadwal) {
+                                return '-';
+                            }
 
                             return $jadwal->hari . ' | ' .
                                 substr($jadwal->jam_mulai, 0, 5) . ' - ' .
@@ -53,7 +69,7 @@ public function infolist(Schema $schema): Schema
                         ->label('Metode')
                         ->badge(),
 
-                    TextEntry::make('durasi_sesi')
+                    TextEntry::make('durasi')
                         ->label('Durasi')
                         ->suffix(' menit'),
 
@@ -77,7 +93,7 @@ public function infolist(Schema $schema): Schema
                         ->label('Catatan Sesi')
                         ->columnSpanFull(),
 
-                    TextEntry::make('assessment')
+                    TextEntry::make('diagnosis')
                         ->label('Assessment')
                         ->columnSpanFull(),
 
@@ -89,12 +105,8 @@ public function infolist(Schema $schema): Schema
             // 🔹 TINDAK LANJUT - DI BAWAH ISI LAPORAN
             Section::make('Tindak Lanjut')
                 ->schema([
-                    TextEntry::make('rekomendasi')
-                        ->label('Rekomendasi')
-                        ->columnSpanFull(),
-
                     TextEntry::make('tindak_lanjut')
-                        ->label('Tindak Lanjut')
+                        ->label('Rekomendasi')
                         ->columnSpanFull(),
                 ]),
         ]);
@@ -102,12 +114,17 @@ public function infolist(Schema $schema): Schema
 
 
     protected function getHeaderActions(): array
-{
-    return [
-        Action::make('back')
-            ->label('Kembali')
-            ->url($this->getResource()::getUrl('index'))
-            ->color('gray'),
-    ];
-}
+    {
+        return [
+            Action::make('print')
+                ->label('Cetak Laporan')
+                ->url(route('laporan.print', $this->record))
+                ->openUrlInNewTab()
+                ->color('secondary'),
+            Action::make('back')
+                ->label('Kembali')
+                ->url($this->getResource()::getUrl('index'))
+                ->color('gray'),
+        ];
+    }
 }

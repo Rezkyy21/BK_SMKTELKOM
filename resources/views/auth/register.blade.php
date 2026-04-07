@@ -67,7 +67,7 @@
                         @if(old('major_id'))
                             @foreach($classes->where('major_id', old('major_id'))->where('academic_year_id', $activeYear->id ?? null) ?? [] as $class)
                                 <option value="{{ $class->id }}" @selected(old('class_id') == $class->id)>
-                                    Kelas {{ $class->grade_level }} - {{ $class->name }}
+                                    Kelas {{ $class->full_name }}
                                 </option>
                             @endforeach 
                         @endif
@@ -188,7 +188,7 @@
         filteredClasses.forEach(cls => {
             const option = document.createElement('option');
             option.value = cls.id;
-            option.textContent = `Kelas ${cls.grade_level} - ${cls.name}`;
+            option.textContent = `Kelas ${cls.full_name}`;
             classSelect.appendChild(option);
         });
         

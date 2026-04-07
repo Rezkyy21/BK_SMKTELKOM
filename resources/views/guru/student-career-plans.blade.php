@@ -128,9 +128,8 @@
                                         <td class="px-6 py-4 text-sm text-gray-700">
                                             @if ($plan->user->classRoom)
                                                 <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
-                                                    Kelas {{ $plan->user->classRoom->grade_level }}
+                                                    {{ $plan->user->classRoom->full_name }}
                                                 </span>
-                                                <p class="text-xs text-gray-500 mt-1">{{ $plan->user->major->name ?? 'N/A' }}</p>
                                             @else
                                                 <span class="text-gray-500">-</span>
                                             @endif

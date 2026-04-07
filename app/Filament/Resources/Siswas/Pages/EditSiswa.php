@@ -21,20 +21,46 @@ class EditSiswa extends EditRecord
     {
         // Ensure user exists and update
         if (!empty($data['email'])) {
-            $user = \App\Models\User::firstOrCreate(
-                ['email' => $data['email']],
-                [
-                    'name' => $data['nama_lengkap'] ?? ($data['nama'] ?? 'Siswa'),
-                    'password' => bcrypt('siswa123'),
-                    'role' => 'siswa',
-                    'status_akun' => $data['status_akun'] ?? 'aktif',
-                ]
-            );
+            $currentUser = $this->record->user;
 
-            // update fields
-            $user->update(['name' => $data['nama_lengkap'] ?? $data['nama']]);
+            if ($currentUser) {
+                $duplicate = \App\Models\User::where('email', $data['email'])
+                    ->where('id', '!=', $currentUser->id)
+                    ->first();
 
-            $data['user_id'] = $user->id;
+                if ($duplicate) {
+                    throw new \Exception('Alamat email sudah digunakan oleh akun lain.');
+                }
+
+                $currentUser->update([
+                    'email' => $data['email'],
+                    'name' => $data['nama_lengkap'] ?? $data['nama'] ?? $currentUser->name,
+                ]);
+
+                $data['user_id'] = $currentUser->id;
+            } else {
+                $user = \App\Models\User::where('email', $data['email'])->first();
+
+                if ($user) {
+                    if ($user->role !== 'siswa') {
+                        throw new \Exception('Alamat email sudah digunakan oleh akun yang bukan siswa.');
+                    }
+
+                    if ($user->siswa) {
+                        throw new \Exception('Alamat email sudah terhubung dengan siswa lain.');
+                    }
+                } else {
+                    $user = \App\Models\User::create([
+                        'name' => $data['nama_lengkap'] ?? ($data['nama'] ?? 'Siswa'),
+                        'email' => $data['email'],
+                        'password' => bcrypt('siswa123'),
+                        'role' => 'siswa',
+                        'status_akun' => $data['status_akun'] ?? 'aktif',
+                    ]);
+                }
+
+                $data['user_id'] = $user->id;
+            }
         }
 
         if (!empty($data['nama_lengkap']) && empty($data['nama'])) {

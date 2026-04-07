@@ -21,11 +21,7 @@
                     <div>
                         <p class="text-sm text-gray-600">Kelas</p>
                         <p class="font-semibold text-gray-900">
-                            @if ($student->classRoom)
-                                Kelas {{ $student->classRoom->grade_level }}
-                            @else
-                                -
-                            @endif
+                            {{ $student->classRoom?->full_name ?? '-' }}
                         </p>
                     </div>
                     <div>

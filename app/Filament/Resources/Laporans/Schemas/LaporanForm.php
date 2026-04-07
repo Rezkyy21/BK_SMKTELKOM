@@ -8,6 +8,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
@@ -29,7 +30,8 @@ class LaporanForm
                                 ->mapWithKeys(fn (Booking $booking) => [$booking->id => $booking->siswa ? $booking->siswa->nama . ' - ' . $booking->tanggal : 'Booking #' . $booking->id])
                                 ->toArray())
                             ->searchable()
-                            ->required()
+                            ->required(fn (Get $get) => !$get('id'))
+                            ->hidden(fn (Get $get) => (bool) $get('id'))
                             ->live()
                             ->afterStateUpdated(function ($state, Set $set) {
                                 $booking = Booking::with(['siswa.classRoom'])->find($state);
@@ -38,7 +40,7 @@ class LaporanForm
                                     $set('siswa_id', $booking->siswa_id);
                                     $set('nama_siswa', $booking->siswa->nama);
                                     $set('nis', $booking->siswa->nis);
-                                    $set('kelas', $booking->siswa->classRoom?->name ?? '-');
+                                    $set('kelas', $booking->siswa->classRoom?->full_name ?? '-');
                                     $set('jenis_kelamin', $booking->siswa->jenis_kelamin);
                                 }
                             }),

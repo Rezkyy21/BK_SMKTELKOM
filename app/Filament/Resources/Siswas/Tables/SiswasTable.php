@@ -30,7 +30,6 @@ class SiswasTable
             ])->sortable(),
            TextColumn::make('classRoom.full_name')
                 ->label('Kelas')
-                ->sortable()
                 ->placeholder('-'),
 
           TextColumn::make('academicYear.name')

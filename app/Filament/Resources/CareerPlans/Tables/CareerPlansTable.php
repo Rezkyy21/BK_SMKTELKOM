@@ -27,8 +27,6 @@ class CareerPlansTable
                     ->searchable(),
                TextColumn::make('user.siswa.classRoom.full_name')
                     ->label('Kelas')
-                    ->sortable()
-                    ->searchable()
                     ->placeholder('-'),
                 TextColumn::make('graduation_year')
                     ->numeric()

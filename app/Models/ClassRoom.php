@@ -25,12 +25,21 @@ class ClassRoom extends Model
         'guru_id',
     ];
 
+    protected $appends = [
+        'full_name',
+    ];
 
-   
     public function getFullNameAttribute()
-    {
-        return $this->grade_level . ' ' . $this->major->name . '-' . $this->name;
-    }
+{
+    $grade = match ((int) $this->grade_level) {
+        10 => 'X',
+        11 => 'XI',
+        12 => 'XII',
+        default => $this->grade_level,
+    };
+
+    return $grade . ' ' . $this->major->name . ' ' . $this->name;
+}
     /**
      * Each class belongs to a major (jurusan).
      */

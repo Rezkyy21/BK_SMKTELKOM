@@ -23,13 +23,15 @@ class CreateLaporan extends CreateRecord
 
         // Auto set siswa_id from selected booking
         if (empty($data['siswa_id']) && !empty($data['booking_id'])) {
-            $booking = Booking::with('siswa.classRoom')->find($data['booking_id']);
+            $booking = Booking::with(['siswa.classRoom', 'topik', 'jadwal'])->find($data['booking_id']);
             if ($booking && $booking->siswa) {
                 $data['siswa_id'] = $booking->siswa_id;
                 $data['nama_siswa'] = $booking->siswa->nama;
                 $data['nis'] = $booking->siswa->nis;
-                $data['kelas'] = $booking->siswa->classRoom?->name ?? '-';
+                $data['kelas'] = $booking->siswa->classRoom?->full_name ?? '-';
                 $data['jenis_kelamin'] = $booking->siswa->jenis_kelamin;
+                $data['topik'] = $booking->topik?->nama_topik;
+                $data['jadwal'] = $booking->jadwal ? $booking->jadwal->hari . ' | ' . substr($booking->jadwal->jam_mulai, 0, 5) . ' - ' . substr($booking->jadwal->jam_selesai, 0, 5) : null;
             } else {
                 throw new \Exception('Booking tidak ditemukan atau tidak memiliki data siswa');
             }

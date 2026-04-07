@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LaporanPrintController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\GuruController;
@@ -101,7 +102,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/guru/dashboard', [GuruController::class, 'dashboard'])
         ->name('guru.dashboard');
 
-    
+    Route::get('/laporan/{laporan}/print', [LaporanPrintController::class, 'show'])
+        ->name('laporan.print');
+
     // GURU: Data Siswa & Rencana Karir
     Route::prefix('guru/students')->name('guru.students.')->group(function () {
         Route::get('/career-plans', [GuruController::class, 'studentCareerPlans'])->name('career-plans');

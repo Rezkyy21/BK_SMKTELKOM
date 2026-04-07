@@ -1534,7 +1534,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
                         <input type="text"
-                               value="{{ $studentClass ? $studentClass->grade_level . ' ' . ($studentClass->major->name ?? '') . ' ' . $studentClass->name : '-' }}"
+                               value="{{ $studentClass?->full_name ?? '-' }}"
                                readonly
                                class="bg-transparent w-full text-sm text-gray-700 outline-none">
                     </div>
@@ -1691,7 +1691,7 @@
             classes.forEach(cls => {
                 const option = document.createElement('option');
                 option.value = cls.id;
-                option.textContent = `${cls.grade_level}  ${cls.major?.name ?? ''} ${cls.name}`;
+                option.textContent = cls.full_name;
                 select.appendChild(option);
             });
         }
@@ -1701,9 +1701,6 @@
     if (hiddenClassIdInput && hiddenClassIdInput.value === '') {
         hiddenClassIdInput.value = '{{ $studentClass->id ?? '' }}';
     }
-
-    // lanjut normal
-    document.getElementById('guru-label').textContent = guruName;
 
     const wrap = document.getElementById('jadwal-wrap');
     wrap.classList.add('visible');
