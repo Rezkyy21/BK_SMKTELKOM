@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('laporan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('siswa_id')->constrained('siswas')->cascadeOnDelete();
+            $table->foreignId('siswa_id')->constrained('siswa')->cascadeOnDelete();
             $table->foreignId('guru_id')->constrained('guru_bk')->cascadeOnDelete();
             $table->foreignId('booking_id')->nullable()->nullOnDelete();
 
