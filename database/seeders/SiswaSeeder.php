@@ -14,26 +14,47 @@ class SiswaSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil contoh major, class, dan academic year
-        $rplMajor = Major::firstOrCreate(['name' => 'RPL']);
-        $tkjMajor = Major::firstOrCreate(['name' => 'TKJ']);
+        $rplMajor = Major::where('name', 'RPL')->first();
+        $tkjMajor = Major::where('name', 'TKJ')->first();
 
-        $classXII1 = ClassRoom::firstOrCreate(['name' => 'XII 1']);
-        $classXII2 = ClassRoom::firstOrCreate(['name' => 'XII 2']);
+        if (!$rplMajor || !$tkjMajor) {
+            $this->command->warn('Majors RPL/TKJ not found. Skipping SiswaSeeder.');
+            return;
+        }
 
-        $academicYear = AcademicYear::firstOrCreate([
-            'name' => '2025/2026',
-            'start_year' => 2025,
-            'end_year' => 2026,
-            'is_active' => true,
-        ]);
+        $academicYear = AcademicYear::where('is_active', true)->first();
+        if (!$academicYear) {
+            $this->command->warn('No active academic year found. Skipping SiswaSeeder.');
+            return;
+        }
+
+        // Use existing classes created by ClassSeeder
+        $classRPL1 = ClassRoom::where('major_id', $rplMajor->id)
+            ->where('academic_year_id', $academicYear->id)
+            ->where('grade_level', 12)
+            ->first();
+
+        $classRPL2 = ClassRoom::where('major_id', $rplMajor->id)
+            ->where('academic_year_id', $academicYear->id)
+            ->where('grade_level', 11)
+            ->first();
+
+        $classTKJ1 = ClassRoom::where('major_id', $tkjMajor->id)
+            ->where('academic_year_id', $academicYear->id)
+            ->where('grade_level', 12)
+            ->first();
+
+        if (!$classRPL1 || !$classRPL2 || !$classTKJ1) {
+            $this->command->warn('Required classes not found. Skipping SiswaSeeder.');
+            return;
+        }
 
         $siswasData = [
             [
                 'nis' => '12001',
                 'nama' => 'Ahmad Rizki Pratama',
                 'major' => $rplMajor,
-                'class' => $classXII1,
+                'class' => $classRPL1,
                 'jenis_kelamin' => 'L',
                 'alamat' => 'Jl. Merdeka No. 123, Purwokerto',
             ],
@@ -41,7 +62,7 @@ class SiswaSeeder extends Seeder
                 'nis' => '12002',
                 'nama' => 'Siti Nurhaliza',
                 'major' => $rplMajor,
-                'class' => $classXII1,
+                'class' => $classRPL1,
                 'jenis_kelamin' => 'P',
                 'alamat' => 'Jl. Ahmad Yani No. 45, Purwokerto',
             ],
@@ -49,7 +70,7 @@ class SiswaSeeder extends Seeder
                 'nis' => '12003',
                 'nama' => 'Budi Santoso',
                 'major' => $rplMajor,
-                'class' => $classXII2,
+                'class' => $classRPL2,
                 'jenis_kelamin' => 'L',
                 'alamat' => 'Jl. Sudirman No. 67, Purwokerto',
             ],
@@ -57,7 +78,7 @@ class SiswaSeeder extends Seeder
                 'nis' => '12004',
                 'nama' => 'Eka Putri Wijaya',
                 'major' => $rplMajor,
-                'class' => $classXII2,
+                'class' => $classRPL2,
                 'jenis_kelamin' => 'P',
                 'alamat' => 'Jl. Gatot Subroto No. 89, Purwokerto',
             ],
@@ -65,7 +86,7 @@ class SiswaSeeder extends Seeder
                 'nis' => '12005',
                 'nama' => 'Rendi Gunawan',
                 'major' => $tkjMajor,
-                'class' => $classXII1,
+                'class' => $classTKJ1,
                 'jenis_kelamin' => 'L',
                 'alamat' => 'Jl. Diponegoro No. 101, Purwokerto',
             ],
@@ -73,7 +94,7 @@ class SiswaSeeder extends Seeder
                 'nis' => '12006',
                 'nama' => 'Nisa Amalina',
                 'major' => $tkjMajor,
-                'class' => $classXII1,
+                'class' => $classTKJ1,
                 'jenis_kelamin' => 'P',
                 'alamat' => 'Jl. Hayam Wuruk No. 112, Purwokerto',
             ],

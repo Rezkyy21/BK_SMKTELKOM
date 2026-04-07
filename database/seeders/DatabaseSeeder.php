@@ -227,5 +227,10 @@ if (! $realClassRoom) {
         // 11. Kategori Materi Seeder
         // =========================
         $this->call(KategoriMateriSeeder::class);
+
+        // =========================
+        // 12. Siswa Seeder (additional test students)
+        // =========================
+        $this->call(SiswaSeeder::class);
     }
 }
