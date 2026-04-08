@@ -10,12 +10,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to VPS via SSH key
-        uses: appleboy/ssh-action@v1
+      - name: Setup SSH key
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY_B64 }}" | base64 -d > /tmp/ssh_key
+          chmod 600 /tmp/ssh_key
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          key_path: /tmp/ssh_key
           port: ${{ secrets.VPS_PORT }}
           script: |
             set -e
@@ -36,7 +41,6 @@ jobs:
             echo "===> Install and use Node.js 22"
             nvm install 22
             nvm use 22
-            echo "===> Show Node and NPM version"
             node -v
             npm -v
             echo "===> Install PHP dependencies"
