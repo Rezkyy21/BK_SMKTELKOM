@@ -55,8 +55,6 @@ Route::get('/', function () {
 // PUBLIC STUDENT PAGES (view-only for guests)
 Route::get('/siswa/dashboard', [SiswaController::class, 'dashboard'])
     ->name('siswa.dashboard');
-Route::post('/bk-assistant/message', [BkAssistantController::class, 'message'])
-    ->name('bk-assistant.message');
 Route::get('/bk-assistant/test', [BkAssistantController::class, 'test'])
     ->name('bk-assistant.test');
 Route::get('/siswa/karir', [SiswaController::class, 'karir'])
@@ -72,6 +70,10 @@ Route::get('/siswa/konseling', [SiswaController::class, 'konseling'])
     ->name('siswa.konseling');
 
 Route::middleware(['auth'])->group(function () {
+
+    // CHATBOT API (requires authentication for CSRF protection)
+    Route::post('/bk-assistant/message', [BkAssistantController::class, 'message'])
+        ->name('bk-assistant.message');
 
     // SISWA PROFILE (no CheckFirstTimeLogin for these routes since they ARE the profile edit routes)
     Route::prefix('siswa/profile')->name('siswa.profile.')->group(function () {

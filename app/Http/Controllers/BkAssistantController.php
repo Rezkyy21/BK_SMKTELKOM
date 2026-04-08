@@ -15,9 +15,10 @@ class BkAssistantController extends Controller
     public function message(Request $request)
     {
         try {
-            // Log request untuk debugging
+            // Debug: Log request untuk debugging
             \Log::info('BkAssistant message request', [
-                'headers' => $request->headers->all(),
+                'user' => auth()->user()?->id,
+                'csrf_valid' => csrf_token(),
                 'body' => $request->all()
             ]);
 
@@ -59,7 +60,14 @@ class BkAssistantController extends Controller
                 ], 400);
             }
 
-            $apiKey = env('GEMINI_API_KEY', 'AIzaSyBpKNS0gM6zyUiE0aMtTPmMjOqicV636HY');
+            $apiKey = env('GEMINI_API_KEY');
+
+            if (!$apiKey) {
+                \Log::error('GEMINI_API_KEY not set');
+                return response()->json([
+                    'error' => 'API key tidak dikonfigurasi.'
+                ], 500);
+            }
 
             $payload = [
                 'contents' => $contents
