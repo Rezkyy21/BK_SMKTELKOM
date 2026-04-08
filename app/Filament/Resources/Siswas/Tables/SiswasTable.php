@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Siswas\Tables;
 
+use App\Models\ClassRoom;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -30,6 +31,7 @@ class SiswasTable
             ])->sortable(),
            TextColumn::make('classRoom.full_name')
                 ->label('Kelas')
+                ->searchable()
                 ->placeholder('-'),
 
           TextColumn::make('academicYear.name')
@@ -52,6 +54,21 @@ class SiswasTable
                     return $query->whereHas('user', function ($q) use ($data) {
                         $q->where('status_akun', $data['value']);
                     });
+                }),
+            SelectFilter::make('class_id')
+                ->label('Kelas')
+                ->options(ClassRoom::with('major')
+                    ->orderBy('grade_level')
+                    ->orderBy('major_id')
+                    ->orderBy('name')
+                    ->get()
+                    ->pluck('full_name', 'id'))
+                ->query(function (Builder $query, $data) {
+                    if (!$data['value']) {
+                        return $query;
+                    }
+
+                    return $query->where('class_id', $data['value']);
                 }),
         ])
         ->recordActions([
