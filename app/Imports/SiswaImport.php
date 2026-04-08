@@ -42,6 +42,14 @@ class SiswaImport implements ToCollection, WithHeadingRow
             // Resolve class_id & major_id dari nama kelas
             [$classId, $majorId] = $this->resolveKelas($namaKelas);
 
+            // DEBUG: Log hasil resolveKelas
+            \Log::info("IMPORT SISWA DEBUG - NIS: {$nis}, Kelas: '{$namaKelas}' -> class_id: " . ($classId ?? 'NULL') . ", major_id: " . ($majorId ?? 'NULL'));
+
+            // Jika class_id null, log error tapi lanjutkan import
+            if (!$classId) {
+                \Log::warning("IMPORT SISWA WARNING - Class tidak ditemukan untuk kelas: '{$namaKelas}' (NIS: {$nis})");
+            }
+
             // ── Siswa sudah ada → update kelas saja, TIDAK reset password/email ──
             $existingSiswa = Siswa::where('nis', $nis)->first();
 
@@ -115,7 +123,11 @@ class SiswaImport implements ToCollection, WithHeadingRow
         $normalized = strtoupper(trim($namaKelas));
         $normalized = str_replace(['XII', 'XI', 'X'], ['12', '11', '10'], $normalized);
 
+        // DEBUG: Log input parsing
+        \Log::info("RESOLVE KELAS DEBUG - Input: '{$namaKelas}', Normalized: '{$normalized}'");
+
         if (!preg_match('/^(\d{2})\s+([A-Z]+)[\s\-]+(\d+)$/', $normalized, $m)) {
+            \Log::warning("RESOLVE KELAS DEBUG - Regex failed for: '{$normalized}'");
             return [null, null];
         }
 
@@ -123,28 +135,67 @@ class SiswaImport implements ToCollection, WithHeadingRow
         $majorInput = $m[2];
         $nomor      = (int) $m[3];
 
+        \Log::info("RESOLVE KELAS DEBUG - Parsed: grade={$grade}, majorInput={$majorInput}, nomor={$nomor}");
+
         $majorNama = $this->majorAliases[$majorInput] ?? $majorInput;
         $major     = Major::where('name', $majorNama)->first();
 
         if (!$major) {
+            \Log::warning("RESOLVE KELAS DEBUG - Major not found: '{$majorNama}'");
             return [null, null];
         }
 
-        // Nama kelas di DB: "11 RPL-1"
-        $classNama = $grade . ' ' . $majorNama . '-' . $nomor;
-        $class = ClassRoom::where('name', $classNama)
-            ->where('grade_level', $grade)
+        \Log::info("RESOLVE KELAS DEBUG - Major found: {$major->name} (ID: {$major->id})");
+
+        // Method 1: Cari berdasarkan format name yang benar (hanya angka)
+        $class = ClassRoom::where('grade_level', $grade)
             ->where('major_id', $major->id)
+            ->where('name', (string)$nomor)
             ->first();
 
-        // Fallback LIKE
-        if (!$class) {
-            $class = ClassRoom::where('grade_level', $grade)
-                ->where('major_id', $major->id)
-                ->where('name', 'like', '%' . $majorNama . '-' . $nomor)
-                ->first();
+        if ($class) {
+            \Log::info("RESOLVE KELAS DEBUG - Class found (Method 1): {$class->full_name} (ID: {$class->id})");
+            return [$class->id, $major->id];
         }
 
-        return [$class?->id, $major->id];
+        // Method 2: Fallback - cari berdasarkan format name yang salah (dengan prefix)
+        $wrongFormat = $grade . ' ' . $majorNama . '-' . $nomor;
+        $class = ClassRoom::where('grade_level', $grade)
+            ->where('major_id', $major->id)
+            ->where('name', $wrongFormat)
+            ->first();
+
+        if ($class) {
+            \Log::info("RESOLVE KELAS DEBUG - Class found (Method 2): {$class->full_name} (ID: {$class->id})");
+            return [$class->id, $major->id];
+        }
+
+        // Method 3: Ultimate fallback - cari berdasarkan full_name comparison
+        $gradeRoman = match($grade) {
+            10 => 'X',
+            11 => 'XI',
+            12 => 'XII',
+            default => (string)$grade
+        };
+
+        $expectedFullName = $gradeRoman . ' ' . $majorNama . ' ' . $nomor;
+
+        $classes = ClassRoom::with('major')
+            ->where('grade_level', $grade)
+            ->where('major_id', $major->id)
+            ->get();
+
+        \Log::info("RESOLVE KELAS DEBUG - Checking {$classes->count()} classes for grade {$grade}, major {$major->id}");
+
+        foreach ($classes as $c) {
+            \Log::info("RESOLVE KELAS DEBUG - Comparing: '{$c->full_name}' vs '{$expectedFullName}'");
+            if (strtoupper($c->full_name) === strtoupper($expectedFullName)) {
+                \Log::info("RESOLVE KELAS DEBUG - Class found (Method 3): {$c->full_name} (ID: {$c->id})");
+                return [$c->id, $major->id];
+            }
+        }
+
+        \Log::warning("RESOLVE KELAS DEBUG - No class found for: grade={$grade}, major={$majorNama}, nomor={$nomor}");
+        return [null, null];
     }
 }
