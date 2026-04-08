@@ -26,5 +26,7 @@
     </main>
 
 </div>
+
+@include('components.bk-chatbot')
 </body>
 </html>

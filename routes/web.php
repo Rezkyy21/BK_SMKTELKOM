@@ -6,6 +6,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\CareerPlanController;
 use App\Http\Controllers\Siswa\ProfileController as SiswaProfileController;
+use App\Http\Controllers\BkAssistantController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Siswa;
 
@@ -54,6 +55,10 @@ Route::get('/', function () {
 // PUBLIC STUDENT PAGES (view-only for guests)
 Route::get('/siswa/dashboard', [SiswaController::class, 'dashboard'])
     ->name('siswa.dashboard');
+Route::post('/bk-assistant/message', [BkAssistantController::class, 'message'])
+    ->name('bk-assistant.message');
+Route::get('/bk-assistant/test', [BkAssistantController::class, 'test'])
+    ->name('bk-assistant.test');
 Route::get('/siswa/karir', [SiswaController::class, 'karir'])
     ->name('siswa.karir');
 Route::get('/siswa/belajar', [SiswaController::class, 'belajar'])

@@ -1,53 +1,50 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Karir - SMK Telkom</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+@extends('layouts.siswa')
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #fdf4f4;
-            overflow-x: hidden;
-        }
+@section('title', 'Karir - SMK Telkom')
 
-        .hero-section {
-            background: linear-gradient(135deg, #fff8f0 0%, #fff 60%, #f0f4ff 100%);
-        }
+@section('styles')
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .hero-brain {
-            animation: float 3s ease-in-out infinite;
-        }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #fdf4f4;
+        overflow-x: hidden;
+    }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
-        }
+    .hero-section {
+        background: linear-gradient(135deg, #fff8f0 0%, #fff 60%, #f0f4ff 100%);
+    }
 
-       .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 64px;
+    .hero-brain {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); }
+    }
+
+   .nav-inner {
+max-width: 1200px;
+margin: 0 auto;
+padding: 0 24px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+height: 64px;
 }
 
 .nav-links {
-    display: flex;
-    gap: 32px;
-    list-style: none;
+display: flex;
+gap: 32px;
+list-style: none;
 }
 
 .nav-links a {
-    text-decoration: none;
-    color: #64748b;
-    font-weight: 600;
+text-decoration: none;
+color: #64748b;
+font-weight: 600;
     font-size: 0.9rem;
     padding: 6px 0;
     position: relative;
@@ -577,15 +574,4 @@
             </div>
         </div>
     </footer>
-<script>
-   
-const menuBtn = document.getElementById("menuBtn");
-const navMenu = document.getElementById("navMenu");
-
-menuBtn.addEventListener("click", () => {
-    navMenu.classList.toggle("show");
-});
-
-</script>
-</body>
-</html>
+@endsection

@@ -1,53 +1,50 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pribadi - SMK Telkom</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-       :root {
-    --pink: #ef4444;
-    --rose: #dc2626;
-    --purple: #b91c1c;
-    --violet: #991b1b;
-    --red: #dc2626;
-    --orange: #f97316;
-    --fuchsia: #ef4444;
+@extends('layouts.siswa')
+
+@section('title', 'Pribadi - SMK Telkom')
+
+@section('styles')
+<style>
+   :root {
+--pink: #ef4444;
+--rose: #dc2626;
+--purple: #b91c1c;
+--violet: #991b1b;
+--red: #dc2626;
+--orange: #f97316;
+--fuchsia: #ef4444;
 }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #fdf4f4;
-            overflow-x: hidden;
-        }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #fdf4f4;
+        overflow-x: hidden;
+    }
 
-        /* ===== NAV ===== */
-        nav {
-            background: white;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.07);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            animation: slideDown 0.5s ease;
-        }
+    /* ===== NAV ===== */
+    nav {
+        background: white;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        animation: slideDown 0.5s ease;
+    }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+    @keyframes slideDown {
+        from { transform: translateY(-100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 64px;
+    .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 64px;
         }
 
         .logo {
@@ -883,8 +880,9 @@
             }
         
     </style>
-</head>
-<body>
+@endsection
+
+@section('content')
 
     <!-- Navigation -->
 
@@ -1308,6 +1306,4 @@
             navMenu.classList.toggle("show");
         });
     </script>
-
-</body>
-</html>
+@endsection

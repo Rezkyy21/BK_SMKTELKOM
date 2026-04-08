@@ -1,53 +1,50 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belajar - SMK Telkom</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --red: #E63329;
-            --orange: #F97316;
-            --yellow: #FBBF24;
-            --green: #22C55E;
-            --cyan: #06B6D4;
-            --blue: #3B82F6;
-            --purple: #8B5CF6;
-            --pink: #EC4899;
-        }
+@extends('layouts.siswa')
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-         * { font-family: 'Plus Jakarta Sans', sans-serif; }
+@section('title', 'Belajar - SMK Telkom')
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #f8f9ff;
-            overflow-x: hidden;
-        }
+@section('styles')
+<style>
+    :root {
+        --red: #E63329;
+        --orange: #F97316;
+        --yellow: #FBBF24;
+        --green: #22C55E;
+        --cyan: #06B6D4;
+        --blue: #3B82F6;
+        --purple: #8B5CF6;
+        --pink: #EC4899;
+    }
 
-        /* ===== NAV ===== */
-        nav {
-            background: white;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            animation: slideDown 0.5s ease;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+     * { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: #f8f9ff;
+        overflow-x: hidden;
+    }
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            justify-content: space-between;
+    /* ===== NAV ===== */
+    nav {
+        background: white;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        justify-content: space-between;
             align-items: center;
             height: 64px;
         }
@@ -901,8 +898,9 @@
             }
            
     </style>
-</head>
-<body>
+@endsection
+
+@section('content')
 
     <!-- Navigation -->
    <nav class="bg-white shadow-sm sticky top-0 z-50">
@@ -1250,6 +1248,4 @@
             navMenu.classList.toggle("show");
         });
     </script>
-
-</body>
-</html>
+@endsection

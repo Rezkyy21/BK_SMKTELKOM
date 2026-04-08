@@ -1,122 +1,119 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Siswa - SMK Telkom</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-                    --red: #dc2626;
-                    --orange: #ef4444;
-                    --teal: #b91c1c;
-                    --cyan: #f87171;
-                    --emerald: #7f1d1d;
-                    --yellow: #fca5a5;
-                }
+@extends('layouts.siswa')
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+@section('title', 'Dashboard Siswa - SMK Telkom')
 
-        html { scroll-behavior: smooth; }
+@section('styles')
+<style>
+    :root {
+        --red: #dc2626;
+        --orange: #ef4444;
+        --teal: #b91c1c;
+        --cyan: #f87171;
+        --emerald: #7f1d1d;
+        --yellow: #fca5a5;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #2a0f0f;
-            color: white;
-            overflow-x: hidden;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* ==============================
-           NAVBAR
-        ============================== */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 200;
-            background: rgba(42, 15, 15, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            animation: navSlide 0.6s ease both;
-        }
+    html { scroll-behavior: smooth; }
 
-        @keyframes navSlide {
-            from { transform: translateY(-100%); opacity: 0; }
-            to   { transform: translateY(0);      opacity: 1; }
-        }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #2a0f0f;
+        color: white;
+        overflow-x: hidden;
+    }
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 28px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+    /* ==============================
+       NAVBAR
+    ============================== */
+    nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 200;
+        background: rgba(42, 15, 15, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        animation: navSlide 0.6s ease both;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
+    @keyframes navSlide {
+        from { transform: translateY(-100%); opacity: 0; }
+        to   { transform: translateY(0);      opacity: 1; }
+    }
 
-        .logo-icon {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, var(--red), var(--orange));
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; color: white;
-            box-shadow: 0 4px 14px rgba(230,51,41,0.4);
-        }
+    .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 28px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-        .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 750;
-            font-size: 1.2rem;
-            color: white;
-        }
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
 
-        .nav-links {
-            display: flex;
-            gap: 28px;
-            list-style: none;
-        }
+    .logo-icon {
+        width: 36px; height: 36px;
+        background: linear-gradient(135deg, var(--red), var(--orange));
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem; color: white;
+        box-shadow: 0 4px 14px rgba(230,51,41,0.4);
+    }
 
-        .nav-links a {
-            text-decoration: none;
-            color: rgba(255,255,255,0.55);
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: color 0.25s;
-            position: relative;
-        }
+    .logo-text {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 750;
+        font-size: 1.2rem;
+        color: white;
+    }
 
-        .nav-links a:hover { color: white; }
-        .nav-links a.active { color: white; }
-        .nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -4px; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--red), var(--orange));
-            border-radius: 2px;
-        }
+    .nav-links {
+        display: flex;
+        gap: 28px;
+        list-style: none;
+    }
 
-        /* Profile dropdown */
-        .profile-wrapper { position: relative; }
+    .nav-links a {
+        text-decoration: none;
+        color: rgba(255,255,255,0.55);
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: color 0.25s;
+        position: relative;
+    }
 
-        .profile-btn {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.12);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            color: rgba(255,255,255,0.7);
-            transition: all 0.2s;
-        }
+    .nav-links a:hover { color: white; }
+    .nav-links a.active { color: white; }
+    .nav-links a.active::after {
+        content: '';
+        position: absolute;
+        bottom: -4px; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--red), var(--orange));
+        border-radius: 2px;
+    }
+
+    /* Profile dropdown */
+    .profile-wrapper { position: relative; }
+
+    .profile-btn {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        color: rgba(255,255,255,0.7);
+        transition: all 0.2s;
+    }
 
         .profile-btn:hover {
             background: rgba(255,255,255,0.15);
@@ -1059,9 +1056,9 @@
 }
 
     </style>
-</head>
-<body>
+@endsection
 
+@section('content')
     <!-- ==============================
          NAVBAR
     ============================== -->
@@ -1655,6 +1652,4 @@ menuBtn.addEventListener("click", () => {
     mobileMenu.classList.toggle("active");
 });
     </script>
-
-</body>
-</html>
+@endsection

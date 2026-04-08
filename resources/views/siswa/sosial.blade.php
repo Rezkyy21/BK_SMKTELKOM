@@ -1,53 +1,50 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sosial - SMK Telkom</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-                --teal: #E63329;
-                --cyan: #ff4d4d;
-                --emerald: #E63329;
-                --green: #ff6b6b;
-                --sky: #ff3b3b;
-                --red: #E63329;
-                --orange: #ff7849;
-            }
+@extends('layouts.siswa')
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+@section('title', 'Sosial - SMK Telkom')
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background:#fff5f5;
-            overflow-x: hidden;
+@section('styles')
+<style>
+    :root {
+            --teal: #E63329;
+            --cyan: #ff4d4d;
+            --emerald: #E63329;
+            --green: #ff6b6b;
+            --sky: #ff3b3b;
+            --red: #E63329;
+            --orange: #ff7849;
         }
 
-        /* ===== NAV ===== */
-        nav {
-            background: white;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.07);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            animation: slideDown 0.5s ease;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background:#fff5f5;
+        overflow-x: hidden;
+    }
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 64px;
+    /* ===== NAV ===== */
+    nav {
+        background: white;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 64px;
         }
 
         .logo {
@@ -762,8 +759,9 @@
                 object-fit:contain;
             }
     </style>
-</head>
-<body>
+@endsection
+
+@section('content')
 
     <!-- Navigation -->
    <nav class="bg-white shadow-sm sticky top-0 z-50">
@@ -1162,6 +1160,4 @@ menuBtn.addEventListener("click", () => {
     navMenu.classList.toggle("show");
 });
     </script>
-
-</body>
-</html>
+@endsection

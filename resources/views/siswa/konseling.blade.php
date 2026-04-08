@@ -1,53 +1,46 @@
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Konseling - SMK Telkom</title>
+@extends('layouts.siswa')
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+@section('title', 'Konseling - SMK Telkom')
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-            :root {
-                --red: #E63329;
-                --red-dark: #b91c1c;
-                --teal: #dc2626;
-                --cyan: #ef4444;
-                --emerald: #f87171;
-                --orange: #fb7185;
-            }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-           font-family: 'Poppins', sans-serif;
-            background: #f8fafc;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-                    
+@section('styles')
+<style>
+        :root {
+            --red: #E63329;
+            --red-dark: #b91c1c;
+            --teal: #dc2626;
+            --cyan: #ef4444;
+            --emerald: #f87171;
+            --orange: #fb7185;
         }
 
-        /* ===== NAV ===== */
-        nav {
-            background: white;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.07);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 64px;
+    body {
+       font-family: 'Poppins', sans-serif;
+        background: #f8fafc;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+
+    }
+
+    /* ===== NAV ===== */
+    nav {
+        background: white;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 64px;
         }
 
         .logo {
@@ -1811,19 +1804,7 @@
             }
         });
    
-
-   
-  
-        const menuBtn = document.getElementById("menuBtn");
-        const navMenu = document.getElementById("navMenu");
-
-        menuBtn.addEventListener("click", () => {
-            navMenu.classList.toggle("show");
-        });
-   
- </script>
-</body>
-</html>
+@endsection
 
 
 

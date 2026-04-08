@@ -1,7 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.siswa')
 
-@section('content')
+@section('title', 'Career Plan Form - SMK Telkom')
 
+@section('styles')
 <style>
 .nav-inner{
 max-width:1200px;

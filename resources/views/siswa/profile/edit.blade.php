@@ -1,23 +1,21 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lengkapi Profil - SMK Telkom Purwokerto</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@extends('layouts.siswa')
 
-        :root {
-            --red: #E31837;
-            --red-dark: #b5122b;
-            --red-glow: rgba(227, 24, 55, 0.18);
-            --cream: #FFF8F5;
-            --charcoal: #1A1A1A;
-            --muted: #6B6B6B;
-            --border: #E8E0DC;
-            --card-bg: #FFFFFF;
-            --input-bg: #FAF6F4;
+@section('title', 'Lengkapi Profil - SMK Telkom Purwokerto')
+
+@section('styles')
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        --red: #E31837;
+        --red-dark: #b5122b;
+        --red-glow: rgba(227, 24, 55, 0.18);
+        --cream: #FFF8F5;
+        --charcoal: #1A1A1A;
+        --muted: #6B6B6B;
+        --border: #E8E0DC;
+        --card-bg: #FFFFFF;
+        --input-bg: #FAF6F4;
             --disabled-bg: #F0EAE7;
         }
 
@@ -686,5 +684,4 @@
             }
         }
     </script>
-</body>
-</html>
+@endsection
