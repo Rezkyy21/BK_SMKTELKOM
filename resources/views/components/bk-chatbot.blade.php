@@ -147,6 +147,17 @@
       padding: 12px 16px;
       font-size: 0.95rem;
       outline: none;
+      color: var(--bk-text);
+      background: var(--bk-surface);
+    }
+
+    .bk-chat-input input::placeholder {
+      color: var(--bk-muted);
+    }
+
+    .bk-chat-input input:focus {
+      border-color: var(--bk-primary);
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
     }
 
     .bk-chat-input button {
@@ -157,6 +168,11 @@
       padding: 0 18px;
       cursor: pointer;
       font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+
+    .bk-chat-input button:hover {
+      background: #a93226;
     }
 
     @media (max-width: 640px) {
