@@ -1803,7 +1803,7 @@
                 tutupModalForm();
             }
         });
-   
+   </script> 
 @endsection
 
 
