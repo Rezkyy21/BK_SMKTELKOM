@@ -34,7 +34,7 @@ class LaporanForm
                             ->hidden(fn (Get $get) => (bool) $get('id'))
                             ->live()
                             ->afterStateUpdated(function ($state, Set $set) {
-                                $booking = Booking::with(['siswa.classRoom'])->find($state);
+                                $booking = Booking::with(['siswa.classRoom', 'jadwal.guru'])->find($state);
                                 if ($booking?->siswa && $booking->status === 'disetujui') {
                                     $set('booking_id', $booking->id);
                                     $set('siswa_id', $booking->siswa_id);
@@ -42,6 +42,10 @@ class LaporanForm
                                     $set('nis', $booking->siswa->nis);
                                     $set('kelas', $booking->siswa->classRoom?->full_name ?? '-');
                                     $set('jenis_kelamin', $booking->siswa->jenis_kelamin);
+
+                                    if ($booking->jadwal?->guru) {
+                                        $set('nama_guru', $booking->jadwal->guru->nama);
+                                    }
                                 }
                             }),
                         TextInput::make('siswa_id')

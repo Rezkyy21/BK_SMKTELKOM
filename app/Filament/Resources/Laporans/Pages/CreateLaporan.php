@@ -12,18 +12,27 @@ class CreateLaporan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Auto set guru_id from logged in guru
-        $guruBk = auth()->user()->guruBk;
-        if (!$guruBk) {
-            throw new \Exception('User tidak memiliki data Guru BK yang valid');
+        // Auto set guru_id from booking jadwal guru if booking is selected.
+        $booking = null;
+        if (!empty($data['booking_id'])) {
+            $booking = Booking::with(['siswa.classRoom', 'topik', 'jadwal.guru'])->find($data['booking_id']);
         }
 
-        $data['guru_id'] = $guruBk->id;
-        $data['nama_guru'] = $guruBk->nama;
+        if ($booking && $booking->jadwal?->guru) {
+            $data['guru_id'] = $booking->jadwal->guru->id;
+            $data['nama_guru'] = $booking->jadwal->guru->nama;
+        } else {
+            $guruBk = auth()->user()->guruBk;
+            if (!$guruBk) {
+                throw new \Exception('User tidak memiliki data Guru BK yang valid dan booking tidak memiliki guru.');
+            }
+
+            $data['guru_id'] = $guruBk->id;
+            $data['nama_guru'] = $guruBk->nama;
+        }
 
         // Auto set siswa_id from selected booking
         if (empty($data['siswa_id']) && !empty($data['booking_id'])) {
-            $booking = Booking::with(['siswa.classRoom', 'topik', 'jadwal'])->find($data['booking_id']);
             if ($booking && $booking->siswa) {
                 $data['siswa_id'] = $booking->siswa_id;
                 $data['nama_siswa'] = $booking->siswa->nama;
