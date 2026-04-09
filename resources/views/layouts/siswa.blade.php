@@ -12,7 +12,7 @@
 <body class="@yield('body-class', 'font-sans antialiased')">
     @yield('content')
 
-    @include('components.bk-chatbot')
+    {{-- @include('components.bk-chatbot') --}}
 
     <script>
         // Hapus percakapan chatbot saat logout

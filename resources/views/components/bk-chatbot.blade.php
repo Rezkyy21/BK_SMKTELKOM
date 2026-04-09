@@ -228,7 +228,7 @@
 </div>
 
 <script>
-  const GEMINI_URL = '{{ route('bk-assistant.message') }}';
+  const GEMINI_URL = "{{ route('bk-assistant.message') }}";
   const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
   const bkChatToggle = document.getElementById('bkChatToggle');
@@ -392,7 +392,8 @@ Mulai percakapan dengan menyapa siswa secara hangat.`
       const data = await response.json();
 
       if (data.error) {
-        throw new Error(data.error);
+        let detailText = data.details ? ' (' + data.details + ')' : '';
+        throw new Error(data.error + detailText);
       }
 
       const output = data.text || 'Maaf, saya belum bisa menjawab sekarang.';

@@ -78,16 +78,25 @@ class BkAssistantController extends Controller
             ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key={$apiKey}", $payload);
 
             if (!$response->ok()) {
+                $status = $response->status();
+                $body = $response->body();
                 \Log::error('Gemini API error', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
+                    'status' => $status,
+                    'body' => $body,
                     'payload' => $payload
                 ]);
 
+                $errorMessage = 'Layanan Gemini tidak tersedia saat ini.';
+                if ($status === 429) {
+                    $errorMessage = 'Kuota Gemini habis. Silakan cek billing/plan Google Cloud atau gunakan API key dengan quota lebih besar.';
+                } elseif ($status === 403) {
+                    $errorMessage = 'API key Gemini tidak memiliki izin atau sudah diblokir. Silakan periksa key dan billing Google Cloud Anda.';
+                }
+
                 return response()->json([
-                    'error' => 'Layanan Gemini tidak tersedia saat ini.',
-                    'details' => $response->body(),
-                ], $response->status());
+                    'error' => $errorMessage,
+                    'details' => $body,
+                ], $status);
             }
 
             $data = $response->json();

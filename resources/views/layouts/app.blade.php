@@ -27,6 +27,6 @@
 
 </div>
 
-@include('components.bk-chatbot')
+{{-- @include('components.bk-chatbot') --}}
 </body>
 </html>
