@@ -1165,18 +1165,18 @@
                 </p>
 
                 <div class="hero-btns">
-                    <div class="btn-hero-primary" role="button" aria-disabled="true">
+                    <a href="{{ route('siswa.konseling') }}" class="btn-hero-primary">
                         Mulai Bimbingan
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                         </svg>
-                    </div>
-                    <div class="btn-hero-ghost" role="button" aria-disabled="true">
+                    </a>
+                    <a href="#guru" class="btn-hero-ghost">
                         Lihat Guru BK
                         <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="hero-stats">
@@ -1187,30 +1187,30 @@
             <!-- Right -->
             <div class="hero-right">
                 <div class="feature-cards">
-                    <div class="fcard">
+                    <a href="{{ route('siswa.pribadi') }}" class="fcard">
                         <div class="fcard-icon-wrap">💡</div>
                         <div class="fcard-text">
                             <div class="fcard-title">Tips & Pengembangan Diri</div>
                             <div class="fcard-sub">Tingkatkan potensi dirimu setiap hari</div>
                         </div>
                         <div class="fcard-arrow">→</div>
-                    </div>
-                    <div class="fcard">
+                    </a>
+                    <a href="{{ route('siswa.konseling') }}" class="fcard">
                         <div class="fcard-icon-wrap">🎯</div>
                         <div class="fcard-text">
                             <div class="fcard-title">Konseling Minat & Bakat</div>
                             <div class="fcard-sub">Temukan jalur terbaik untuk masa depanmu</div>
                         </div>
                         <div class="fcard-arrow">→</div>
-                    </div>
-                    <div class="fcard">
+                    </a>
+                    <a href="{{ route('siswa.konseling') }}" class="fcard">
                         <div class="fcard-icon-wrap">🧠</div>
                         <div class="fcard-text">
                             <div class="fcard-title">Konseling Kesehatan Mental</div>
                             <div class="fcard-sub">Ceritakan, kami siap mendengarkan</div>
                         </div>
                         <div class="fcard-arrow">→</div>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="hero-deco">
@@ -1248,12 +1248,12 @@
                         <div class="guru-info">
                             <div class="guru-name">{{ $guru->nama }}</div>
                            
-                            <button type="button" class="guru-btn" aria-disabled="true">
+                            <a href="{{ route('siswa.konseling') }}" class="guru-btn">
                                 Buat Jadwal
                                 <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                                 </svg>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 @empty
@@ -1266,12 +1266,12 @@
                         <div class="guru-info">
                             <div class="guru-name">Guru BK {{ $i + 1 }}</div>
                            
-                            <button type="button" class="guru-btn" aria-disabled="true">
+                            <a href="{{ route('siswa.konseling') }}" class="guru-btn">
                                 Buat Jadwal
                                 <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                                 </svg>
-                            </button>
+                            </a>
                         </div>
                     </div>
                     @endforeach
@@ -1382,7 +1382,7 @@
             <p class="lulus-sub reveal">Apapun pilihanmu, kami siap mendampingi dan mempersiapkanmu sejak sekarang.</p>
 
             <div class="lulus-grid">
-                <div class="lulus-card reveal">
+                <a href="{{ route('career-plan.edit') }}" class="lulus-card reveal">
                     <div class="lulus-icon">🎓</div>
                     <div class="lulus-label">Kuliah</div>
                     <div class="lulus-desc">Lanjutkan pendidikan ke perguruan tinggi impianmu</div>
@@ -1391,8 +1391,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                         </svg>
                     </div>
-                </div>
-                <div class="lulus-card reveal" style="transition-delay:0.1s">
+                </a>
+                <a href="{{ route('career-plan.edit') }}" class="lulus-card reveal" style="transition-delay:0.1s">
                     <div class="lulus-icon">💻</div>
                     <div class="lulus-label">Kerja</div>
                     <div class="lulus-desc">Mulai karir profesionalmu di dunia industri</div>
@@ -1401,8 +1401,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                         </svg>
                     </div>
-                </div>
-                <div class="lulus-card reveal" style="transition-delay:0.2s">
+                </a>
+                <a href="{{ route('career-plan.edit') }}" class="lulus-card reveal" style="transition-delay:0.2s">
                     <div class="lulus-icon">📈</div>
                     <div class="lulus-label">Wirausaha</div>
                     <div class="lulus-desc">Bangun bisnis impianmu dan jadilah pengusaha sukses</div>
@@ -1411,7 +1411,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                         </svg>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </section>
